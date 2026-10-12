@@ -1,0 +1,97 @@
+RESUMEN DE PRACTICA - EJERCICIO 4: PERSONAS Y PASAPORTES VIGENTES
+============================================================
+
+ENUNCIADO
+- La oficina de relaciones internacionales de una universidad registra a las personas que viajan en misiones academicas. De cada persona se guarda su numero de documento, nombre, apellido y fecha de nacimiento.
+- Algunas personas tienen pasaporte vigente y otras no. Para este sistema, cada persona tiene como maximo un pasaporte vigente registrado, y cada pasaporte vigente pertenece exactamente a una persona.
+- Del pasaporte se guarda su numero (unico), el pais que lo expidio, la fecha de expedicion y la fecha de vencimiento, que debe ser posterior a la de expedicion.
+- De cada pais se guarda su codigo ISO de tres letras y su nombre. Un pais puede haber expedido muchos de los pasaportes registrados, o ninguno.
+
+REGLAS DE NEGOCIO
+R1. Persona 1 -> 0..1 pasaporte vigente.  ->  1:1 opcional del lado del pasaporte.
+R2. Pasaporte -> exactamente 1 persona.  ->  FK NOT NULL en PASAPORTE_VIGENTE.
+R3. Una persona no puede tener dos pasaportes vigentes.  ->  UNIQUE sobre la FK: eso convierte la 1:N en 1:1.
+R4. Pais 1 -> 0..N pasaportes.  ->  1:N: FK NOT NULL cod_pais en PASAPORTE_VIGENTE.
+R5. Vencimiento posterior a expedicion.  ->  CHECK que compara dos columnas.
+
+MODELO RELACIONAL
+PAIS (#cod_pais, nom_pais)
+PERSONA (#id_persona, nombre, apellido, fecha_nac)
+PASAPORTE_VIGENTE (#num_pasaporte, id_persona*, cod_pais*, fecha_expedicion, fecha_vencimiento)
+  (# = parte de la PK, * = FK)
+
+RELACIONES Y CARDINALIDADES
+- PERSONA 1..1 --posee--> 0..1 PASAPORTE_VIGENTE: Cada pasaporte es de una persona (FK NOT NULL) y una persona tiene como maximo uno (UNIQUE sobre la FK). Puede no tener ninguno: 0..1.
+- PAIS 1..1 --expide--> 0..N PASAPORTE_VIGENTE: Cada pasaporte lo expide un pais; un pais puede no haber expedido ninguno de los registrados (Espana).
+
+RESTRICCIONES
+PK     pk_pais ON PAIS (cod_pais)
+PK     pk_persona ON PERSONA (id_persona)
+PK     pk_pasaporte ON PASAPORTE_VIGENTE (num_pasaporte)
+FK     fk_pasaporte_persona: PASAPORTE_VIGENTE (id_persona) -> PERSONA (id_persona)
+FK     fk_pasaporte_pais: PASAPORTE_VIGENTE (cod_pais) -> PAIS (cod_pais)
+UNIQUE uq_pasaporte_persona ON PASAPORTE_VIGENTE (id_persona)
+CHECK  chk_pasaporte_fechas ON PASAPORTE_VIGENTE: fecha_vencimiento > fecha_expedicion
+
+RUTA PRACTICA ORACLE
+0. Etapa previa: modelo verificado.
+1. SYSTEM: CREATE TABLESPACE TS_PASAPORTES DATAFILE TS_PASAPORTES01.DBF.
+2. SYSTEM: CREATE USER USR_ADMIN_PAS (DEFAULT TABLESPACE, QUOTA).
+3. SYSTEM: GRANT CREATE SESSION, CREATE TABLE. USR_ADMIN_PAS: CREATE TABLE -> PK -> FK -> UNIQUE/CHECK.
+4. SYSTEM: CREATE USER USR_CONSULTAS_PAS.
+5. SYSTEM: GRANT CREATE SESSION. USR_ADMIN_PAS: GRANT SELECT, INSERT ON cada tabla.
+6. USR_CONSULTAS_PAS: INSERT INTO usr_admin_pas.tabla, COMMIT, consultas.
+
+CONSULTAS
+- Que pasaporte tiene cada persona?
+    SELECT pe.nombre, pe.apellido, pa.num_pasaporte, pa.cod_pais
+    FROM usr_admin_pas.persona pe
+    LEFT JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
+    ORDER BY pe.apellido;
+
+- Que personas no tienen pasaporte vigente?
+    SELECT pe.id_persona, pe.nombre, pe.apellido
+    FROM usr_admin_pas.persona pe
+    LEFT JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
+    WHERE pa.num_pasaporte IS NULL
+    ORDER BY pe.apellido;
+
+- Cuantos pasaportes registrados expidio cada pais?
+    SELECT pi.cod_pais, pi.nom_pais, COUNT(pa.num_pasaporte) AS pasaportes
+    FROM usr_admin_pas.pais pi
+    LEFT JOIN usr_admin_pas.pasaporte_vigente pa ON pa.cod_pais = pi.cod_pais
+    GROUP BY pi.cod_pais, pi.nom_pais
+    ORDER BY pasaportes DESC, pi.cod_pais;
+
+- Que pasaportes vencen antes de 2030?
+    SELECT pa.num_pasaporte, pe.nombre, pe.apellido,
+           TO_CHAR(pa.fecha_vencimiento, 'YYYY-MM-DD') AS vence
+    FROM usr_admin_pas.pasaporte_vigente pa
+    JOIN usr_admin_pas.persona pe ON pe.id_persona = pa.id_persona
+    WHERE pa.fecha_vencimiento < DATE '2030-01-01'
+    ORDER BY pa.fecha_vencimiento;
+
+- Que personas nacidas antes de 1995 tienen pasaporte?
+    SELECT pe.nombre, pe.apellido, TO_CHAR(pe.fecha_nac, 'YYYY-MM-DD') AS nacimiento, pa.cod_pais
+    FROM usr_admin_pas.persona pe
+    JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
+    WHERE pe.fecha_nac < DATE '1995-01-01'
+    ORDER BY pe.fecha_nac;
+
+- Alguien tiene mas de un pasaporte vigente?
+    SELECT id_persona, COUNT(*) AS pasaportes
+    FROM usr_admin_pas.pasaporte_vigente
+    GROUP BY id_persona
+    HAVING COUNT(*) > 1;
+
+PREGUNTAS TIPO PARCIAL
+1. Como se implementa una relacion 1:1 en Oracle?
+   R: Con una FK en una de las tablas acompanada de una restriccion UNIQUE (o haciendo que la FK sea tambien la PK). La FK sola permitiria 1:N.
+2. En que tabla va la FK y por que?
+   R: En PASAPORTE_VIGENTE: es el lado opcional y dependiente (el pasaporte no existe sin persona, la persona si sin pasaporte). Asi la FK puede ser NOT NULL.
+3. Que pasa si se inserta un segundo pasaporte para Camila?
+   R: ORA-00001 por uq_pasaporte_persona.
+4. Si se quisiera guardar el historial de pasaportes, que cambia?
+   R: La relacion pasa a 1:N: se elimina el UNIQUE sobre id_persona (y la tabla dejaria de llamarse "vigente").
+5. Como compruebas con SQL que nadie tiene dos pasaportes?
+   R: GROUP BY id_persona HAVING COUNT(*) > 1 debe devolver "no rows selected".

@@ -1,0 +1,144 @@
+RESUMEN DE PRACTICA - EJERCICIO 3: CLIENTES Y PEDIDOS
+============================================================
+
+ENUNCIADO
+- Una tienda de tecnologia registra los pedidos de sus clientes. De cada cliente se guarda un codigo, nombre, apellido, correo (obligatorio y unico: lo usa para iniciar sesion) y ciudad.
+- Un cliente puede hacer muchos pedidos o ninguno; cada pedido es de un solo cliente.
+- Cada pedido tiene un numero, la fecha (si no se indica, la fecha actual) y un estado: PENDIENTE (por defecto), ENVIADO, ENTREGADO o ANULADO.
+- De cada producto se guarda un codigo, un nombre que no se repite y el precio de lista, que debe ser mayor que cero.
+- Un pedido incluye uno o varios productos y un producto puede aparecer en muchos pedidos. Por cada producto incluido en un pedido se guarda la cantidad (mayor que cero) y el precio al que realmente se vendio, que puede diferir del precio de lista por descuentos.
+- El total del pedido se calcula a partir de su detalle; no se almacena.
+
+REGLAS DE NEGOCIO
+R1. Cliente 1 -> 0..N pedidos.  ->  1:N: FK NOT NULL en PEDIDO.
+R2. Pedido N:M Producto, con cantidad y precio de venta.  ->  Interseccion DETALLE_PEDIDO con atributos propios.
+R3. Correo obligatorio y unico; nombre de producto unico.  ->  NOT NULL + UNIQUE: claves alternativas.
+R4. Fecha por defecto la actual; estado por defecto PENDIENTE.  ->  DEFAULT SYSDATE y DEFAULT 'PENDIENTE'.
+R5. Estado dentro de una lista.  ->  CHECK (estado IN (...)).
+R6. Precio de lista > 0; cantidad > 0; precio de venta >= 0.  ->  CHECK.
+R7. El total no se almacena.  ->  Atributo derivado: se calcula con SUM en la consulta.
+
+MODELO RELACIONAL
+CLIENTE (#id_cliente, nombre, apellido, correo, ciudad)
+PRODUCTO (#id_producto, nom_producto, precio_lista)
+PEDIDO (#id_pedido, fecha_pedido, estado, id_cliente*)
+DETALLE_PEDIDO (#id_pedido*, #id_producto*, cantidad, precio_venta)
+  (# = parte de la PK, * = FK)
+
+RELACIONES Y CARDINALIDADES
+- CLIENTE 1..1 --realiza--> 0..N PEDIDO: Cada pedido es de un cliente (FK NOT NULL); un cliente puede no tener pedidos (Tomas).
+- PEDIDO 1..1 --contiene--> 1..N DETALLE_PEDIDO: Un pedido tiene una o varias lineas (regla de negocio); cada linea es de un pedido.
+- PRODUCTO 1..1 --aparece en--> 0..N DETALLE_PEDIDO: Un producto puede no haberse vendido nunca (Base para portatil).
+
+RESTRICCIONES
+PK     pk_cliente ON CLIENTE (id_cliente)
+PK     pk_producto ON PRODUCTO (id_producto)
+PK     pk_pedido ON PEDIDO (id_pedido)
+PK     pk_detalle_pedido ON DETALLE_PEDIDO (id_pedido, id_producto)
+FK     fk_pedido_cliente: PEDIDO (id_cliente) -> CLIENTE (id_cliente)
+FK     fk_detalle_pedido: DETALLE_PEDIDO (id_pedido) -> PEDIDO (id_pedido)
+FK     fk_detalle_producto: DETALLE_PEDIDO (id_producto) -> PRODUCTO (id_producto)
+UNIQUE uq_cliente_correo ON CLIENTE (correo)
+UNIQUE uq_producto_nombre ON PRODUCTO (nom_producto)
+CHECK  chk_producto_precio ON PRODUCTO: precio_lista > 0
+CHECK  chk_pedido_estado ON PEDIDO: estado IN ('PENDIENTE', 'ENVIADO', 'ENTREGADO', 'ANULADO')
+CHECK  chk_detalle_cantidad ON DETALLE_PEDIDO: cantidad > 0
+CHECK  chk_detalle_precio ON DETALLE_PEDIDO: precio_venta >= 0
+
+RUTA PRACTICA ORACLE
+0. Etapa previa: modelo verificado.
+1. SYSTEM: CREATE TABLESPACE TS_PEDIDOS DATAFILE TS_PEDIDOS01.DBF.
+2. SYSTEM: CREATE USER USR_ADMIN_PED (DEFAULT TABLESPACE, QUOTA).
+3. SYSTEM: GRANT CREATE SESSION, CREATE TABLE. USR_ADMIN_PED: CREATE TABLE -> PK -> FK -> UNIQUE/CHECK.
+4. SYSTEM: CREATE USER USR_CONSULTAS_PED.
+5. SYSTEM: GRANT CREATE SESSION. USR_ADMIN_PED: GRANT SELECT, INSERT ON cada tabla.
+6. USR_CONSULTAS_PED: INSERT INTO usr_admin_ped.tabla, COMMIT, consultas.
+
+CONSULTAS
+- Cual es el total de cada pedido?
+    SELECT p.id_pedido, c.nombre || ' ' || c.apellido AS cliente, p.estado,
+           SUM(d.cantidad * d.precio_venta) AS total
+    FROM usr_admin_ped.pedido p
+    JOIN usr_admin_ped.cliente c ON c.id_cliente = p.id_cliente
+    JOIN usr_admin_ped.detalle_pedido d ON d.id_pedido = p.id_pedido
+    GROUP BY p.id_pedido, c.nombre, c.apellido, p.estado
+    ORDER BY p.id_pedido;
+
+- Cuanto ha comprado cada cliente (sin pedidos anulados)?
+    SELECT c.nombre, c.apellido,
+           COUNT(DISTINCT p.id_pedido) AS pedidos,
+           SUM(d.cantidad * d.precio_venta) AS total_comprado
+    FROM usr_admin_ped.cliente c
+    JOIN usr_admin_ped.pedido p ON p.id_cliente = c.id_cliente
+    JOIN usr_admin_ped.detalle_pedido d ON d.id_pedido = p.id_pedido
+    WHERE p.estado <> 'ANULADO'
+    GROUP BY c.nombre, c.apellido
+    ORDER BY total_comprado DESC;
+
+- Cuales son los productos mas vendidos (en unidades)?
+    SELECT pr.nom_producto,
+           SUM(d.cantidad) AS unidades,
+           COUNT(*) AS lineas
+    FROM usr_admin_ped.producto pr
+    JOIN usr_admin_ped.detalle_pedido d ON d.id_producto = pr.id_producto
+    JOIN usr_admin_ped.pedido p ON p.id_pedido = d.id_pedido
+    WHERE p.estado <> 'ANULADO'
+    GROUP BY pr.nom_producto
+    ORDER BY unidades DESC, pr.nom_producto;
+
+- Que productos nunca se han vendido?
+    SELECT pr.id_producto, pr.nom_producto
+    FROM usr_admin_ped.producto pr
+    LEFT JOIN usr_admin_ped.detalle_pedido d ON d.id_producto = pr.id_producto
+    WHERE d.id_pedido IS NULL;
+
+- Que pedidos superan 1.000.000?
+    SELECT d.id_pedido, SUM(d.cantidad * d.precio_venta) AS total
+    FROM usr_admin_ped.detalle_pedido d
+    GROUP BY d.id_pedido
+    HAVING SUM(d.cantidad * d.precio_venta) > 1000000
+    ORDER BY total DESC;
+
+- Que clientes no han hecho pedidos?
+    SELECT c.id_cliente, c.nombre, c.apellido
+    FROM usr_admin_ped.cliente c
+    LEFT JOIN usr_admin_ped.pedido p ON p.id_cliente = c.id_cliente
+    WHERE p.id_pedido IS NULL;
+
+- Cuantos pedidos hay en cada estado?
+    SELECT estado, COUNT(*) AS pedidos
+    FROM usr_admin_ped.pedido
+    GROUP BY estado
+    ORDER BY pedidos DESC, estado;
+
+- Cual es el precio minimo, maximo y promedio del catalogo?
+    SELECT MIN(precio_lista) AS minimo,
+           MAX(precio_lista) AS maximo,
+           ROUND(AVG(precio_lista), 2) AS promedio,
+           COUNT(*) AS productos
+    FROM usr_admin_ped.producto;
+
+- En que lineas se vendio por debajo del precio de lista?
+    SELECT d.id_pedido, pr.nom_producto, pr.precio_lista, d.precio_venta
+    FROM usr_admin_ped.detalle_pedido d
+    JOIN usr_admin_ped.producto pr ON pr.id_producto = d.id_producto
+    WHERE d.precio_venta < pr.precio_lista
+    ORDER BY d.id_pedido, pr.nom_producto;
+
+- Que pedidos se hicieron en agosto de 2026?
+    SELECT id_pedido, TO_CHAR(fecha_pedido, 'YYYY-MM-DD') AS fecha, estado
+    FROM usr_admin_ped.pedido
+    WHERE fecha_pedido BETWEEN DATE '2026-08-01' AND DATE '2026-08-31'
+    ORDER BY fecha_pedido;
+
+PREGUNTAS TIPO PARCIAL
+1. Por que cantidad y precio_venta estan en DETALLE_PEDIDO?
+   R: Porque dependen del pedido y del producto a la vez: el mismo producto se vende en cantidades y precios distintos en cada pedido.
+2. precio_venta es redundante con precio_lista?
+   R: No. precio_lista es el precio actual del catalogo; precio_venta es el precio historico de esa venta. Si manana cambia el catalogo, las ventas pasadas no deben cambiar.
+3. Cuando usarias una clave subrogada en DETALLE_PEDIDO?
+   R: Si el mismo producto pudiera aparecer en varias lineas del mismo pedido (por ejemplo con precios distintos) o si otras tablas necesitaran referenciar una linea con una sola columna.
+4. Que hace DEFAULT 'PENDIENTE'?
+   R: Si el INSERT no da valor para estado, Oracle guarda PENDIENTE. Si se da un valor explicito, se usa ese.
+5. Como se calcula el total de un pedido?
+   R: SUM(cantidad * precio_venta) agrupando por pedido.

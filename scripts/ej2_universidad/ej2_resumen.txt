@@ -1,0 +1,164 @@
+RESUMEN DE PRACTICA - EJERCICIO 2: SISTEMA UNIVERSITARIO
+============================================================
+
+ENUNCIADO
+- Una universidad organiza sus carreras en facultades. De cada facultad se guarda un codigo de tres letras y su nombre; una facultad nueva puede crearse antes de tener carreras.
+- Cada carrera pertenece a una sola facultad; de cada carrera se guarda un codigo de tres letras y su nombre.
+- De cada alumno se registra su cedula, nombre, apellido, genero (M o F) y promedio acumulado de 0 a 5, que puede no existir aun si el alumno esta en primer semestre.
+- Cada alumno esta matriculado en una unica carrera; una carrera puede tener muchos alumnos o ninguno.
+- La universidad registra el barrio de residencia de cada alumno, tomado de un listado de barrios con codigo y nombre. Un alumno puede no haber informado su barrio.
+- Requisito posterior: cuando la base ya esta creada, la universidad pide registrar tambien la fecha de nacimiento de cada alumno.
+
+REGLAS DE NEGOCIO
+R1. Una facultad tiene 0..N carreras; cada carrera es de 1 facultad.  ->  1:N -> FK NOT NULL en CARRERA.
+R2. Una carrera tiene 0..N alumnos; cada alumno esta en 1 carrera.  ->  1:N -> FK NOT NULL en ALUMNOS.
+R3. Un barrio tiene 0..N alumnos; un alumno vive en 0..1 barrio.  ->  1:N -> FK que admite NULL en ALUMNOS.
+R4. Genero M o F.  ->  CHECK (genero IN ('M','F')).
+R5. Promedio entre 0 y 5, opcional.  ->  CHECK (promedio BETWEEN 0 AND 5) y la columna admite NULL.
+R6. Fecha de nacimiento: requisito posterior.  ->  ALTER TABLE alumnos ADD fecha_nac DATE, sin DEFAULT.
+
+MODELO RELACIONAL
+FACULTAD (#cod_fac, nom_facultad)
+CARRERA (#cod_carrera, nom_carrera, cod_fac*)
+BARRIOS (#id_barrio, nom_barrio)
+ALUMNOS (#ced_alumno, nombre, apellido, genero, promedio, cod_carrera*, id_barrio*, fecha_nac)
+  (# = parte de la PK, * = FK)
+
+RELACIONES Y CARDINALIDADES
+- FACULTAD 1..1 --ofrece--> 0..N CARRERA: Cada carrera pertenece a exactamente una facultad (FK NOT NULL); una facultad puede tener cero o muchas carreras.
+- CARRERA 1..1 --matricula--> 0..N ALUMNOS: Cada alumno esta en una carrera (FK NOT NULL); una carrera puede no tener alumnos (PSI).
+- BARRIOS 0..1 --reside--> 0..N ALUMNOS: El alumno puede no informar su barrio: la FK admite NULL, y por eso el lado del barrio es 0..1.
+
+RESTRICCIONES
+PK     pk_facultad ON FACULTAD (cod_fac)
+PK     pk_carrera ON CARRERA (cod_carrera)
+PK     pk_barrios ON BARRIOS (id_barrio)
+PK     pk_alumnos ON ALUMNOS (ced_alumno)
+FK     fk_carrera_facultad: CARRERA (cod_fac) -> FACULTAD (cod_fac)
+FK     fk_alumnos_carrera: ALUMNOS (cod_carrera) -> CARRERA (cod_carrera)
+FK     fk_alumnos_barrios: ALUMNOS (id_barrio) -> BARRIOS (id_barrio)
+CHECK  chk_alumnos_genero ON ALUMNOS: genero IN ('M', 'F')
+CHECK  chk_alumnos_promedio ON ALUMNOS: promedio BETWEEN 0 AND 5
+
+RUTA PRACTICA ORACLE
+0. Etapa previa: modelo verificado.
+1. SYSTEM: CREATE TABLESPACE TS_UNIVERSIDAD DATAFILE TS_UNIVERSIDAD01.DBF.
+2. SYSTEM: CREATE USER USR_ADMIN_UNI (DEFAULT TABLESPACE, QUOTA).
+3. SYSTEM: GRANT CREATE SESSION, CREATE TABLE. USR_ADMIN_UNI: CREATE TABLE -> PK -> FK -> UNIQUE/CHECK.
+4. SYSTEM: CREATE USER USR_CONSULTAS_UNI.
+5. SYSTEM: GRANT CREATE SESSION. USR_ADMIN_UNI: GRANT SELECT, INSERT ON cada tabla.
+6. USR_CONSULTAS_UNI: INSERT INTO usr_admin_uni.tabla, COMMIT, consultas.
+
+CONSULTAS
+- Cuantos alumnos hay en cada carrera?
+    SELECT c.cod_carrera, c.nom_carrera, COUNT(a.ced_alumno) AS alumnos
+    FROM usr_admin_uni.carrera c
+    LEFT JOIN usr_admin_uni.alumnos a ON a.cod_carrera = c.cod_carrera
+    GROUP BY c.cod_carrera, c.nom_carrera
+    ORDER BY alumnos DESC, c.cod_carrera;
+
+- Cuantos alumnos tiene cada facultad?
+    SELECT f.nom_facultad, COUNT(a.ced_alumno) AS alumnos
+    FROM usr_admin_uni.facultad f
+    LEFT JOIN usr_admin_uni.carrera c ON c.cod_fac = f.cod_fac
+    LEFT JOIN usr_admin_uni.alumnos a ON a.cod_carrera = c.cod_carrera
+    GROUP BY f.nom_facultad
+    ORDER BY alumnos DESC, f.nom_facultad;
+
+- Cuantos alumnos viven en cada barrio?
+    SELECT b.nom_barrio, COUNT(a.ced_alumno) AS alumnos
+    FROM usr_admin_uni.barrios b
+    LEFT JOIN usr_admin_uni.alumnos a ON a.id_barrio = b.id_barrio
+    GROUP BY b.nom_barrio
+    ORDER BY alumnos DESC, b.nom_barrio;
+
+- Que alumnos no informaron su barrio?
+    SELECT ced_alumno, nombre, apellido
+    FROM usr_admin_uni.alumnos
+    WHERE id_barrio IS NULL;
+
+- Cual es el promedio, el minimo y el maximo por carrera?
+    SELECT c.nom_carrera,
+           COUNT(a.promedio) AS con_promedio,
+           ROUND(AVG(a.promedio), 2) AS promedio,
+           MIN(a.promedio) AS minimo,
+           MAX(a.promedio) AS maximo
+    FROM usr_admin_uni.carrera c
+    JOIN usr_admin_uni.alumnos a ON a.cod_carrera = c.cod_carrera
+    GROUP BY c.nom_carrera
+    ORDER BY promedio DESC;
+
+- Que alumnas estudian Ingenieria de Sistemas?
+    SELECT nombre, apellido, promedio
+    FROM usr_admin_uni.alumnos
+    WHERE genero = 'F'
+      AND cod_carrera = 'SIS'
+    ORDER BY apellido;
+
+- Que alumnos todavia no tienen promedio?
+    SELECT nombre, apellido, cod_carrera
+    FROM usr_admin_uni.alumnos
+    WHERE promedio IS NULL
+    ORDER BY apellido;
+
+- Que alumnos tienen un apellido que empieza por M?
+    SELECT nombre, apellido
+    FROM usr_admin_uni.alumnos
+    WHERE apellido LIKE 'M%'
+    ORDER BY apellido, nombre;
+
+- Que alumnos nacieron en 2004?
+    SELECT nombre, apellido, TO_CHAR(fecha_nac, 'YYYY-MM-DD') AS nacimiento
+    FROM usr_admin_uni.alumnos
+    WHERE fecha_nac BETWEEN DATE '2004-01-01' AND DATE '2004-12-31'
+    ORDER BY fecha_nac;
+
+- Que carreras tienen mas de 6 alumnos?
+    SELECT cod_carrera, COUNT(*) AS alumnos
+    FROM usr_admin_uni.alumnos
+    GROUP BY cod_carrera
+    HAVING COUNT(*) > 6
+    ORDER BY alumnos DESC, cod_carrera;
+
+- Que alumnos de Medicina o Enfermeria tienen promedio de 4.0 o mas?
+    SELECT nombre, apellido, cod_carrera, promedio
+    FROM usr_admin_uni.alumnos
+    WHERE cod_carrera IN ('MED', 'ENF')
+      AND promedio >= 4
+    ORDER BY promedio DESC, apellido;
+
+- AND se evalua antes que OR: cuantas filas devuelve cada version?
+    SELECT COUNT(*) AS sin_parentesis
+    FROM usr_admin_uni.alumnos
+    WHERE cod_carrera = 'SIS' OR cod_carrera = 'IND' AND genero = 'F';
+    
+    SELECT COUNT(*) AS con_parentesis
+    FROM usr_admin_uni.alumnos
+    WHERE (cod_carrera = 'SIS' OR cod_carrera = 'IND') AND genero = 'F';
+
+- En que barrios viven los alumnos de Sistemas? (sin repetir)
+    SELECT DISTINCT b.nom_barrio
+    FROM usr_admin_uni.alumnos a
+    JOIN usr_admin_uni.barrios b ON b.id_barrio = a.id_barrio
+    WHERE a.cod_carrera = 'SIS'
+    ORDER BY b.nom_barrio;
+
+- Que alumnos pertenecen a la facultad de Ciencias de la Salud?
+    SELECT a.nombre, a.apellido, c.nom_carrera
+    FROM usr_admin_uni.alumnos a
+    JOIN usr_admin_uni.carrera c ON c.cod_carrera = a.cod_carrera
+    JOIN usr_admin_uni.facultad f ON f.cod_fac = c.cod_fac
+    WHERE f.cod_fac = 'SAL'
+    ORDER BY c.nom_carrera, a.apellido;
+
+PREGUNTAS TIPO PARCIAL
+1. Por que este modelo no necesita tablas de interseccion?
+   R: Porque todas sus relaciones son 1:N: cada carrera es de una facultad y cada alumno de una carrera y como maximo un barrio. Una 1:N se resuelve con una FK en el lado N.
+2. Que diferencia hay entre cod_carrera e id_barrio en ALUMNOS?
+   R: Ambas son FK, pero cod_carrera es NOT NULL (participacion obligatoria) e id_barrio admite NULL (opcional).
+3. Que hace ALTER TABLE alumnos ADD fecha_nac DATE?
+   R: Agrega una columna nueva a una tabla existente. Las filas que ya existieran quedan con NULL en esa columna.
+4. Por que no se usa DEFAULT SYSDATE en fecha_nac?
+   R: Porque DEFAULT se aplica cuando no se da un valor: pondria la fecha actual, que no es la fecha de nacimiento.
+5. Que restriccion impide registrar el genero X?
+   R: chk_alumnos_genero: CHECK (genero IN ('M','F')). Oracle responde ORA-02290.
