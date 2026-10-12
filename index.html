@@ -740,6 +740,134 @@ dl.glos dd{margin:4px 0 0;font-size:14px;color:var(--ink-2)}
   .pm{min-width:0;width:100%}
 }
 
+
+/* ===== v3: construcción progresiva, selección, mapa de Oracle, GROUP BY ===== */
+.diagram-cap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.zoom-btn{text-transform:none;letter-spacing:0}
+.er-hit{stroke:transparent;stroke-width:14;fill:transparent;cursor:pointer}
+rect.er-hit{stroke:none}
+svg.er [data-sel]{cursor:pointer}
+svg.er.has-sel [data-sel]:not(.sel):not(:has(.sel)){opacity:.45}
+svg.er .er-t.sel .er-box,svg.er .er-t.sel .cx-e{stroke:var(--warn);stroke-width:3}
+svg.er .er-col.sel rect.er-hit{fill:color-mix(in srgb,var(--warn) 22%,transparent)}
+svg.er .er-rel.sel line:not(.er-hit),svg.er .er-rel.sel path,svg.er .cx-r.sel line:not(.er-hit){stroke:var(--warn);stroke-width:3}
+svg.er .er-new .er-box{stroke:var(--ok);stroke-width:2.6}
+svg.er .er-col.er-new rect.er-hit{fill:color-mix(in srgb,var(--ok) 20%,transparent)}
+svg.er .er-rel.er-new line:not(.er-hit),svg.er .er-rel.er-new path{stroke:var(--ok);stroke-width:2.4}
+.er-uid{fill:#b7791f}
+.er-info{margin-top:10px;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);font-size:14px;color:var(--ink-2);min-height:44px}
+.er-info .hint{display:flex;gap:6px;align-items:center;color:var(--ink-3)}
+.cx-e{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.6}
+.cx-en{fill:var(--ink);font-weight:700;font-size:13px}
+.cx-ea{fill:var(--ink-2);font-size:11.5px}
+.cx-r line:not(.er-hit){stroke:var(--ink-2);stroke-width:1.6}
+.cx-d{fill:color-mix(in srgb,var(--warn) 14%,var(--surface));stroke:var(--warn);stroke-width:1.6}
+.cx-v{fill:var(--warn);font-size:11.5px;font-weight:700}
+.cx-c{fill:var(--accent);font-size:12.5px;font-weight:800}
+.cx-type{fill:var(--ink-3);font-size:11px;font-weight:700}
+.cx-at{fill:var(--ok);font-size:11px;font-style:italic}
+.cx-al{stroke:var(--ok);stroke-dasharray:3 3}
+.cx-dim{opacity:.25}
+.cx-hi line:not(.er-hit){stroke:var(--warn);stroke-width:2.6}
+/* visor progresivo */
+.pv{padding:16px}
+.pv-dots{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pv-dot{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 11px 4px 4px;font-size:12.5px;font-weight:650;cursor:pointer;color:var(--ink-2)}
+.pv-dot span{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--surface-3);font:700 11.5px var(--mono)}
+.pv-dot.done span{background:var(--ok);color:#fff}
+.pv-dot.on{border-color:var(--accent);color:var(--ink)}
+.pv-dot.on span{background:var(--accent);color:var(--accent-ink)}
+.pv-lead{font-size:15px;color:var(--ink-2)}
+.pv-ctl{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px;margin-top:14px}
+.pv-sub{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.pv-text{font-size:14.5px}
+.pv-text li{margin:.35em 0}
+.mig{font:700 12.5px var(--mono);background:var(--ok-soft);color:var(--ok);padding:1px 7px;border-radius:6px;margin-right:4px}
+.pv-rules{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.pv-rule{font-size:12.5px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 9px;color:var(--ink-2)}
+.pv-rels{margin:6px 0 4px;flex-wrap:wrap}
+.pv-concl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:14.5px}
+.pv-concl .dt-kind{margin:0}
+.pt{font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:99px}
+.pt.opt{background:var(--warn-soft);color:var(--warn)}.pt.obl{background:var(--ok-soft);color:var(--ok)}
+.pv-leg{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.hl-chip{border:1.5px solid transparent;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700;cursor:pointer}
+.hl-chip[aria-pressed="false"]{opacity:.45;text-decoration:line-through}
+mark{color:inherit;border-radius:4px;padding:0 3px}
+.hl-e,.hl-chip.hl-e{background:color-mix(in srgb,var(--accent) 20%,transparent)}
+.hl-a,.hl-chip.hl-a{background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.hl-ar,.hl-chip.hl-ar{background:color-mix(in srgb,#7c3aed 20%,transparent)}
+.hl-d,.hl-chip.hl-d{background:color-mix(in srgb,var(--ink-3) 25%,transparent)}
+.hl-v,.hl-chip.hl-v{background:color-mix(in srgb,var(--warn) 25%,transparent)}
+.hl-q,.hl-chip.hl-q{background:color-mix(in srgb,var(--danger) 18%,transparent)}
+.hl-r,.hl-chip.hl-r{background:transparent;border-bottom:2.5px solid var(--danger)}
+.hl-chip.hl-r{border:1.5px solid var(--danger)}
+.hl-enun.off-hl-e .hl-e,.hl-enun.off-hl-a .hl-a,.hl-enun.off-hl-ar .hl-ar,.hl-enun.off-hl-d .hl-d,.hl-enun.off-hl-v .hl-v,.hl-enun.off-hl-q .hl-q,.hl-enun.off-hl-r .hl-r{background:transparent;border:0}
+/* comparación de claves y UNIQUE/NULL */
+.kc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.kc{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.kc h4{font-size:14px;margin-bottom:6px}
+.kc svg{min-width:0!important}
+.kc-p,.kc-c{font-size:13.5px;margin:6px 0 0}
+.kc-p b{color:var(--ok)}.kc-c b{color:var(--danger)}
+.uq-card{font-size:14.5px}
+/* mapa de Oracle */
+.ora-map{margin-top:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:10px 12px;font-size:13px}
+.om-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.om-note{margin-left:auto;font-size:11px;color:var(--ink-3)}
+.om-sess,.om-spool,.om-obj{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line-2);border-radius:8px;padding:3px 9px;background:var(--surface);font-size:12.5px}
+.om-sess .ic,.om-obj .ic{width:14px;height:14px}
+.om-spool.on .spool-dot{background:#e5484d}
+.u-sys{border-color:var(--c-system)}.u-adm{border-color:var(--c-jorge)}.u-con{border-color:var(--c-usr)}
+.om-db{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:1px dashed var(--line-2);border-radius:9px;padding:8px}
+.om-lbl{font:700 11px var(--mono);color:var(--ink-3);margin-right:4px}
+.om-grant{border-color:var(--ok);color:var(--ok)}
+.om-tabs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}
+.om-t{border:1.5px solid var(--line-2);border-radius:8px;background:var(--surface);padding:6px 8px;display:flex;flex-direction:column;gap:3px}
+.om-t b{font:700 12px var(--mono)}
+.om-rows{font-size:11.5px;color:var(--ink-3)}
+.ora-map .chg{border-color:var(--ok)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 22%,transparent);animation:flash 1.2s ease}
+.ora-map .badge.chg{box-shadow:0 0 0 2px var(--ok)}
+.ora-map .om-rows.chg{color:var(--ok);font-weight:700;box-shadow:none}
+.om-sample{margin-top:8px}
+.om-sample .dtable{font-size:12px}
+td.new-cell{background:var(--ok-soft)}
+.om-commit{margin-top:8px;display:flex;gap:6px;align-items:center;color:var(--ok);font-size:13px}
+/* GROUP BY */
+.gb-rows{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.gb-chip{font:12px var(--mono);border-radius:6px;padding:2px 7px;background:var(--surface);border:1px solid var(--line)}
+.gb-chip.null{color:var(--ink-3);font-style:italic}
+.gb-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}
+.gb-g{border:2px solid var(--gbc);border-radius:10px;padding:8px;background:color-mix(in srgb,var(--gbc) 8%,var(--surface));display:flex;flex-direction:column;gap:6px}
+.gb-g>div{display:flex;flex-wrap:wrap;gap:4px}
+.gb-n{font:800 22px var(--mono);color:var(--gbc)}
+.gb-rows .gb-chip{border-color:var(--gbc);background:color-mix(in srgb,var(--gbc) 10%,var(--surface))}
+.g0{--gbc:#2457d6}.g1{--gbc:#0b7a52}.g2{--gbc:#b7791f}.g3{--gbc:#7c3aed}.g4{--gbc:#c2410c}.g5{--gbc:#0e7490}.g6{--gbc:#be185d}.g7{--gbc:#475569}
+/* guía de decisión y comparaciones */
+.dguide{display:flex;flex-direction:column;align-items:stretch;margin:12px 0}
+.dg{display:flex;gap:12px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;background:var(--surface);padding:10px 14px}
+.dg h4{font-size:15px;margin-bottom:4px}
+.dg p{margin:0 0 4px;font-size:14px;color:var(--ink-2)}
+.dg-n{font:800 14px var(--mono);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;flex:none}
+.dg-ex{display:flex;gap:6px;align-items:flex-start;font-size:13px!important;color:var(--ink-3)!important}
+.dg-ex .ic{color:var(--warn);width:15px;height:15px;margin-top:2px}
+.dg-arrow{text-align:center;color:var(--ink-3);font-size:16px;line-height:1.3}
+.cmp-tbl{display:grid;gap:8px;margin:10px 0}
+.cmp-row{display:grid;grid-template-columns:200px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:8px 12px}
+.cmp-row p{margin:0;font-size:14px;color:var(--ink-2)}
+.cmp-row span{font-size:13px;white-space:nowrap}
+.flash-card{animation:flash 1.6s ease}
+.lv-seg{flex-wrap:wrap;margin-bottom:10px}
+.lv-b h3{font-size:17px;margin-bottom:6px}
+.dlg-wide{width:min(1200px,96vw)}
+.zoom-b{overflow:auto;max-height:78vh}
+.zoom-b svg{display:block;height:auto}
+@media (max-width:760px){
+  .cmp-row{grid-template-columns:1fr}
+  .om-note{margin-left:0;width:100%}
+  .pv-dot{font-size:11.5px}
+}
+
 </style>
 </head>
 
@@ -853,6 +981,11 @@ dl.glos dd{margin:4px 0 0;font-size:14px;color:var(--ink-2)}
 <dialog id="dlg-preview" aria-labelledby="dlg-pv-t">
   <div class="dlg-h"><span data-ic="file"></span><h2 id="dlg-pv-t">Vista previa</h2><button class="iconbtn" type="button" data-act="close-dlg" aria-label="Cerrar"><span data-ic="x"></span></button></div>
   <div class="dlg-b"><div class="preview" id="pv-body" tabindex="0"></div></div>
+</dialog>
+
+<dialog id="dlg-zoom" class="dlg-wide" aria-labelledby="dlg-zoom-t">
+  <div class="dlg-h"><span data-ic="search"></span><h2 id="dlg-zoom-t">Diagrama ampliado</h2><button class="iconbtn" type="button" data-act="zoom-out" aria-label="Reducir">−</button><button class="iconbtn" type="button" data-act="zoom-in" aria-label="Ampliar">+</button><button class="iconbtn" type="button" data-act="close-dlg" aria-label="Cerrar"><span data-ic="x"></span></button></div>
+  <div class="dlg-b zoom-b" id="zoom-body"></div>
 </dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2424,7 +2557,7 @@ function step(o){
   if(o.action) h += q('terminal', '¿Qué hago?', o.action);
   if(o.what) h += q('info', '¿Qué significa?', o.what);
   if(o.now) h += q('target', '¿Por qué ahora?', o.now);
-  if(o.changes) h += q('layers', '¿Qué cambia en Oracle?', o.changes);
+  if(o.changes) h += q('layers', '¿Qué cambia en Oracle?', o.changes + (o.k && o.key ? oraMap(o) : ''));
   const real = o.real ? realOut(o.k, o.key) : null;
   const expText = real !== null ? real : o.exp;
   if(expText !== undefined && expText !== null) h += q('check', '¿Qué resultado espero?', expHtml(expText, o.expNote, real !== null || !!o.realStatic) + (o.after ? '<p class="after">' + ic('bulb') + o.after + '</p>' : ''));
@@ -2530,38 +2663,40 @@ function erSvg(M, opts){
       const pIsL = L === A;
       d1 = pIsL ? [1, 0] : [-1, 0]; d2 = pIsL ? [-1, 0] : [1, 0];
       const ax = pIsL ? x1 : x2, bx = pIsL ? x2 : x1;
-      s += '<g class="er-rel"><line x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/>' + sym(ax, y, d1[0], d1[1], r.pc) + sym(bx, y, d2[0], d2[1], r.cc) + '</g>';
-      s += '<text class="er-card" x="' + (ax + d1[0] * 8) + '" y="' + (y - 13) + '" text-anchor="' + (d1[0] > 0 ? 'start' : 'end') + '">' + r.pc + '</text><text class="er-card" x="' + (bx + d2[0] * 8) + '" y="' + (y - 13) + '" text-anchor="' + (d2[0] > 0 ? 'start' : 'end') + '">' + r.cc + '</text>';
-      if(r.v) s += '<text class="er-verb" x="' + ((x1 + x2) / 2) + '" y="' + (y + 22) + '" text-anchor="middle">' + esc(r.v) + '</text>';
+      s += '<g class="er-rel' + (r.isNew ? ' er-new' : '') + '" data-sel="r:' + r.p + '>' + r.c + '"><line class="er-hit" x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/><line x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/>' + sym(ax, y, d1[0], d1[1], r.pc) + sym(bx, y, d2[0], d2[1], r.cc) +
+        '<text class="er-card" x="' + (ax + d1[0] * 8) + '" y="' + (y - 13) + '" text-anchor="' + (d1[0] > 0 ? 'start' : 'end') + '">' + r.pc + '</text><text class="er-card" x="' + (bx + d2[0] * 8) + '" y="' + (y - 13) + '" text-anchor="' + (d2[0] > 0 ? 'start' : 'end') + '">' + r.cc + '</text>' +
+        (r.v ? '<text class="er-verb" x="' + ((x1 + x2) / 2) + '" y="' + (y + 22) + '" text-anchor="middle">' + esc(r.v) + '</text>' : '') + '</g>';
     } else {
       const T = pa[1] < pb[1] ? A : B, Bo = T === A ? B : A;
       const x = Math.max(A.x, B.x) + Math.min(A.w, B.w) / 2;
       y1 = T.y + T.h; y2 = Bo.y;
       const pIsT = T === A;
       const ay = pIsT ? y1 : y2, by = pIsT ? y2 : y1;
-      s += '<g class="er-rel"><line x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/>' + sym(x, ay, 0, pIsT ? 1 : -1, r.pc) + sym(x, by, 0, pIsT ? -1 : 1, r.cc) + '</g>';
-      s += '<text class="er-card" x="' + (x + 14) + '" y="' + (ay + (pIsT ? 16 : -8)) + '">' + r.pc + '</text><text class="er-card" x="' + (x + 14) + '" y="' + (by + (pIsT ? -8 : 16)) + '">' + r.cc + '</text>';
-      if(r.v) s += '<text class="er-verb" x="' + (x - 12) + '" y="' + ((y1 + y2) / 2 + 4) + '" text-anchor="end">' + esc(r.v) + '</text>';
+      s += '<g class="er-rel' + (r.isNew ? ' er-new' : '') + '" data-sel="r:' + r.p + '>' + r.c + '"><line class="er-hit" x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/><line x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/>' + sym(x, ay, 0, pIsT ? 1 : -1, r.pc) + sym(x, by, 0, pIsT ? -1 : 1, r.cc) +
+        '<text class="er-card" x="' + (x + 14) + '" y="' + (ay + (pIsT ? 16 : -8)) + '">' + r.pc + '</text><text class="er-card" x="' + (x + 14) + '" y="' + (by + (pIsT ? -8 : 16)) + '">' + r.cc + '</text>' +
+        (r.v ? '<text class="er-verb" x="' + (x - 12) + '" y="' + ((y1 + y2) / 2 + 4) + '" text-anchor="end">' + esc(r.v) + '</text>' : '') + '</g>';
     }
   });
   /* tablas */
   M.tables.forEach(t => {
     const b = box[t.n];
-    s += '<g class="er-t"><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + b.h + '" rx="8" class="er-box"/><path d="M' + b.x + ' ' + (b.y + HH) + ' H' + (b.x + b.w) + '" class="er-sep"/><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + HH + '" rx="8" class="er-head"/><rect x="' + b.x + '" y="' + (b.y + HH - 8) + '" width="' + b.w + '" height="8" class="er-head"/>' +
+    s += '<g class="er-t' + (t.isNew ? ' er-new' : '') + '" data-sel="t:' + t.n + '"><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + b.h + '" rx="8" class="er-box"/><path d="M' + b.x + ' ' + (b.y + HH) + ' H' + (b.x + b.w) + '" class="er-sep"/><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + HH + '" rx="8" class="er-head"/><rect x="' + b.x + '" y="' + (b.y + HH - 8) + '" width="' + b.w + '" height="8" class="er-head"/>' +
       '<text x="' + (b.x + 12) + '" y="' + (b.y + 20) + '" class="er-tn">' + esc(t.n) + '</text>';
     t.cols.forEach((c, i) => {
       const y = b.y + HH + 17 + i * RH;
-      const tag = c.k === 'pf' ? 'PF' : c.k === 'pk' ? 'PK' : c.k === 'fk' ? 'FK' : c.uq ? 'UQ' : '';
-      s += (tag ? '<text x="' + (b.x + 10) + '" y="' + y + '" class="er-tag er-' + tag.toLowerCase() + '">' + tag + '</text>' : '') +
-        '<text x="' + (b.x + 38) + '" y="' + y + '" class="er-cn' + (c.k === 'pk' || c.k === 'pf' ? ' er-key' : '') + '">' + (c.nn && !c.k.match(/p/) ? '* ' : '') + esc(c.n) + '</text>' +
-        (opts.types !== false && c.t ? '<text x="' + (b.x + b.w - 10) + '" y="' + y + '" class="er-ty" text-anchor="end">' + esc(c.t) + '</text>' : '');
+      const tag = c.k === 'uid' ? '#' : c.k === 'pf' ? 'PF' : c.k === 'pk' ? 'PK' : c.k === 'fk' ? 'FK' : c.uq ? 'UQ' : '';
+      s += '<g class="er-col' + (c.isNew ? ' er-new' : '') + '" data-sel="c:' + t.n + '.' + c.n + '"><rect class="er-hit" x="' + (b.x + 4) + '" y="' + (y - 14) + '" width="' + (b.w - 8) + '" height="19"/>' + (tag ? '<text x="' + (b.x + 10) + '" y="' + y + '" class="er-tag er-' + (tag === '#' ? 'uid' : tag.toLowerCase()) + '">' + tag + '</text>' : '') +
+        '<text x="' + (b.x + 38) + '" y="' + y + '" class="er-cn' + (c.k === 'pk' || c.k === 'pf' || c.k === 'uid' ? ' er-key' : '') + '">' + (c.nn && !/p|uid/.test(c.k) ? '* ' : '') + esc(c.n) + '</text>' +
+        (opts.types !== false && c.t ? '<text x="' + (b.x + b.w - 10) + '" y="' + y + '" class="er-ty" text-anchor="end">' + esc(c.t) + '</text>' : '') + '</g>';
     });
     s += '</g>';
   });
   return s + '</svg>';
 }
 function erFigure(M, cap, opts){
-  return '<figure class="diagram er-fig blk"><figcaption class="diagram-cap">' + cap + '</figcaption><p class="er-hint">Desliza horizontalmente para ver todo el diagrama →</p><div class="er-scroll" tabindex="0">' + erSvg(M, Object.assign({ label:cap }, opts || {})) + '</div>' +
+  opts = opts || {};
+  return '<figure class="diagram er-fig blk"' + (opts.ex ? ' data-ex="' + opts.ex + '"' : '') + '><figcaption class="diagram-cap"><span>' + cap + '</span><button type="button" class="btn btn-sm zoom-btn" data-act="zoom">' + ic('search') + 'Ampliar</button></figcaption><p class="er-hint">Desliza horizontalmente para ver todo el diagrama →</p><div class="er-scroll" tabindex="0">' + erSvg(M, Object.assign({ label:cap }, opts)) + '</div>' +
+    (opts.ex ? '<div class="er-info" aria-live="polite"><span class="hint">' + ic('help') + 'Pulsa una tabla, una columna o una línea de relación para ver qué significa y de dónde viene.</span></div>' : '') +
     '<p class="er-legend"><span class="er-l"><b class="lg-pk">PK</b> clave primaria</span><span class="er-l"><b class="lg-fk">FK</b> clave foránea</span><span class="er-l"><b class="lg-pf">PF</b> PK y FK a la vez</span><span class="er-l"><b class="lg-uq">UQ</b> UNIQUE</span><span class="er-l">* NOT NULL</span><span class="er-l">○ mínimo 0 · | mínimo/máximo 1 · ⋔ máximo N</span></p></figure>';
 }
 /* tabla de un modelo en notación relacional textual */
@@ -2627,6 +2762,345 @@ function dtHtml(){
 function erSvgSmall(A, I, B){
   return '<div class="er-scroll">' + erSvg({ tables:[{ n:A, cols:[{ n:'id_' + lc(A), k:'pk', t:'' }] }, { n:I, cols:[{ n:'id_' + lc(A), k:'pf', t:'' }, { n:'id_' + lc(B), k:'pf', t:'' }] }, { n:B, cols:[{ n:'id_' + lc(B), k:'pk', t:'' }] }],
     rels:[{ p:A, c:I, pc:'1..1', cc:'0..N' }, { p:B, c:I, pc:'1..1', cc:'0..N' }], pos:{ [A]:[0, 0], [I]:[1, 0], [B]:[2, 0] } }, { types:false, label:'Intersección' }) + '</div>';
+}
+
+
+/* =========================================================
+   VISUALIZACIONES: construcción progresiva del modelo,
+   mapa de Oracle, GROUP BY, claves y UNIQUE/NULL
+   ========================================================= */
+const EXTRA = {
+  1:{ verbs:['adquirir', 'adquirió', 'pasar por', 'pertenece'], cpos:{ PROPIETARIO:[0, 0], VEHICULO:[1, 0], MARCA:[1, 1] },
+    cx:[{ a:'PROPIETARIO', b:'VEHICULO', ca:'1..N', cb:'0..N', v:'adquiere', type:'N:M', attrs:['fecha_adquisicion'], ra:'Un PROPIETARIO adquiere cero, uno o varios VEHÍCULOS.', rb:'Un VEHÍCULO ha sido adquirido por uno o varios PROPIETARIOS.' },
+        { a:'MARCA', b:'VEHICULO', ca:'1..1', cb:'0..N', v:'clasifica', type:'1:N', ra:'Una MARCA clasifica cero, uno o varios VEHÍCULOS.', rb:'Un VEHÍCULO pertenece a una y solo una MARCA.' }],
+    limits:['Que cada vehículo tenga al menos un propietario (el mínimo 1 de R2): una FK obliga al hijo a tener padre, pero no obliga al padre a tener hijos. Se controla al cargar los datos.', 'Que la fecha de adquisición no sea anterior al año del modelo: compara columnas de dos tablas distintas y un CHECK solo ve su propia fila. Requeriría un trigger o validación en la aplicación.'] },
+  2:{ verbs:['organiza', 'pertenece', 'matriculado', 'residencia'], cpos:{ FACULTAD:[0, 0], BARRIOS:[1, 0], CARRERA:[0, 1], ALUMNOS:[1, 1] },
+    cx:[{ a:'FACULTAD', b:'CARRERA', ca:'1..1', cb:'0..N', v:'ofrece', type:'1:N', ra:'Una FACULTAD ofrece cero, una o varias CARRERAS.', rb:'Una CARRERA pertenece a una y solo una FACULTAD.' },
+        { a:'CARRERA', b:'ALUMNOS', ca:'1..1', cb:'0..N', v:'matricula', type:'1:N', ra:'Una CARRERA tiene cero, uno o varios ALUMNOS.', rb:'Un ALUMNO está matriculado en una y solo una CARRERA.' },
+        { a:'BARRIOS', b:'ALUMNOS', ca:'0..1', cb:'0..N', v:'reside', type:'1:N', ra:'En un BARRIO residen cero, uno o varios ALUMNOS.', rb:'Un ALUMNO reside en un BARRIO o no lo informa: cero o uno.' }],
+    limits:['Que toda facultad tenga al menos una carrera: el enunciado no lo exige y una FK tampoco podría exigirlo.', 'Que el barrio informado sea el verdadero: la FK solo garantiza que el código exista en BARRIOS.'] },
+  3:{ verbs:['hacer', 'incluye', 'aparecer', 'incluido'], cpos:{ CLIENTE:[0, 0], PEDIDO:[1, 0], PRODUCTO:[1, 1] },
+    cx:[{ a:'CLIENTE', b:'PEDIDO', ca:'1..1', cb:'0..N', v:'realiza', type:'1:N', ra:'Un CLIENTE realiza cero, uno o varios PEDIDOS.', rb:'Un PEDIDO es de uno y solo un CLIENTE.' },
+        { a:'PEDIDO', b:'PRODUCTO', ca:'0..N', cb:'1..N', v:'incluye', type:'N:M', attrs:['cantidad', 'precio_venta'], ra:'Un PEDIDO incluye uno o varios PRODUCTOS.', rb:'Un PRODUCTO aparece en cero, uno o varios PEDIDOS.' }],
+    limits:['Que cada pedido tenga al menos una línea de detalle (1..N): la FK no obliga a que exista el hijo.', 'Que precio_venta no supere precio_lista: compara columnas de dos tablas; un CHECK solo ve la fila de su tabla.'] },
+  4:{ verbs:['tienen', 'pertenece', 'expidió'], cpos:{ PERSONA:[0, 0], PASAPORTE_VIGENTE:[1, 0], PAIS:[1, 1] },
+    cx:[{ a:'PERSONA', b:'PASAPORTE_VIGENTE', ca:'1..1', cb:'0..1', v:'posee', type:'1:1', ra:'Una PERSONA posee cero o un PASAPORTE VIGENTE.', rb:'Un PASAPORTE VIGENTE pertenece a una y solo una PERSONA.' },
+        { a:'PAIS', b:'PASAPORTE_VIGENTE', ca:'1..1', cb:'0..N', v:'expide', type:'1:N', ra:'Un PAÍS expide cero, uno o varios de los pasaportes registrados.', rb:'Un PASAPORTE VIGENTE es expedido por uno y solo un PAÍS.' }],
+    limits:['Que el pasaporte siga vigente hoy: un CHECK no puede usar SYSDATE (ORA-02436). Se consulta con WHERE fecha_vencimiento >= SYSDATE.', 'Que toda persona tenga pasaporte: no se exige (0..1) y, aunque se quisiera, una FK no obliga al padre a tener un hijo.', 'Un pasaporte por país (doble nacionalidad): cambiaría la regla a UNIQUE (id_persona, cod_pais) y la relación sería 1:N.'] }
+};
+EX.forEach(ex => { Object.assign(ex, EXTRA[ex.k]); ex.concept = ex.cx.map(c => [c.a, c.b, c.ca, c.cb, c.v, c.type + (c.attrs ? ' con ' + c.attrs.join(' y ') : '')]); });
+const isInter = (ex, tn) => { const p = (ex.pk.find(x => x[1] === tn) || [0, 0, []])[2]; return p.length > 1 && p.every(c => ex.fk.some(f => f[1] === tn && f[2].includes(c))); };
+const entTables = ex => ex.tables.filter(t => !isInter(ex, t.n));
+const fkCols = (ex, tn) => ex.fk.filter(f => f[1] === tn).flatMap(f => f[2]);
+const pkCols = (ex, tn) => (ex.pk.find(p => p[1] === tn) || [0, 0, []])[2];
+
+/* ---------- enunciado analizado ---------- */
+const QT = /(^|[\s(,;¿])((?:uno o varios|una sola|un solo|una única|única|como máximo|al menos|exactamente|cada|varios|varias|muchos|muchas|ninguno|ninguna|o ninguno|algunas|puede no|pueden faltar|puede faltar)(?=[\s,.;)]|$))/i;
+const QRE = /(^|[\s(,;¿])((?:uno o varios|una sola|un solo|una única|única|como máximo|al menos|exactamente|cada|varios|varias|muchos|muchas|ninguno|ninguna|o ninguno|algunas|puede no|pueden faltar|puede faltar)(?=[\s,.;)]|$))/gi;
+function normWord(s){ return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim().replace(/\s+/g, '_'); }
+function enunHl(ex){
+  const tn = new Set(); ex.tables.forEach(t => { const n = normWord(t.n); tn.add(n); tn.add(n.replace(/s$/, '')); });
+  const isEnt = w => { const n = normWord(w); return [n, n.replace(/s$/, ''), n.replace(/es$/, '')].some(x => tn.has(x)); };
+  return ex.enun.map(p => {
+    const toks = [];
+    let s = p.replace(/<b>(.+?)<\/b>/g, (m, w) => {
+      const plain = w.replace(/<[^>]+>/g, '');
+      let c = 'hl-a';
+      if(ex.verbs.some(v => normWord(plain) === normWord(v))) c = 'hl-v';
+      else if(QT.test(' ' + plain) && plain.split(' ').length > 3){ c = 'hl-r'; }
+      else if(QT.test(' ' + plain)) c = 'hl-q';
+      else if(isEnt(plain)) c = 'hl-e';
+      else if(ex.terms.some(t => (t[1] === 'AR' || t[1] === 'D') && normWord(t[0]).indexOf(normWord(plain)) >= 0)) c = ex.terms.find(t => normWord(t[0]).indexOf(normWord(plain)) >= 0)[1] === 'D' ? 'hl-d' : 'hl-ar';
+      toks.push('<mark class="' + c + '">' + w + '</mark>'); return '\u0000' + (toks.length - 1) + '\u0000';
+    });
+    s = s.replace(QRE, (m, pre, q) => pre + '<mark class="hl-q">' + q + '</mark>');
+    ex.verbs.forEach(v => { s = s.replace(new RegExp('(^|\\s)(' + v + ')(?=[\\s,.;]|$)', 'g'), '$1<mark class="hl-v">$2</mark>'); });
+    return '<p>' + s.replace(/\u0000(\d+)\u0000/g, (m, i) => toks[+i]) + '</p>';
+  }).join('');
+}
+const HL_LEG = [['hl-e', 'Entidad'], ['hl-a', 'Atributo'], ['hl-ar', 'Atributo de la relación'], ['hl-d', 'Derivado'], ['hl-v', 'Verbo (relación)'], ['hl-q', 'Cuantificador'], ['hl-r', 'Regla de cardinalidad']];
+
+/* ---------- diagrama conceptual (entidades, rombos, cardinalidades) ---------- */
+function conceptSvg(ex, opts){
+  opts = opts || {};
+  const ents = entTables(ex);
+  const EW = 196, HH = 28, RH = 18, GX = 196, GY = 128, PAD = 18;
+  const attrsOf = t => opts.attrs === false ? [] : t.cols.filter(c => !fkCols(ex, t.n).includes(c[0])).map(c => ({ n:c[0], k:pkCols(ex, t.n).includes(c[0]) }));
+  const hOf = t => HH + attrsOf(t).length * RH + (opts.attrs === false ? 8 : 10);
+  const P = ex.cpos;
+  const ncol = Math.max(...Object.values(P).map(p => p[0])) + 1, nrow = Math.max(...Object.values(P).map(p => p[1])) + 1;
+  const rowH = []; for(let r = 0; r < nrow; r++) rowH[r] = Math.max(40, ...ents.filter(t => P[t.n][1] === r).map(hOf));
+  const rowY = []; let acc = PAD; for(let r = 0; r < nrow; r++){ rowY[r] = acc; acc += rowH[r] + GY; }
+  const VW = PAD * 2 + ncol * EW + (ncol - 1) * GX, VH = acc - GY + PAD + 34;
+  const box = {}; ents.forEach(t => { box[t.n] = { x:PAD + P[t.n][0] * (EW + GX), y:rowY[P[t.n][1]], w:EW, h:hOf(t) }; });
+  let s = '<svg class="er cx" viewBox="0 0 ' + VW + ' ' + VH + '" role="img" aria-label="Modelo conceptual del ejercicio ' + ex.k + '" style="min-width:' + Math.min(VW, 560) + 'px">';
+  ex.cx.forEach((r, i) => {
+    const A = box[r.a], B = box[r.b]; if(!A || !B) return;
+    const hi = opts.hi === undefined || opts.hi === i;
+    const horiz = P[r.a][1] === P[r.b][1];
+    let g = '';
+    if(horiz){
+      const L = A.x < B.x ? A : B, R = L === A ? B : A, y = L.y + HH / 2 + 8;
+      const x1 = L.x + L.w, x2 = R.x, mx = (x1 + x2) / 2;
+      const aEnd = L === A ? x1 : x2, bEnd = L === A ? x2 : x1, da = L === A ? 1 : -1;
+      g += '<line class="er-hit" x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/><line x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/>';
+      g += '<polygon class="cx-d" points="' + mx + ',' + (y - 22) + ' ' + (mx + 50) + ',' + y + ' ' + mx + ',' + (y + 22) + ' ' + (mx - 50) + ',' + y + '"/><text class="cx-v" x="' + mx + '" y="' + (y + 4) + '" text-anchor="middle">' + esc(r.v) + '</text>';
+      g += '<text class="cx-c" x="' + (aEnd + da * 8) + '" y="' + (y - 9) + '" text-anchor="' + (da > 0 ? 'start' : 'end') + '">' + r.ca + '</text><text class="cx-c" x="' + (bEnd - da * 8) + '" y="' + (y - 9) + '" text-anchor="' + (da > 0 ? 'end' : 'start') + '">' + r.cb + '</text>';
+      if(r.attrs && opts.attrs !== false){ const ay = y + 42; g += '<line class="cx-al" x1="' + mx + '" y1="' + (y + 22) + '" x2="' + mx + '" y2="' + (ay - 12) + '"/>' + r.attrs.map((a, j) => '<text class="cx-at" x="' + mx + '" y="' + (ay + j * 15) + '" text-anchor="middle">' + esc(a) + '</text>').join(''); }
+      g += '<text class="cx-type" x="' + mx + '" y="' + (y - 30) + '" text-anchor="middle">' + r.type + '</text>';
+    } else {
+      const T = A.y < B.y ? A : B, Bo = T === A ? B : A, x = T.x + T.w / 2;
+      const y1 = T.y + T.h, y2 = Bo.y, my = (y1 + y2) / 2;
+      const aEnd = T === A ? y1 : y2, bEnd = T === A ? y2 : y1, da = T === A ? 1 : -1;
+      g += '<line class="er-hit" x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/><line x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/>';
+      g += '<polygon class="cx-d" points="' + x + ',' + (my - 22) + ' ' + (x + 50) + ',' + my + ' ' + x + ',' + (my + 22) + ' ' + (x - 50) + ',' + my + '"/><text class="cx-v" x="' + x + '" y="' + (my + 4) + '" text-anchor="middle">' + esc(r.v) + '</text>';
+      g += '<text class="cx-c" x="' + (x + 10) + '" y="' + (aEnd + da * 16) + '">' + r.ca + '</text><text class="cx-c" x="' + (x + 10) + '" y="' + (bEnd - da * 8) + '">' + r.cb + '</text>';
+      g += '<text class="cx-type" x="' + (x + 58) + '" y="' + (my + 4) + '">' + r.type + '</text>';
+      if(r.attrs && opts.attrs !== false){ g += '<line class="cx-al" x1="' + (x - 50) + '" y1="' + my + '" x2="' + (x - 70) + '" y2="' + my + '"/>' + r.attrs.map((a, j) => '<text class="cx-at" x="' + (x - 74) + '" y="' + (my + 4 + j * 15) + '" text-anchor="end">' + esc(a) + '</text>').join(''); }
+    }
+    s += '<g class="cx-r' + (hi ? '' : ' cx-dim') + (opts.hi === i ? ' cx-hi' : '') + '" data-sel="cr:' + i + '">' + g + '</g>';
+  });
+  ents.forEach(t => {
+    const b = box[t.n];
+    s += '<g class="er-t" data-sel="e:' + t.n + '"><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + b.h + '" rx="10" class="cx-e"/><text x="' + (b.x + b.w / 2) + '" y="' + (b.y + 19) + '" text-anchor="middle" class="cx-en">' + esc(t.n) + '</text>' +
+      attrsOf(t).map((a, i) => '<text x="' + (b.x + 14) + '" y="' + (b.y + HH + 12 + i * RH) + '" class="cx-ea' + (a.k ? ' er-key' : '') + '">' + (a.k ? '# ' : '· ') + esc(a.n) + '</text>').join('') + '</g>';
+  });
+  return s + '</svg>';
+}
+function cxFigure(ex, cap, opts){
+  return '<figure class="diagram er-fig blk" data-ex="' + ex.k + '"><figcaption class="diagram-cap"><span>' + cap + '</span><button type="button" class="btn btn-sm zoom-btn" data-act="zoom">' + ic('search') + 'Ampliar</button></figcaption><p class="er-hint">Desliza horizontalmente para ver todo el diagrama →</p><div class="er-scroll" tabindex="0">' + conceptSvg(ex, opts) + '</div>' +
+    '<div class="er-info" aria-live="polite"><span class="hint">' + ic('help') + 'Pulsa una entidad o un rombo de relación.</span></div><p class="er-legend"><span class="er-l"># identificador</span><span class="er-l">◇ relación (verbo)</span><span class="er-l">0..1 · 1..1 · 0..N · 1..N junto a cada entidad = cuántas de esa entidad se relacionan con una de la otra</span></p></figure>';
+}
+
+/* ---------- transformación al modelo relacional ---------- */
+function transModel(ex, stage){
+  const full = exModel(ex);
+  const inter = new Set(ex.tables.filter(t => isInter(ex, t.n)).map(t => t.n));
+  const tables = full.tables.filter(t => stage >= 2 || !inter.has(t.n)).map(t => {
+    const fks = fkCols(ex, t.n);
+    const cols = t.cols.filter(c => (stage >= 1 || !fks.includes(c.n)) && !(ex.tmap[t.n].addCol && c.n === ex.tmap[t.n].addCol[0]));
+    return { n:t.n, isNew:(stage === 0 && !inter.has(t.n)) || (stage === 2 && inter.has(t.n)), cols:cols.map(c => Object.assign({}, c, { isNew:(stage === 1 && fks.includes(c.n) && !inter.has(t.n)) || (stage === 0 && !inter.has(t.n) && c.k === 'pk') })) };
+  });
+  const rels = stage === 0 ? [] : full.rels.filter(r => stage >= 2 || !inter.has(r.c)).map(r => Object.assign({}, r, { isNew:(stage === 1 && !inter.has(r.c)) || (stage === 2 && inter.has(r.c)) }));
+  return { tables:tables, rels:rels, pos:ex.pos };
+}
+function transText(ex, stage){
+  const inter = ex.tables.filter(t => isInter(ex, t.n));
+  if(stage === 0) return '<p><b>Regla 1:</b> cada entidad se convierte en una tabla, cada atributo en una columna y su identificador en la <b>PRIMARY KEY</b>. Todavía no hay FK.</p><ul class="clean">' + entTables(ex).map(t => '<li><b>' + t.n + '</b>: PK <code class="i">' + pkCols(ex, t.n).join(', ') + '</code> — ' + (ex.keys.find(k => k[0] === t.n) || [0, 0, ''])[2] + '</li>').join('') + '</ul>';
+  if(stage === 1){
+    const rs = ex.rels.filter(r => !isInter(ex, r.c));
+    return '<p><b>Regla 2:</b> en cada relación 1:N (o 1:1) la PK del padre <b>migra</b> como FK a la tabla hija, la del lado N o la que puede no existir.</p><ul class="clean">' + rs.map(r => { const f = ex.fk.find(x => x[1] === r.c && x[3] === r.p); const col = ex.tmap[r.c].cols.find(c => c[0] === f[2][0]); const nn = /nn/.test(col[2]); const uq = ex.uq.some(u => u[1] === r.c && u[2].join() === f[2].join());
+      return '<li><span class="mig">' + r.p + '.' + f[4].join(',') + ' → ' + r.c + '.' + f[2].join(',') + '</span> ' + r.c + ' es la hija (' + r.cc + '). ' + (nn ? '<b>NOT NULL</b>: cada ' + r.c + ' debe tener su ' + r.p + '.' : '<b>Admite NULL</b>: la relación es opcional para ' + r.c + '.') + (uq ? ' <b>UNIQUE</b>: un ' + r.p + ' no puede repetirse → 1:1.' : '') + '</li>'; }).join('') + '</ul>';
+  }
+  if(!inter.length) return '<p><b>Regla 3:</b> solo una relación N:M necesita una tabla de intersección. En este ejercicio todas las relaciones tienen al menos un máximo 1, así que <b>no se crea ninguna</b>: el modelo ya está completo.</p>';
+  return '<p><b>Regla 3:</b> una relación N:M no cabe en una FK (una celda guarda un solo valor). Se crea una <b>tabla de intersección</b> que recibe la PK de cada lado como FK.</p><ul class="clean">' + inter.map(t => { const c = ex.cx.find(x => x.type === 'N:M'); const pk = pkCols(ex, t.n);
+    return '<li><b>' + t.n + '</b>: PK compuesta <code class="i">(' + pk.join(', ') + ')</code> = las dos FK. ' + (c && c.attrs ? 'Los atributos de la relación <b>' + c.attrs.join(', ') + '</b> se guardan aquí porque dependen de la pareja ' + c.a + '–' + c.b + ', no de una sola entidad.' : '') + ' Cada pareja aparece una vez; si la misma pareja pudiera repetirse en el tiempo, la PK debería incluir la fecha o usar una clave subrogada con UNIQUE.</li>'; }).join('') + '</ul>';
+}
+/* ---------- explicaciones al seleccionar ---------- */
+function selInfo(k, sel){
+  const ex = EX[k - 1]; const i = sel.indexOf(':'); const ty = sel.slice(0, i), v = sel.slice(i + 1);
+  if(ty === 'e'){ const t = ex.tmap[v]; return '<b>Entidad ' + v + '</b> · ' + t.d + ' Se convertirá en la tabla ' + v + ' con PK <code class="i">' + pkCols(ex, v).join(', ') + '</code>.'; }
+  if(ty === 'cr'){ const r = ex.cx[+v]; return '<b>' + r.a + ' —' + r.v + '— ' + r.b + ' (' + r.type + ')</b><br>' + r.ra + '<br>' + r.rb + (r.attrs ? '<br>Atributos de la relación: <b>' + r.attrs.join(', ') + '</b>.' : ''); }
+  if(ty === 't'){
+    const t = ex.tmap[v]; if(!t) return '';
+    const fks = ex.fk.filter(f => f[1] === v), kids = ex.fk.filter(f => f[3] === v);
+    return '<b>Tabla ' + v + '</b> · ' + t.d + ' PK: <code class="i">' + pkCols(ex, v).join(', ') + '</code>. ' + (isInter(ex, v) ? 'Es una <b>tabla de intersección</b>: resuelve una N:M; su PK está formada por sus FK. ' : '') +
+      (fks.length ? 'Es <b>hija</b> de ' + fks.map(f => f[3]).join(' y ') + '. ' : 'No tiene FK: es una tabla <b>padre</b> o independiente y se carga primero. ') + (kids.length ? 'Es <b>padre</b> de ' + kids.map(f => f[1]).join(' y ') + '.' : '');
+  }
+  if(ty === 'c'){
+    const [tn, cn] = v.split('.'); const t = ex.tmap[tn]; if(!t) return '';
+    const col = t.cols.find(c => c[0] === cn) || (t.addCol && t.addCol[0] === cn ? [cn, t.addCol[1], '', t.addCol[2]] : null); if(!col) return '';
+    const f = ex.fk.find(x => x[1] === tn && x[2].includes(cn)); const pk = pkCols(ex, tn).includes(cn);
+    const uq = ex.uq.find(u => u[1] === tn && u[2].includes(cn)); const ck = ex.ck.filter(c => c[1] === tn && c[2].indexOf(cn) >= 0);
+    let h = '<b>' + tn + '.' + cn + '</b> <code class="i">' + esc(colSpec(col)) + '</code> · ' + (col[3] || '') + ' ';
+    if(f){ const r = ex.rels.find(x => x.p === f[3] && x.c === tn) || {}; h += '<br><b>Es FK</b>: proviene de la PK de <b>' + f[3] + '</b> (' + f[4].join(', ') + ') y se coloca en ' + tn + ' porque ' + tn + ' es el lado hijo (' + (r.cc || 'N') + '). ' + (r.a || '') + ' ' + (/nn/.test(col[2]) || pk ? 'Es NOT NULL: participación <b>obligatoria</b>.' : 'Admite NULL: participación <b>opcional</b>.') + (pk ? ' Además forma parte de la <b>PK compuesta</b>.' : ''); }
+    else if(pk) h += '<br><b>Es PK</b>: identifica cada fila (única y nunca NULL).';
+    if(uq) h += '<br><b>UNIQUE</b> (' + uq[0] + '): no admite valores repetidos' + (f ? ', por eso cada padre aparece como máximo una vez: 1:1.' : ': es una clave alternativa.');
+    if(ck.length) h += '<br><b>CHECK</b>: ' + ck.map(c => '<code class="i">' + esc(c[2]) + '</code>').join(', ') + '.';
+    return h;
+  }
+  if(ty === 'r'){
+    const [p, c] = v.split('>'); const r = ex.rels.find(x => x.p === p && x.c === c); if(!r) return '';
+    const f = ex.fk.find(x => x[1] === c && x[3] === p);
+    return '<b>' + p + ' ' + r.pc + ' — ' + r.cc + ' ' + c + '</b><br>' + r.a + (f ? '<br>Se implementa con <code class="i">' + f[0] + '</code>: ' + c + '.' + f[2].join(',') + ' → ' + p + '.' + f[4].join(',') + '.' : '');
+  }
+  return '';
+}
+
+/* ---------- visor progresivo de cinco vistas ---------- */
+const PV_NAMES = ['Enunciado analizado', 'Modelo conceptual', 'Cardinalidades', 'Transformación', 'Modelo relacional final'];
+function pvState(k){ ST.pv = ST.pv || {}; if(!ST.pv[k]) ST.pv[k] = { v:0, sub:0, rel:0 }; return ST.pv[k]; }
+function pvHtml(k){
+  const ex = EX[k - 1], P = pvState(k);
+  let body = '';
+  if(P.v === 0){
+    body = '<p class="pv-lead">Lee el enunciado con colores. Pulsa una categoría de la leyenda para ocultarla o mostrarla.</p><div class="pv-leg">' + HL_LEG.filter(l => l[0] !== 'hl-d' || ex.terms.some(t => t[1] === 'D')).map(l => '<button type="button" class="hl-chip ' + l[0] + '" data-act="hl-toggle" data-c="' + l[0] + '" aria-pressed="true">' + l[1] + '</button>').join('') + '</div><div class="enun hl-enun">' + enunHl(ex) + '</div>' +
+      '<div class="pv-rules">' + ex.rules.map(r => '<span class="pv-rule"><b>' + r[0] + '</b> ' + r[1] + '</span>').join('') + '</div><p class="exp-note">Pregúntate: ¿qué sustantivos tienen datos propios? ¿qué verbos los unen? ¿qué palabras dicen cuántos? La respuesta aparece en las vistas siguientes.</p>';
+  } else if(P.v === 1){
+    body = '<p class="pv-lead">Solo entidades, sus atributos y las relaciones (rombos). <b>No hay FK ni tablas de intersección</b>: eso es implementación y aparece en la vista 4.</p>' + cxFigure(ex, 'Ejercicio ' + ex.k + ' · modelo conceptual') +
+      (ex.cx.some(c => c.attrs) ? '<p class="exp-note">Los atributos colgados del rombo pertenecen a la relación, no a una entidad.</p>' : '');
+  } else if(P.v === 2){
+    const r = ex.cx[P.rel] || ex.cx[0];
+    const part = c => c.split('..')[0] === '0' ? '<span class="pt opt">opcional</span>' : '<span class="pt obl">obligatoria</span>';
+    body = '<p class="pv-lead">Lee cada relación <b>en los dos sentidos</b>. El número junto a cada entidad dice cuántas de ella se relacionan con una de la otra.</p><div class="seg pv-rels" role="group">' + ex.cx.map((c, i) => '<button type="button" data-act="pv-rel" data-k="' + k + '" data-i="' + i + '" aria-pressed="' + (i === P.rel) + '">' + c.a + ' – ' + c.b + '</button>').join('') + '</div>' +
+      cxFigure(ex, 'Relación ' + r.a + ' – ' + r.b, { hi:P.rel, attrs:false }) +
+      table(['Sentido', 'Lectura', 'Mínimo → participación', 'Máximo'], [
+        [r.a + ' → ' + r.b, r.ra, r.cb.split('..')[0] + ' → ' + part(r.cb), '<b>' + r.cb.split('..')[1] + '</b>'],
+        [r.b + ' → ' + r.a, r.rb, r.ca.split('..')[0] + ' → ' + part(r.ca), '<b>' + r.ca.split('..')[1] + '</b>']]) +
+      '<div class="pv-concl"><span class="dt-kind ' + (r.type === 'N:M' ? 'kind-nm' : r.type === '1:1' ? 'kind-11' : 'kind-1n') + '">' + r.type + '</span> Máximos: ' + r.cb.split('..')[1] + ' y ' + r.ca.split('..')[1] + '. ' + (r.type === 'N:M' ? 'Los dos son N: muchos a muchos.' : r.type === '1:1' ? 'Los dos son 1: uno a uno.' : 'Uno es 1 y el otro N: uno a muchos.') + '</div>';
+  } else if(P.v === 3){
+    const sub = P.sub;
+    body = '<p class="pv-lead">Paso ' + (sub + 1) + ' de 3 · Lo resaltado en color es lo que aparece en este paso. Pulsa cualquier tabla, columna o línea.</p><div class="pv-sub">' + ['1 · Entidades → tablas y PK', '2 · Relaciones 1:N y 1:1 → FK', '3 · N:M → intersección'].map((n, i) => '<button type="button" class="tab" data-act="pv-sub" data-k="' + k + '" data-i="' + i + '" aria-selected="' + (i === sub) + '">' + n + '</button>').join('') + '</div>' +
+      erFigure(transModel(ex, sub), 'Transformación · paso ' + (sub + 1), { ex:k }) + '<div class="pv-text">' + transText(ex, sub) + '</div>';
+  } else {
+    body = '<p class="pv-lead">Tablas, columnas, PK, FK, PK compuestas, UNIQUE y CHECK. Pulsa un elemento para ver de dónde proviene.</p>' + erFigure(exModel(ex), 'Ejercicio ' + ex.k + ' · modelo relacional final', { ex:k }) +
+      '<div class="pv-rules">' + ex.uq.map(u => '<span class="pv-rule"><b class="lg-uq">UQ</b> ' + u[0] + ' (' + u[1] + '.' + u[2].join(',') + ')</span>').concat(ex.ck.map(c => '<span class="pv-rule"><b>CK</b> ' + c[0] + ': ' + esc(c[2]) + '</span>')).join('') + '</div>' +
+      (ex.tables.some(t => t.addCol) ? callout('info', 'Columna agregada después', '<p>' + ex.tables.filter(t => t.addCol).map(t => '<b>' + t.n + '.' + t.addCol[0] + '</b> se agrega en la etapa 3 con <code class="i">ALTER TABLE ' + lc(t.n) + ' ADD ' + t.addCol[0] + ' ' + t.addCol[1] + '</code>, sin DEFAULT: ' + t.addCol[2]).join('') + '</p>') : '') +
+      sec('Reglas que una FK no puede garantizar') + '<ul class="clean">' + ex.limits.map(l => '<li>' + l + '</li>').join('') + '</ul>' +
+      sec('Del modelo al SQL') + ex.tables.map(t => reveal('SQL de ' + t.n, codeView(createTableSql(t, false) + '\n\n' + ex.pk.filter(p => p[1] === t.n).map(p => pkSql(p)).concat(ex.fk.filter(f => f[1] === t.n).map(f => fkSql(f)), ex.uq.filter(u => u[1] === t.n).map(u => uqSql(u)), ex.ck.filter(c => c[1] === t.n).map(c => ckSql(c))).join('\n') + (t.addCol ? '\nALTER TABLE ' + lc(t.n) + ' ADD ' + t.addCol[0] + ' ' + t.addCol[1] + ';' : ''), { label:'Etapa 3 · conectado como ' + ex.adm }))).join('') +
+      '<div class="lab-ctl"><button type="button" class="btn btn-primary" data-act="goto-practice" data-k="' + k + '">' + ic('terminal') + 'Ejecutarlo en SQL*Plus (Ruta práctica)</button></div>';
+  }
+  const last = P.v === 4, first = P.v === 0 && P.sub === 0;
+  return '<div class="pv-dots" role="group" aria-label="Vistas">' + PV_NAMES.map((n, i) => '<button type="button" class="pv-dot' + (i === P.v ? ' on' : i < P.v ? ' done' : '') + '" data-act="pv-go" data-k="' + k + '" data-i="' + i + '" aria-current="' + (i === P.v ? 'step' : 'false') + '"><span>' + (i + 1) + '</span>' + n + '</button>').join('') + '</div>' +
+    '<div class="pv-body">' + body + '</div><div class="pv-ctl"><button type="button" class="btn" data-act="pv-prev" data-k="' + k + '"' + (first ? ' disabled' : '') + '>' + ic('chevL') + 'Anterior</button>' + (last ? '' : '<button type="button" class="btn btn-primary" data-act="pv-next" data-k="' + k + '">Siguiente' + ic('chevR') + '</button><button type="button" class="btn btn-sm" data-act="pv-go" data-k="' + k + '" data-i="4">Ver solución completa</button>') + '</div>';
+}
+
+/* ---------- comparación de claves (Ejercicio 3) ---------- */
+function keyCmpHtml(){
+  const one = (n, cols, title, pros, cons) => '<div class="kc"><h4>' + title + '</h4><div class="er-scroll">' + erSvg({ tables:[{ n:n, cols:cols }], rels:[], pos:{ [n]:[0, 0] } }, { label:title }) + '</div><p class="kc-p"><b>A favor:</b> ' + pros + '</p><p class="kc-c"><b>En contra:</b> ' + cons + '</p></div>';
+  return '<div class="lab blk"><div class="lab-h">' + ic('key') + 'Natural, compuesta o subrogada</div><div class="kc-grid">' +
+    one('CLIENTE', [{ n:'correo', k:'pk', t:'VARCHAR2(100)' }, { n:'nombre', k:'', t:'VARCHAR2(15)', nn:true }], 'Natural: correo como PK', 'existe en la vida real y ya es único.', 'puede cambiar, es largo y se copiaría como FK en cada pedido. Por eso aquí queda como clave alternativa (UNIQUE).') +
+    one('DETALLE_PEDIDO', [{ n:'id_pedido', k:'pf', t:'NUMBER(8)' }, { n:'id_producto', k:'pf', t:'NUMBER(5)' }, { n:'cantidad', k:'', t:'NUMBER(4)', nn:true }], 'Compuesta: (id_pedido, id_producto)', 'expresa la regla «un producto una vez por pedido» sin columnas extra. Es la de la práctica.', 'si otra tabla referenciara una línea, necesitaría una FK de dos columnas.') +
+    one('DETALLE_PEDIDO', [{ n:'id_detalle', k:'pk', t:'IDENTITY' }, { n:'id_pedido', k:'fk', t:'NUMBER(8)', nn:true }, { n:'id_producto', k:'fk', t:'NUMBER(5)', nn:true, uq:true }], 'Subrogada: id_detalle + UNIQUE', 'una sola columna corta y estable; permite registrar eventos repetidos si se quita el UNIQUE.', 'sin el UNIQUE (id_pedido, id_producto) se pierde la regla de negocio. Requiere CREATE SEQUENCE.') +
+    '</div></div>';
+}
+/* ---------- simulador UNIQUE / NULL (Ejercicio 4) ---------- */
+const UQ = { u:true, nn:true };
+function uqSimHtml(){
+  const card = (UQ.nn ? '1..1' : '0..1') + ' PERSONA — ' + (UQ.u ? '0..1' : '0..N') + ' PASAPORTE';
+  const r1 = UQ.u ? '<div class="result-line bad">✗ <b>ORA-00001</b> (uq_pasaporte_persona): Camila ya tiene pasaporte. La regla «máximo uno» se cumple.</div>' : '<div class="result-line good">✓ <b>1 row created.</b> ⚠ Camila queda con dos pasaportes «vigentes»: la relación es 1:N.</div>';
+  const r2 = UQ.nn ? '<div class="result-line bad">✗ <b>ORA-01400</b>: id_persona es obligatoria. Un pasaporte siempre tiene dueño.</div>' : '<div class="result-line good">✓ <b>1 row created.</b> ⚠ Un pasaporte sin persona. UNIQUE no lo impide: admite varios NULL.</div>';
+  return '<div class="lab-h">' + ic('target') + 'Simulador: ¿qué cambia con UNIQUE y con NOT NULL en id_persona?</div>' +
+    '<div class="lab-ctl"><button type="button" class="btn btn-sm" data-act="uq" data-k="u" aria-pressed="' + UQ.u + '">' + (UQ.u ? '✓ ' : '✗ ') + 'UNIQUE (id_persona)</button><button type="button" class="btn btn-sm" data-act="uq" data-k="nn" aria-pressed="' + UQ.nn + '">' + (UQ.nn ? '✓ ' : '✗ ') + 'NOT NULL (id_persona)</button></div>' +
+    '<p class="uq-card">Cardinalidad resultante: <b>' + card + '</b>' + (UQ.u && UQ.nn ? ' · la del enunciado' : ' · no coincide con el enunciado') + '</p>' +
+    '<div class="grid2"><div>' + codeView("INSERT INTO pasaporte_vigente (num_pasaporte, id_persona, …)\nVALUES ('AT9999999', '52123456', …);", { label:'Segundo pasaporte para Camila' }) + r1 + '</div><div>' + codeView("INSERT INTO pasaporte_vigente (num_pasaporte, id_persona, …)\nVALUES ('ZZ1111111', NULL, …);", { label:'Pasaporte sin persona' }) + r2 + '</div></div>' +
+    '<p class="exp-note">Simulación educativa con las reglas de Oracle. Con las dos restricciones (la práctica), el primer caso es la prueba de integridad del paso de la etapa 6.</p>';
+}
+
+/* ---------- mapa de Oracle paso a paso ---------- */
+const ORA = {};
+function oraStates(k){
+  if(ORA[k]) return ORA[k];
+  const ex = EX[k - 1];
+  const S = { user:null, spool:false, ts:false, adm:false, admPriv:false, con:false, conPriv:false, objPriv:false, t:{} };
+  ex.tables.forEach(t => { S.t[t.n] = { on:false, pk:false, fk:false, rc:false, add:false, rows:0, pend:false }; });
+  const res = {};
+  PRACT[k].forEach(o => {
+    const ch = new Set(); const K = o.key;
+    if(K === 'a2' || K === 'c1'){ S.user = 'SYSTEM'; ch.add('user'); }
+    else if(K === 'b2' || K === 'c4'){ S.user = ex.adm; ch.add('user'); }
+    else if(K === 'c6'){ S.user = ex.con; ch.add('user'); }
+    if(K === 'a3'){ S.spool = true; ch.add('spool'); }
+    if(K === 'c12'){ S.spool = false; ch.add('spool'); }
+    if(K === 'a4'){ S.ts = true; ch.add('ts'); }
+    if(K === 'a6'){ S.adm = true; ch.add('adm'); }
+    if(K === 'b1'){ S.admPriv = true; ch.add('admPriv'); }
+    if(K === 'c2'){ S.con = true; ch.add('con'); }
+    if(K === 'c3'){ S.conPriv = true; ch.add('conPriv'); }
+    if(K === 'c5'){ S.objPriv = true; ch.add('objPriv'); }
+    let m;
+    if((m = /^b3-(\d+)$/.exec(K))){ const n = ex.tables[+m[1]].n; S.t[n].on = true; ch.add('t:' + n); }
+    if(K === 'b4') ex.tables.forEach(t => { S.t[t.n].pk = true; ch.add('pk:' + t.n); });
+    if(K === 'b5') ex.fk.forEach(f => { S.t[f[1]].fk = true; ch.add('fk:' + f[1]); });
+    if(K === 'b6'){ ex.uq.concat(ex.ck).forEach(c => { S.t[c[1]].rc = true; ch.add('rc:' + c[1]); }); }
+    if(K === 'b7') ex.tables.filter(t => t.addCol).forEach(t => { S.t[t.n].add = true; ch.add('add:' + t.n); });
+    if((m = /^c8-(\d+)$/.exec(K))){ const n = ex.loadOrder[+m[1]]; S.t[n].rows = ex.tmap[n].rows.length; S.t[n].pend = true; ch.add('rows:' + n); }
+    if(K === 'c9'){ ex.tables.forEach(t => { if(S.t[t.n].pend){ S.t[t.n].pend = false; ch.add('commit:' + t.n); } }); }
+    res[K] = { s:JSON.parse(JSON.stringify(S)), ch:ch };
+  });
+  return (ORA[k] = res);
+}
+function oraMap(o){
+  const st = oraStates(o.k)[o.key]; if(!st || !st.ch.size) return '';
+  const ex = EX[o.k - 1], S = st.s, ch = st.ch;
+  const c = k => ch.has(k) ? ' chg' : '';
+  const user = S.user ? '<span class="om-sess' + c('user') + ' ' + (S.user === 'SYSTEM' ? 'u-sys' : S.user === ex.adm ? 'u-adm' : 'u-con') + '">' + ic('user') + 'Conectado: <b>' + S.user + '</b></span>' : '<span class="om-sess">Sin conexión</span>';
+  let h = '<div class="ora-map" aria-label="Estado educativo de Oracle después de este paso"><div class="om-top">' + user + '<span class="om-spool' + (S.spool ? ' on' : '') + c('spool') + '"><span class="spool-dot"></span>SPOOL ' + (S.spool ? 'grabando' : 'apagado') + '</span><span class="om-note">Estado después del paso · representación educativa</span></div><div class="om-db"><span class="om-lbl">XEPDB1</span>';
+  if(S.ts) h += '<span class="om-obj' + c('ts') + '">' + ic('db') + ex.ts + '</span>';
+  if(S.adm) h += '<span class="om-obj u-adm' + c('adm') + c('admPriv') + '">' + ic('user') + ex.adm + (S.admPriv ? ' · CREATE SESSION, CREATE TABLE' : '') + ' · QUOTA 20M</span>';
+  if(S.con) h += '<span class="om-obj u-con' + c('con') + c('conPriv') + '">' + ic('user') + ex.con + (S.conPriv ? ' · CREATE SESSION' : '') + '</span>';
+  if(S.objPriv) h += '<span class="om-obj om-grant' + c('objPriv') + '">' + ic('key') + 'SELECT, INSERT en ' + ex.tables.length + ' tablas → ' + ex.con + '</span>';
+  h += '</div>';
+  const tabs = ex.tables.filter(t => S.t[t.n].on);
+  if(tabs.length){
+    h += '<div class="om-tabs">' + tabs.map(t => { const T = S.t[t.n]; const fks = ex.fk.filter(f => f[1] === t.n);
+      return '<div class="om-t' + c('t:' + t.n) + '"><b>' + t.n + '</b><span class="om-b">' + (T.pk ? '<span class="badge b-pk' + c('pk:' + t.n) + '">PK</span>' : '') + (T.fk ? fks.map(f => '<span class="badge b-fk' + c('fk:' + t.n) + '">FK→' + f[3] + '</span>').join('') : '') + (T.rc ? '<span class="badge b-chk' + c('rc:' + t.n) + '">UQ/CK</span>' : '') + (T.add ? '<span class="badge b-new' + c('add:' + t.n) + '">+' + t.addCol[0] + '</span>' : '') + '</span>' +
+        (T.rows ? '<span class="om-rows' + c('rows:' + t.n) + c('commit:' + t.n) + '">' + T.rows + ' filas · ' + (T.pend ? 'pendientes' : 'confirmadas') + '</span>' : '') + '</div>'; }).join('') + '</div>';
+  }
+  const rk = [...ch].find(x => /^rows:/.test(x));
+  if(rk){ const t = ex.tmap[rk.slice(5)]; const cols = insertCols(t); h += '<div class="om-sample"><span class="om-lbl">Ejemplo: primeras filas insertadas (pendientes hasta COMMIT)</span>' + table(cols, t.rows.slice(0, 3).map(r => r.map(v => v === null ? { v:'NULL', c:'null' } : { v:esc(v), c:'mono new-cell' }))) + '</div>'; }
+  if([...ch].some(x => /^commit:/.test(x))) h += '<div class="om-commit">' + ic('check') + '<b>COMMIT:</b> los cambios pendientes quedan confirmados y visibles para todas las sesiones.</div>';
+  return h + '</div>';
+}
+
+/* ---------- GROUP BY con registros visibles ---------- */
+const GB = { ds:'e1', step:0, mode:'col', having:false };
+function gbData(){
+  if(GB.ds === 'e1'){ const ex = EX[0]; return { key:'nom_marca', item:'placa', groups:ex.tmap.MARCA.rows.map(m => ({ g:m[1], items:ex.tmap.VEHICULO.rows.filter(v => v[4] === m[0]).map(v => v[0]) })), from:'usr_admin_veh.marca m\nLEFT JOIN usr_admin_veh.vehiculo v ON v.id_marca = m.id_marca', gcol:'m.nom_marca', ccol:'v.placa', alias:'cantidad', q:'e1q4' }; }
+  const ex = EX[1]; return { key:'cod_carrera', item:'alumno', groups:ex.tmap.CARRERA.rows.map(c => ({ g:c[0], items:ex.tmap.ALUMNOS.rows.filter(a => a[5] === c[0]).map(a => a[0].slice(-2)) })), from:'usr_admin_uni.carrera c\nLEFT JOIN usr_admin_uni.alumnos a ON a.cod_carrera = c.cod_carrera', gcol:'c.cod_carrera', ccol:'a.ced_alumno', alias:'alumnos', q:'e2q1' };
+}
+function gbHtml(){
+  const D = gbData();
+  const cnt = g => GB.mode === 'star' ? Math.max(1, g.items.length) : g.items.length;
+  const sorted = D.groups.slice().sort((a, b) => cnt(b) - cnt(a) || (a.g < b.g ? -1 : 1)).filter(g => !GB.having || cnt(g) > 1);
+  const sql = 'SELECT ' + D.gcol + ', COUNT(' + (GB.mode === 'star' ? '*' : D.ccol) + ') AS ' + D.alias + '\nFROM ' + D.from + '\nGROUP BY ' + D.gcol + (GB.having ? '\nHAVING COUNT(' + (GB.mode === 'star' ? '*' : D.ccol) + ') > 1' : '') + '\nORDER BY ' + D.alias + ' DESC, ' + D.gcol + ';';
+  const steps = ['1 · Filas del FROM/JOIN', '2 · GROUP BY', '3 · COUNT', '4 · HAVING y ORDER BY'];
+  let vis = '';
+  if(GB.step === 0) vis = '<div class="gb-rows">' + D.groups.flatMap((g, gi) => g.items.length ? g.items.map(it => '<span class="gb-chip g' + (gi % 8) + '">' + esc(it) + ' · ' + esc(g.g) + '</span>') : ['<span class="gb-chip null g' + (gi % 8) + '">NULL · ' + esc(g.g) + '</span>']).join('') + '</div><p class="exp-note">LEFT JOIN conserva cada ' + (GB.ds === 'e1' ? 'marca' : 'carrera') + ' aunque no tenga pareja: aparece una fila con NULL.</p>';
+  else if(GB.step === 1) vis = '<div class="gb-groups">' + D.groups.map((g, gi) => '<div class="gb-g g' + (gi % 8) + '"><b>' + esc(g.g) + '</b><div>' + (g.items.length ? g.items.map(it => '<span class="gb-chip">' + esc(it) + '</span>').join('') : '<span class="gb-chip null">NULL</span>') + '</div></div>').join('') + '</div>';
+  else if(GB.step === 2) vis = '<div class="gb-groups">' + D.groups.map((g, gi) => '<div class="gb-g g' + (gi % 8) + '"><b>' + esc(g.g) + '</b><span class="gb-n">' + cnt(g) + '</span>' + (!g.items.length ? '<span class="exp-note">' + (GB.mode === 'star' ? 'COUNT(*) cuenta la fila con NULL' : 'COUNT(columna) ignora el NULL') + '</span>' : '') + '</div>').join('') + '</div>';
+  else vis = table([D.key.toUpperCase(), D.alias.toUpperCase()], sorted.map(g => [esc(g.g), { v:String(cnt(g)), c:'mono' }]));
+  return '<div class="lab-h">' + ic('layers') + 'GROUP BY paso a paso con los datos de la práctica</div>' +
+    '<div class="lab-ctl"><div class="seg" role="group"><button type="button" data-act="gb" data-k="ds" data-v="e1" aria-pressed="' + (GB.ds === 'e1') + '">Vehículos por marca</button><button type="button" data-act="gb" data-k="ds" data-v="e2" aria-pressed="' + (GB.ds === 'e2') + '">Alumnos por carrera</button></div>' +
+    '<div class="seg" role="group"><button type="button" data-act="gb" data-k="mode" data-v="col" aria-pressed="' + (GB.mode === 'col') + '">COUNT(columna)</button><button type="button" data-act="gb" data-k="mode" data-v="star" aria-pressed="' + (GB.mode === 'star') + '">COUNT(*)</button></div>' +
+    '<button type="button" class="btn btn-sm" data-act="gb" data-k="having" aria-pressed="' + GB.having + '">' + (GB.having ? '✓ ' : '') + 'HAVING &gt; 1</button></div>' +
+    codeView(sql, { label:'Consulta que se está ilustrando' }) +
+    '<div class="pv-sub">' + steps.map((n, i) => '<button type="button" class="tab" data-act="gb" data-k="step" data-v="' + i + '" aria-selected="' + (i === GB.step) + '">' + n + '</button>').join('') + '</div>' + vis +
+    '<p class="exp-note">' + (GB.mode === 'col' && !GB.having ? 'Este resultado coincide con la salida real de la consulta ' + D.q + '.' : GB.mode === 'star' ? 'Con COUNT(*) la ' + (GB.ds === 'e1' ? 'marca sin vehículos' : 'carrera sin alumnos') + ' aparece con 1: error típico tras un LEFT JOIN.' : 'HAVING descarta grupos después de contarlos; WHERE no podría usar COUNT (ORA-00934).') + '</p>';
+}
+
+/* ---------- guía visual de decisión ---------- */
+const DGUIDE = [
+  ['¿Es entidad, atributo o relación?', '¿Tiene datos propios y muchas ocurrencias? → <b>entidad</b>. ¿Describe a una sola cosa? → <b>atributo</b>. ¿Es un verbo que une dos cosas? → <b>relación</b>. ¿Depende de dos cosas a la vez? → <b>atributo de la relación</b>.', 'marca = entidad · color = atributo · adquiere = relación · fecha de adquisición = atributo de la relación'],
+  ['¿Es 1:1, 1:N o N:M?', 'Pregunta el <b>máximo en los dos sentidos</b>: «¿un A con varios B?» y «¿un B con varios A?». Sí/sí → N:M · sí/no → 1:N · no/no → 1:1.', 'pedido–producto: sí/sí → N:M · carrera–alumno: sí/no → 1:N · persona–pasaporte vigente: no/no → 1:1'],
+  ['¿Dónde va la FK?', 'En <b>1:N</b>, en la tabla del lado N (la hija). En <b>1:1</b>, en la tabla que puede no existir, con UNIQUE. En <b>N:M</b>, en la intersección (dos FK).', 'VEHICULO.id_marca · PASAPORTE_VIGENTE.id_persona UNIQUE · PROP_VEH (id_propietario, placa)'],
+  ['¿Necesita intersección?', 'Solo si los <b>dos máximos son N</b>. Si al menos un máximo es 1, basta una FK.', 'PROP_VEH y DETALLE_PEDIDO sí · ALUMNO_CARRERA no'],
+  ['¿Qué atributos van en la intersección?', 'Los que <b>dependen de la pareja</b> y no de una sola entidad. Prueba: ¿cambia el valor si cambio solo una de las dos entidades?', 'fecha_adquisicion · cantidad · precio_venta'],
+  ['¿Cómo elijo la PK?', '<b>Natural</b> si es única, estable y corta. <b>Compuesta</b> (las FK) en una intersección cuando cada pareja aparece una vez. <b>Subrogada</b> si no hay clave natural fiable o la pareja puede repetirse; entonces protege la combinación con UNIQUE.', 'placa · (id_pedido, id_producto) · id_adquisicion IDENTITY'],
+  ['¿Qué pasa si la relación es opcional?', 'Mínimo 0 del padre visto desde la hija → la FK <b>admite NULL</b>. Mínimo 1 → <b>NOT NULL</b>. Mínimo 1 del lado de los hijos («al menos uno») → regla de negocio que una FK no puede garantizar.', 'ALUMNOS.id_barrio admite NULL · VEHICULO.id_marca NOT NULL · «cada pedido con al menos un producto»']
+];
+function dguideHtml(){
+  return '<div class="dguide">' + DGUIDE.map((d, i) => '<div class="dg"><span class="dg-n">' + (i + 1) + '</span><div><h4>' + d[0] + '</h4><p>' + d[1] + '</p><p class="dg-ex">' + ic('bulb') + d[2] + '</p></div></div>').join('<div class="dg-arrow" aria-hidden="true">↓</div>') + '</div>';
+}
+
+/* ---------- niveles de modelo (Data Modeler) ---------- */
+const LV = { i:0 };
+function logicalModel(ex){
+  return { tables:entTables(ex).map(t => ({ n:t.n, cols:t.cols.filter(c => !fkCols(ex, t.n).includes(c[0])).map(c => ({ n:c[0], k:pkCols(ex, t.n).includes(c[0]) ? 'uid' : '', t:'', nn:/nn/.test(c[2]) })) })),
+    rels:ex.cx.map(r => ({ p:r.a, c:r.b, pc:r.ca, cc:r.cb, v:r.v })), pos:ex.cpos };
+}
+function lvHtml(){
+  const ex = EX[0];
+  const L = [
+    ['Conceptual', 'Qué cosas, atributos y reglas existen en el negocio, sin pensar en ninguna tecnología.', cxFigure(ex, 'Ejercicio 1 · modelo conceptual', { attrs:false }), 'Lo construyes tú a partir del enunciado.'],
+    ['Diagrama E-R', 'Es una <b>notación</b> para dibujar el modelo conceptual o el lógico, no un modelo distinto. Chen usa rectángulos, rombos y óvalos; Barker (pata de gallo) y Bachman son las que ofrece SQL Developer Data Modeler.', chenSvg(), 'La misma relación N:M se dibuja con un rombo; la fecha cuelga de la relación.'],
+    ['Lógico', 'En SQL Developer Data Modeler, el modelo lógico es la vista «independiente de la implementación»: entidades, atributos, identificadores únicos (#) y relaciones, incluidas las N:M directas. Todavía no hay FK ni intersecciones.', erFigure(logicalModel(ex), 'Ejercicio 1 · modelo lógico (Barker)', { types:false }), 'Es lo que ves en la pestaña «Logical» de Data Modeler.'],
+    ['Relacional', 'Tablas, columnas, PK y FK. Data Modeler lo genera con «Engineer to Relational Model»: cada entidad → tabla, cada atributo → columna, cada relación → FK y cada N:M → tabla de intersección (aquí PROP_VEH).', erFigure(exModel(ex), 'Ejercicio 1 · modelo relacional', { ex:1 }), 'Es lo que ves en la pestaña «Relational» de Data Modeler.'],
+    ['Físico (Oracle 18c)', 'Los objetos concretos de un sistema gestor: tipos exactos (VARCHAR2(10 CHAR)), restricciones con nombre, índices que crean las PK y UNIQUE, tablespace y cuota. Data Modeler lo asocia a un sitio RDBMS (por ejemplo, Oracle) y desde él genera el DDL.', codeView("CREATE TABLESPACE ts_vehiculos DATAFILE '{{DFDIR}}\\TS_VEHICULOS01.DBF' SIZE 20M;\n\n" + createTableSql(ex.tmap.VEHICULO, false) + '\n' + pkSql(ex.pk[2]) + '\n' + fkSql(ex.fk[0]), { label:'Implementación física en Oracle (fragmento)' }), 'Por eso relacional y físico no son sinónimos: el mismo modelo relacional podría implementarse en otro gestor con otros tipos y otro almacenamiento.']
+  ];
+  const c = L[LV.i];
+  return '<div class="seg lv-seg" role="group" aria-label="Nivel de modelo">' + L.map((l, i) => '<button type="button" data-act="lv" data-i="' + i + '" aria-pressed="' + (i === LV.i) + '">' + (i + 1) + ' · ' + l[0] + '</button>').join('') + '</div>' +
+    '<div class="lv-b"><h3>' + c[0] + '</h3><p>' + c[1] + '</p>' + c[2] + '<p class="exp-note">' + c[3] + '</p></div>';
 }
 
 
@@ -2735,24 +3209,22 @@ function chenSvg(){
     ell(70, 30, 'id_propietario', true) + ell(140, 212, 'nombre') + ell(570, 30, 'placa', true) + ell(640, 212, 'color') + ell(350, 32, 'fecha_adq') +
     t(215, 110, 'N', 'ch-c') + t(485, 110, 'M', 'ch-c') + '</svg></div>';
 }
-mod({ phase:'fun', title:'Conceptual, entidad-relación, lógico y relacional', env:'read', spool:false, mins:12,
-  lead:'Cuatro maneras de describir los mismos datos, de lo más abstracto a lo más cercano a Oracle.',
-  concept:{ t:'Niveles de modelo', d:'Conceptual (qué existe) → E-R (dibujo de entidades y relaciones) → lógico (tablas, claves, cardinalidades) → relacional/físico (tablas con tipos para un SGBD).' },
-  build(){ const ex = EX[0]; return [
-    table(['Nivel', 'Responde', 'Se dibuja con', 'Ejemplo (Ejercicio 1)'], [
-      ['<b>Conceptual</b>', '¿Qué cosas y reglas existen en el negocio?', 'Lista de entidades y reglas', 'Propietarios adquieren vehículos; cada vehículo es de una marca.'],
-      ['<b>Entidad-relación (Chen)</b>', '¿Cómo se relacionan las entidades?', 'Rectángulos, rombos y óvalos', 'PROPIETARIO —adquiere (N:M)— VEHICULO'],
-      ['<b>Lógico</b>', '¿Qué tablas, claves y cardinalidades hay?', 'Tablas con PK/FK y pata de gallo', 'PROP_VEH resuelve la N:M'],
-      ['<b>Relacional / físico</b>', '¿Cómo se crea en Oracle?', 'Notación textual o CREATE TABLE', 'VEHICULO(<u>placa</u>, linea, modelo, color, id_marca)']
+mod({ phase:'fun', title:'Conceptual, E-R, lógico, relacional y físico', env:'read', spool:false, mins:12,
+  lead:'Cinco maneras de describir los mismos datos, de lo más abstracto a lo más cercano a Oracle, con la terminología de SQL Developer Data Modeler.',
+  concept:{ t:'Niveles de modelo', d:'Conceptual (qué existe) · E-R (cómo se dibuja) · lógico (entidades e identificadores, sin tecnología) · relacional (tablas, PK, FK) · físico (objetos de Oracle).' },
+  build(){ return [
+    table(['Nivel', 'Responde', 'Contiene', 'En SQL Developer Data Modeler'], [
+      ['<b>Conceptual</b>', '¿Qué existe en el negocio?', 'Entidades, atributos, relaciones y reglas.', 'Se trabaja en papel o en el modelo lógico.'],
+      ['<b>Diagrama E-R</b>', '¿Cómo lo dibujo?', 'Una notación: Chen, Barker (pata de gallo) o Bachman.', 'Notaciones Barker y Bachman del diagrama lógico.'],
+      ['<b>Lógico</b>', '¿Qué entidades, identificadores y relaciones hay, sin tecnología?', 'Entidades, atributos, # identificadores, relaciones (también N:M).', 'Logical model: «vista independiente de la implementación».'],
+      ['<b>Relacional</b>', '¿Qué tablas, columnas, PK y FK?', 'Tablas, columnas, PK, FK e intersecciones.', 'Relational model, generado con «Engineer to Relational Model».'],
+      ['<b>Físico</b>', '¿Cómo se crea en un gestor concreto?', 'Tipos exactos, restricciones con nombre, índices, tablespaces.', 'Physical model, asociado a un sitio RDBMS (Oracle); desde él se genera el DDL.']
     ]),
-    sec('1 · Diagrama entidad-relación (notación de Chen)'), chenSvg(),
-    '<p class="exp-note">En el modelo E-R la N:M se dibuja directamente con un rombo, y la fecha cuelga de la relación. Todavía no hay tabla de intersección.</p>',
-    sec('2 · Modelo lógico (pata de gallo)'), erFigure(exModel(ex), 'Ejercicio 1 · modelo lógico', { types:false }),
-    sec('3 · Modelo relacional (texto)'), relText(ex),
-    sec('4 · Modelo físico para Oracle'), codeView(createTableSql(ex.tmap.VEHICULO, false), { label:'Fragmento del script (etapa 3)' }),
-    callout('info', 'La diferencia clave', '<p>La <b>intersección</b> aparece al pasar del E-R al lógico: el modelo relacional no puede guardar una lista en una celda, así que la N:M se convierte en una tabla nueva.</p>'),
-    miniCheck('f3a', '¿En qué nivel aparece por primera vez la tabla PROP_VEH?', ['Conceptual', 'Entidad-relación', 'Lógico', 'Nunca'], 2, 'En el E-R hay un rombo N:M; en el lógico ese rombo se transforma en la tabla de intersección.'),
-    ckpt('Diferencio los cuatro niveles', '<p>Dibuja el Ejercicio 2 en notación de Chen y luego en notación lógica.</p>')
+    '<div class="lab blk" id="lv-lab">' + lvHtml() + '</div>',
+    callout('info', 'La diferencia clave', '<p>La <b>intersección</b> aparece al pasar del lógico al relacional: el modelo relacional no puede guardar una lista en una celda, así que la N:M se convierte en una tabla nueva. Y el <b>físico</b> añade lo propio de Oracle: tipos, almacenamiento e índices. Relacional y físico no son sinónimos.</p><p class="exp-note">Referencia: Oracle SQL Developer Data Modeler User\'s Guide, «Data Modeler Concepts and Usage».</p>'),
+    miniCheck('f3a', '¿En qué nivel aparece por primera vez la tabla PROP_VEH?', ['Conceptual', 'Lógico', 'Relacional', 'Nunca'], 2, 'En el lógico la N:M es una relación directa entre PROPIETARIO y VEHICULO; al transformarlo en relacional se crea la intersección.'),
+    miniCheck('f3b', '¿En qué nivel se decide el tablespace TS_VEHICULOS?', ['Conceptual', 'Lógico', 'Relacional', 'Físico'], 3, 'El almacenamiento es propio del gestor: nivel físico.'),
+    ckpt('Diferencio los cinco niveles', '<p>Dibuja el Ejercicio 2 en el nivel lógico (sin FK) y luego en el relacional (con FK).</p>')
   ].join(''); }
 });
 
@@ -2775,6 +3247,8 @@ mod({ phase:'fun', title:'Relaciones, cardinalidades y opcionalidad', env:'read'
       ['<b>1..N</b>', '1', 'N', 'al menos uno', 'regla de negocio: una FK no puede obligar a que exista un hijo']
     ]),
     crowLegend(),
+    cc({ icon:'layers', t:'Tabla de intersección', d:'Tabla que resuelve una relación N:M: guarda una FK hacia cada entidad y los atributos que pertenecen a la pareja.', e:'PROP_VEH (id_propietario, placa, fecha_adquisicion).', g:erSvgSmall('PROPIETARIO', 'PROP_VEH', 'VEHICULO'), x:'Crearla para una relación 1:N, o poner en ella atributos que describen a una sola entidad.' }),
+    cc({ icon:'link', t:'Relación identificadora', d:'La FK forma parte de la PK de la hija: la hija no se identifica sin su padre.', e:'DETALLE_PEDIDO (id_pedido, id_producto): la línea se identifica por su pedido y su producto. En cambio VEHICULO.id_marca es no identificadora: el vehículo se identifica por su placa.', x:'Pensar que toda FK debe estar en la PK.' }),
     sec('Participación, padre e hija, identificadora'),
     defs([['Participación obligatoria', 'Toda ocurrencia debe participar (mínimo 1). En el lado hijo se implementa con NOT NULL en la FK.'], ['Participación opcional', 'Puede no participar (mínimo 0). La FK admite NULL.'], ['Tabla padre', 'La referenciada (lado 1): MARCA, CARRERA. Se carga primero.'], ['Tabla hija', 'La que tiene la FK (lado N): VEHICULO, ALUMNOS. Se carga después.'], ['Relación identificadora', 'La FK forma parte de la PK de la hija: PROP_VEH, DETALLE_PEDIDO. La hija no existe ni se identifica sin el padre.'], ['Relación no identificadora', 'La FK es una columna normal: VEHICULO.id_marca. El vehículo se identifica por su placa.']]),
     sec('Practica la lectura'),
@@ -2793,6 +3267,7 @@ mod({ phase:'fun', title:'Claves y restricciones', env:'read', spool:false, mins
     cc({ icon:'link', t:'FOREIGN KEY (FK)', d:'Columna de la tabla hija que debe coincidir con una PK (o UNIQUE) del padre. Garantiza la integridad referencial.', e:'VEHICULO.id_marca debe existir en MARCA.', g:codeView('ALTER TABLE vehiculo\n  ADD CONSTRAINT fk_vehiculo_marca\n  FOREIGN KEY (id_marca) REFERENCES marca (id_marca);', { label:'Etapa 3' }), x:'Crear la FK antes que la PK del padre (ORA-02270) o referenciar una columna que no es clave.' }),
     cc({ icon:'shield', t:'UNIQUE', d:'Impide valores repetidos en otra columna que también identifica (clave alternativa). Admite varios NULL.', e:'El nombre de la marca o el correo del cliente.', x:'Creer que UNIQUE obliga a tener valor: para eso hace falta NOT NULL.' }),
     cc({ icon:'check', t:'CHECK', d:'Condición que cada fila debe cumplir. Si el resultado es desconocido (NULL), se acepta.', e:"genero IN ('M','F'); cantidad > 0; vencimiento > expedición.", x:'Usar SYSDATE dentro de un CHECK (ORA-02436).' }),
+    cc({ icon:'shield', t:'Integridad referencial', d:'Garantía de que cada FK apunta a una fila que existe en el padre. Oracle la protege en los dos sentidos: no deja insertar un hijo sin padre (ORA-02291) ni borrar un padre con hijos (ORA-02292).', e:'No se puede registrar un vehículo con la marca 99 si la marca 99 no existe.', x:'Creer que la FK obliga a que el padre tenga hijos: eso no lo garantiza.' }),
     cc({ icon:'alert', t:'NOT NULL y DEFAULT', d:'Atributos de columna, declarados en el CREATE TABLE. NOT NULL: dato obligatorio. DEFAULT: valor que Oracle usa si el INSERT no da uno.', e:"fecha_pedido DATE DEFAULT SYSDATE NOT NULL; estado DEFAULT 'PENDIENTE'.", x:'DEFAULT SYSDATE en una fecha de nacimiento: inventa un dato falso.' }),
     sec('Tipos de claves'),
     table(['Clave', 'Definición', 'Ejemplo'], [
@@ -2817,6 +3292,8 @@ mod({ phase:'fun', title:'¿Dónde va la FK? Árbol de decisión', env:'read', s
   lead:'Cinco reglas y un constructor interactivo para decidir si basta una FK o hace falta una tabla de intersección.',
   concept:{ t:'FK en el lado N', d:'En una 1:N la FK va en la tabla del lado «muchos». Solo la N:M necesita intersección; la 1:1 se resuelve con FK + UNIQUE.' },
   build(){ return [
+    sec('Guía visual de decisión'), dguideHtml(),
+    sec('Las cinco reglas de ubicación'),
     '<div class="rules">' + [
       ['1:N', 'La FK va en el lado N.', 'Cada vehículo guarda la marca a la que pertenece: VEHICULO.id_marca. Una marca no puede guardar «sus» vehículos en una celda.'],
       ['1:N opcional', 'La FK admite NULL.', 'ALUMNOS.id_barrio: el alumno puede no informar su barrio.'],
@@ -2894,15 +3371,15 @@ function exModelModule(ex){
     concept:{ t:'Ejercicio ' + ex.k, d:ex.learn.join(' · ') + '.' },
     build(){
       const mid = this.id;
-      const p1 = '<div class="enun">' + ex.enun.map(p => '<p>' + p + '</p>').join('') + '</div>' + sec('Reglas de negocio') + table(['', 'Regla', 'Consecuencia en el modelo'], ex.rules.map(r => ['<b>' + r[0] + '</b>', r[1], r[2]])) +
+      const p1 = '<div class="enun">' + ex.enun.map(p => '<p>' + p + '</p>').join('') + '</div>' + sec('Reglas de negocio') + table(['', 'Regla'], ex.rules.map(r => ['<b>' + r[0] + '</b>', r[1]])) + '<p class="exp-note">Antes de seguir: ¿qué consecuencia tendrá cada regla en el modelo (cardinalidad, NULL, UNIQUE, CHECK)?</p>' + reveal('Ver la consecuencia de cada regla', table(['', 'Consecuencia en el modelo'], ex.rules.map(r => ['<b>' + r[0] + '</b>', r[2]]))) +
         (ex.k === 1 ? callout('warn', 'Cuaderno frente a tablero: VEH_MARCA o PROP_VEH', '<p>En el cuaderno la intersección aparece con un nombre parecido a <b>VEH_MARCA</b>, pero sus columnas (<code class="i">id_propietario</code>, la placa y <code class="i">fecha_adquisicion</code>) son las de la relación <b>PROPIETARIO–VEHICULO</b>, como en el tablero, donde se llama <b>PROP_VEH</b>. La relación VEHICULO–MARCA es 1:N y no necesita intersección. Esta plataforma usa el nombre consistente con sus columnas: <b>PROP_VEH</b>, y el modelo corregido de cuatro tablas (no el primer modelo simplificado).</p>') : '');
-      const p2 = classifier(ex) + sec('Entidades y atributos resultantes') + '<div class="grid2">' + ex.tables.filter(t => !/_/.test(t.n) || ex.k === 4).map(t => '<div class="mini"><h4>' + t.n + '</h4><p>' + t.cols.map(c => c[0]).concat(t.addCol ? [t.addCol[0] + ' (después)'] : []).join(', ') + '</p></div>').join('') + '</div>';
+      const p2 = classifier(ex) + reveal('Ver las entidades y atributos resultantes', '<div class="grid2">' + ex.tables.filter(t => !/_/.test(t.n) || ex.k === 4).map(t => '<div class="mini"><h4>' + t.n + '</h4><p>' + t.cols.map(c => c[0]).concat(t.addCol ? [t.addCol[0] + ' (después)'] : []).join(', ') + '</p></div>').join('') + '</div>');
       const p3 = '<p>Antes de mirar la respuesta, elige la cardinalidad de cada frase.</p>' + ex.predict.map((pr, i) => miniCheck('pr' + ex.k + i, pr[0], pr[3] || CARDS, pr[1], pr[2])).join('') +
-        sec('Relaciones del modelo conceptual') + table(['Relación', 'Lado A', 'Lado B', 'Tipo'], ex.concept.map(c => [c[4], c[0] + ' <b>' + c[2] + '</b>', c[1] + ' <b>' + c[3] + '</b>', c[5]])) +
-        sec('Análisis en el modelo lógico') + table(['Padre', 'Hija', 'Cardinalidad', 'Por qué'], ex.rels.map(r => ['<b>' + r.p + '</b> ' + r.pc, '<b>' + r.c + '</b> ' + r.cc, r.v, r.a]));
-      const p4 = table(['Tabla', 'Claves', 'Justificación'], ex.keys.map(k => ['<b>' + k[0] + '</b>', '<code class="i">' + k[1] + '</code>', k[2]])) +
+        reveal('Ver el análisis de cada relación', sec('Lectura en los dos sentidos') + table(['Relación', 'Lectura', 'Tipo'], ex.cx.map(c => [c.v, c.ra + '<br>' + c.rb, '<b>' + c.type + '</b>'])) +
+        sec('Cómo queda en el modelo relacional') + table(['Padre', 'Hija', 'Cardinalidad', 'Por qué'], ex.rels.map(r => ['<b>' + r.p + '</b> ' + r.pc, '<b>' + r.c + '</b> ' + r.cc, r.v, r.a])));
+      const p4 = '<p>Antes de mirar: ¿qué columna identifica cada tabla? ¿qué FK tendrá cada hija?</p>' + reveal('Ver las claves justificadas', table(['Tabla', 'Claves', 'Justificación'], ex.keys.map(k => ['<b>' + k[0] + '</b>', '<code class="i">' + k[1] + '</code>', k[2]]))) + (ex.k === 3 ? keyCmpHtml() : '') + (ex.k === 4 ? '<div class="lab blk" id="uq-lab">' + uqSimHtml() + '</div>' : '') +
         (ex.variants.length ? sec('Alternativas que debes saber defender') + ex.variants.map(v => '<div class="card variant"><h3>' + ic('flask') + v.t + '</h3><p>' + v.d + '</p>' + codeView(v.code, { label:'Variante · no forma parte de la práctica principal' }) + '</div>').join('') : '');
-      const p5 = erFigure(exModel(ex), 'Ejercicio ' + ex.k + ' · modelo relacional') + sec('Notación relacional') + relText(ex) + wrongHtml(ex);
+      const p5 = '<div class="lab blk pv" id="pv-' + ex.k + '">' + pvHtml(ex.k) + '</div>' + sec('Notación relacional') + relText(ex) + wrongHtml(ex);
       const p6 = '<div class="errs">' + ex.errors.map(e => '<div class="err-card"><b>' + ic('x') + e[0] + '</b><p>' + e[1] + '</p></div>').join('') + '</div>';
       const p7 = reveal('Ver la solución razonada', '<ol class="steps-ol sol">' +
         '<li><b>Entidades:</b> ' + ex.terms.filter(t => t[1] === 'E').map(t => t[0]).join(', ') + '.</li>' +
@@ -2913,7 +3390,7 @@ function exModelModule(ex){
         '<li><b>Verificación:</b> el modelo responde todas las consultas del ejercicio (' + ex.queries.filter(qq => qq.lab).map(qq => qq.q).join(' · ') + ').</li></ol>' + relText(ex));
       const p8 = ex.parcial.map((pp, i) => '<div class="parcial"><p class="pq"><b>' + (i + 1) + '.</b> ' + pp[0] + '</p>' + reveal('Ver respuesta', '<p>' + pp[1] + '</p>') + '</div>').join('') +
         ckpt('Puedo defender el modelo del Ejercicio ' + ex.k, '<p>Explica sin mirar: cada tabla, su PK, cada FK y en qué lado está, y ' + (ex.k === 1 || ex.k === 3 ? 'por qué existe la intersección.' : ex.k === 4 ? 'por qué UNIQUE convierte la relación en 1:1.' : 'por qué no hay intersección.') + '</p><div class="lab-ctl"><button type="button" class="btn btn-sm btn-primary" data-act="goto-practice" data-k="' + ex.k + '">' + ic('terminal') + 'Ir a la práctica SQL*Plus del Ejercicio ' + ex.k + '</button></div>', 'Lo puedo defender');
-      return tabsHtml(mid, ['1 · Enunciado', '2 · Entidades', '3 · Relaciones', '4 · Claves', '5 · Modelo', '6 · Errores típicos', '7 · Solución', '8 · Tipo parcial'], [p1, p2, p3, p4, p5, p6, p7, p8]);
+      return tabsHtml(mid, ['1 · Enunciado', '2 · Entidades', '3 · Relaciones', '4 · Claves', '5 · Construcción del modelo', '6 · Errores típicos', '7 · Solución', '8 · Tipo parcial'], [p1, p2, p3, p4, p5, p6, p7, p8]);
     } });
 }
 EX.forEach(exModelModule);
@@ -2997,13 +3474,13 @@ EX.forEach(ex => ['A', 'B', 'C'].forEach(p => practiceModule(ex, p)));
 function qCard(qq){
   const ex = EX[qq.k - 1];
   const out = realOut(qq.k, 'q-' + qq.id);
-  return '<article class="qcard"><header><span class="qtag">Ej. ' + qq.k + ' · ' + ex.short + '</span><h3>' + qq.q + '</h3></header>' +
+  return '<article class="qcard" id="qc-' + qq.id + '"><header><span class="qtag">Ej. ' + qq.k + ' · ' + ex.short + '</span><h3>' + qq.q + '</h3></header>' +
     '<p class="qthink"><b>Razonamiento:</b> ' + qq.think + '</p>' +
     termHtml({ cmd:sq(ex, qq.sql), env:ex.envCon }) +
     reveal('Predice el resultado y luego revélalo', (out !== null ? expHtml(out, null, true) : '') + '<p class="after">' + ic('bulb') + qq.ex + '</p>') + '</article>';
 }
 function topicQs(topic){ return ALLQ.filter(qq => qq.topic === topic); }
-mod({ phase:'con', title:'SELECT y filtros', env:'read', spool:false, mins:20,
+mod({ phase:'con', title:'SELECT y filtros', qt:['select', 'filter'], env:'read', spool:false, mins:20,
   lead:'Leer datos de una tabla: elegir columnas, quitar repetidos, filtrar filas y ordenar.',
   concept:{ t:'Orden lógico', d:'FROM (de dónde) → WHERE (qué filas) → SELECT (qué columnas) → ORDER BY (en qué orden).' },
   build(){ return [
@@ -3014,29 +3491,54 @@ mod({ phase:'con', title:'SELECT y filtros', env:'read', spool:false, mins:20,
   ].join(''); }
 });
 const JOIN_V = ['ABC123', 'DEF456', 'FGH678', 'HIJ890', 'JKL012', 'CDE345'];
-const JL = { i:-1 };
+const JL = { i:-1, mode:'inner' };
 function joinLabHtml(){
   const ex = EX[0], V = ex.tmap.VEHICULO.rows, M = ex.tmap.MARCA.rows;
+  const nm = id => M.find(m => m[0] === id)[1];
+  const seg = '<div class="seg" role="group" aria-label="Tipo de JOIN"><button type="button" data-act="jl-mode" data-v="inner" aria-pressed="' + (JL.mode === 'inner') + '">INNER JOIN · desde VEHICULO</button><button type="button" data-act="jl-mode" data-v="left" aria-pressed="' + (JL.mode === 'left') + '">LEFT JOIN · desde MARCA</button></div>';
+  const ctl = (n) => '<div class="lab-ctl"><button type="button" class="btn btn-primary" data-act="join-next"' + (JL.i >= n - 1 ? ' disabled' : '') + '>' + ic('play') + 'Siguiente fila</button><button type="button" class="btn" data-act="join-all">Ejecutar todo</button><button type="button" class="btn" data-act="join-reset">' + ic('refresh') + 'Reiniciar</button></div>';
+  if(JL.mode === 'left'){
+    const cur = JL.i >= 0 ? M[JL.i] : null;
+    const lRows = M.map((m, i) => '<tr data-act="join-row" data-i="' + i + '" class="' + (i === JL.i ? 'cur' : '') + '" tabindex="0"><td class="key">' + m[0] + '</td><td>' + m[1] + '</td></tr>').join('');
+    const rRows = V.map(v => '<tr class="' + (cur && v[4] === cur[0] ? 'match' : '') + '"><td>' + v[0] + '</td><td class="key">' + v[4] + '</td></tr>').join('');
+    const res = M.slice(0, JL.i + 1).flatMap((m, i) => { const hit = V.filter(v => v[4] === m[0]); return hit.length ? hit.map(v => '<tr class="' + (i === JL.i ? 'new' : '') + '"><td>' + m[1] + '</td><td>' + v[0] + '</td></tr>') : ['<tr class="' + (i === JL.i ? 'new' : '') + '"><td>' + m[1] + '</td><td class="o-dim">NULL</td></tr>']; }).join('');
+    const nHit = cur ? V.filter(v => v[4] === cur[0]).length : 0;
+    return '<div class="lab-h">' + ic('target') + 'Laboratorio JOIN · MARCA m LEFT JOIN VEHICULO v ON v.id_marca = m.id_marca</div>' + seg +
+      '<div class="join-grid"><div><p class="jt-title">MARCA m (izquierda: se conservan todas)</p><table class="jt"><thead><tr><th>id_marca (PK)</th><th>nom_marca</th></tr></thead><tbody>' + lRows + '</tbody></table></div>' +
+      '<div class="join-mid" aria-live="polite">' + (cur ? (nHit ? '<div class="eq hit">' + cur[0] + ' = ' + cur[0] + '</div><span>' + nHit + ' coincidencia(s) → ' + nHit + ' fila(s)</span>' : '<div class="eq miss">' + cur[0] + ' = ?</div><span>sin pareja → 1 fila con NULL</span>') : '<div class="eq">? = ?</div><span>PK de MARCA<br>= FK de VEHICULO</span>') + '</div>' +
+      '<div><p class="jt-title">VEHICULO v</p><table class="jt"><thead><tr><th>placa</th><th>id_marca (FK)</th></tr></thead><tbody>' + rRows + '</tbody></table></div></div>' + ctl(M.length) +
+      '<p class="jt-title">Resultado: m.nom_marca, v.placa</p><table class="jt"><thead><tr><th>m.nom_marca</th><th>v.placa</th></tr></thead><tbody>' + (res || '<tr><td colspan="2" class="o-dim">Todavía vacío</td></tr>') + '</tbody></table>' +
+      (JL.i >= M.length - 1 ? callout('info', 'Lo que muestra este LEFT JOIN', '<p>11 filas: Chevrolet se repite 3 veces (una por vehículo) y Volkswagen aparece con NULL. Por eso, al contar, se usa COUNT(v.placa) y no COUNT(*): compruébalo en el laboratorio de GROUP BY.</p>') : '');
+  }
   const sub = JOIN_V.map(p => V.find(v => v[0] === p));
   const cur = JL.i >= 0 ? sub[JL.i] : null;
   const used = new Set(sub.slice(0, JL.i + 1).map(v => v[4]));
   const done = JL.i >= sub.length - 1;
   const aRows = sub.map((v, i) => '<tr data-act="join-row" data-i="' + i + '" class="' + (i === JL.i ? 'cur' : '') + '" tabindex="0" aria-label="Vehículo ' + v[0] + ', marca ' + v[4] + '"><td>' + v[0] + '</td><td>' + v[1] + '</td><td class="key">' + v[4] + '</td></tr>').join('');
   const mRows = M.map(m => '<tr class="' + (cur && cur[4] === m[0] ? 'match' : '') + (done ? (used.has(m[0]) ? ' used' : ' unused') : '') + '"><td class="key">' + m[0] + '</td><td>' + m[1] + '</td></tr>').join('');
-  const res = sub.slice(0, JL.i + 1).map((v, i) => '<tr class="' + (i === JL.i ? 'new' : '') + '"><td>' + v[0] + '</td><td>' + v[1] + '</td><td>' + M.find(m => m[0] === v[4])[1] + '</td></tr>').join('');
-  return '<div class="lab-h">' + ic('target') + 'Laboratorio JOIN · VEHICULO v JOIN MARCA m ON v.id_marca = m.id_marca</div>' +
-    '<div class="join-grid"><div><p class="jt-title">VEHICULO v (6 de 10)</p><table class="jt"><thead><tr><th>placa</th><th>linea</th><th>id_marca</th></tr></thead><tbody>' + aRows + '</tbody></table></div>' +
-    '<div class="join-mid" aria-live="polite">' + (cur ? '<div class="eq hit">' + cur[4] + ' = ' + cur[4] + '</div><span>coinciden ✓</span>' : '<div class="eq">? = ?</div><span>ON v.id_marca<br>= m.id_marca</span>') + '</div>' +
-    '<div><p class="jt-title">MARCA m</p><table class="jt"><thead><tr><th>id_marca</th><th>nom_marca</th></tr></thead><tbody>' + mRows + '</tbody></table></div></div>' +
-    '<div class="lab-ctl"><button type="button" class="btn btn-primary" data-act="join-next"' + (done ? ' disabled' : '') + '>' + ic('play') + 'Siguiente fila</button><button type="button" class="btn" data-act="join-all">Ejecutar todo</button><button type="button" class="btn" data-act="join-reset">' + ic('refresh') + 'Reiniciar</button></div>' +
+  const res = sub.slice(0, JL.i + 1).map((v, i) => '<tr class="' + (i === JL.i ? 'new' : '') + '"><td>' + v[0] + '</td><td>' + v[1] + '</td><td>' + nm(v[4]) + '</td></tr>').join('');
+  return '<div class="lab-h">' + ic('target') + 'Laboratorio JOIN · VEHICULO v JOIN MARCA m ON v.id_marca = m.id_marca</div>' + seg +
+    '<div class="join-grid"><div><p class="jt-title">VEHICULO v (6 de 10)</p><table class="jt"><thead><tr><th>placa</th><th>linea</th><th>id_marca (FK)</th></tr></thead><tbody>' + aRows + '</tbody></table></div>' +
+    '<div class="join-mid" aria-live="polite">' + (cur ? '<div class="eq hit">' + cur[4] + ' = ' + cur[4] + '</div><span>FK de VEHICULO = PK de MARCA ✓</span>' : '<div class="eq">? = ?</div><span>ON v.id_marca<br>= m.id_marca</span>') + '</div>' +
+    '<div><p class="jt-title">MARCA m</p><table class="jt"><thead><tr><th>id_marca (PK)</th><th>nom_marca</th></tr></thead><tbody>' + mRows + '</tbody></table></div></div>' + ctl(sub.length) +
     '<p class="jt-title">Resultado (se construye fila a fila)</p><table class="jt"><thead><tr><th>v.placa</th><th>v.linea</th><th>m.nom_marca</th></tr></thead><tbody>' + (res || '<tr><td colspan="3" class="o-dim">Todavía vacío</td></tr>') + '</tbody></table>' +
-    (done ? callout('info', '¿Por qué Volkswagen no aparece?', '<p>INNER JOIN solo devuelve filas con pareja: ningún vehículo tiene id_marca 6. Con <code class="i">MARCA m LEFT JOIN VEHICULO v</code> aparecería con las columnas del vehículo en NULL.</p>') : '');
+    (done ? callout('info', '¿Por qué Volkswagen no aparece?', '<p>INNER JOIN solo devuelve filas con pareja: ningún vehículo tiene id_marca 6. Cambia a <b>LEFT JOIN · desde MARCA</b> para verla con NULL.</p>') : '');
 }
-mod({ phase:'con', title:'JOIN: relacionar tablas', env:'read', spool:false, mins:22,
+const CMP = [
+  ['JOIN frente a LEFT JOIN', 'JOIN descarta lo que no tiene pareja; LEFT JOIN conserva todas las filas de la izquierda con NULL a la derecha.', ['e1q2', 'e1q6']],
+  ['WHERE frente a HAVING', 'WHERE filtra filas antes de agrupar; HAVING filtra grupos después de COUNT/SUM.', ['e3q2', 'e2q10']],
+  ['COUNT(*) frente a COUNT(columna)', 'COUNT(*) cuenta filas, aunque sean de NULL; COUNT(columna) ignora los NULL. Tras un LEFT JOIN usa COUNT(columna).', ['e1q4', 'e2q5']],
+  ['COUNT(DISTINCT …)', 'Cuenta valores distintos: evita contar dos veces lo que el JOIN repite.', ['e1q8', 'e3q2']],
+  ['Duplicación con una intersección', 'Unir con PROP_VEH o DETALLE_PEDIDO repite cada padre una vez por fila de la intersección.', ['e1q8']],
+  ['ORDER BY y alias', 'ORDER BY se evalúa al final y puede usar el alias del SELECT (cantidad). Alias de tabla sin AS; de columna con AS.', ['e1q4', 'e3q1']]
+];
+function cmpHtml(){ return '<div class="cmp-tbl">' + CMP.map(c => '<div class="cmp-row"><b>' + c[0] + '</b><p>' + c[1] + '</p><span>' + c[2].map(id => '<button type="button" class="linkbtn" data-act="goto-q" data-q="' + id + '">ver ' + id + '</button>').join(' · ') + '</span></div>').join('') + '</div>'; }
+mod({ phase:'con', title:'JOIN: relacionar tablas', qt:['join'], env:'read', spool:false, mins:22,
   lead:'Unir filas de tablas relacionadas siguiendo las FK: INNER JOIN, LEFT JOIN y alias.',
   concept:{ t:'JOIN … ON PK = FK', d:'Para cada fila de una tabla se busca la fila de la otra cuyo valor coincide según ON. Cada JOIN sigue una FK del modelo.' },
   build(){ return [
     '<div class="lab blk" id="join-lab">' + joinLabHtml() + '</div>',
+    sec('Comparaciones clave'), cmpHtml(),
     table(['Tipo', 'Devuelve', 'Cuándo usarlo'], [['<b>INNER JOIN</b> (o JOIN)', 'Solo las filas que tienen pareja en ambas tablas.', 'Datos que existen en las dos: vehículos con su marca.'], ['<b>LEFT JOIN</b>', 'Todas las filas de la izquierda; si no hay pareja, columnas de la derecha en NULL.', 'Incluir lo que no tiene relación: marcas sin vehículos, personas sin pasaporte.'], ['<b>LEFT JOIN + IS NULL</b>', 'Solo las filas de la izquierda sin pareja.', '¿Qué productos nunca se vendieron?']]),
     '<div class="grid2">' + codeView('SELECT usr_admin_veh.vehiculo.placa,\n       usr_admin_veh.marca.nom_marca\nFROM usr_admin_veh.vehiculo\nJOIN usr_admin_veh.marca\n  ON usr_admin_veh.vehiculo.id_marca = usr_admin_veh.marca.id_marca;', { label:'Sin alias' }) + codeView('SELECT v.placa, m.nom_marca\nFROM usr_admin_veh.vehiculo v\nJOIN usr_admin_veh.marca m\n  ON v.id_marca = m.id_marca;', { label:'Con alias: igual, más legible', kind:'pro' }) + '</div>',
     callout('info', 'Alias', '<p>Un alias de tabla (<code class="i">vehiculo v</code>) es un nombre corto válido solo en esa consulta; en Oracle se escribe <b>sin AS</b> (con AS: ORA-00933). Es obligatorio usarlo cuando dos tablas tienen la misma columna (id_marca), o Oracle responde ORA-00918.</p>'),
@@ -3044,11 +3546,13 @@ mod({ phase:'con', title:'JOIN: relacionar tablas', env:'read', spool:false, min
     ckpt('Sé elegir entre INNER y LEFT JOIN', '<p>¿Qué JOIN usarías para listar todas las facultades con su número de alumnos, incluida la que no tiene? ¿Por qué?</p>')
   ].join(''); }
 });
-mod({ phase:'con', title:'Agrupar: COUNT, SUM, AVG, MIN, MAX, GROUP BY y HAVING', env:'read', spool:false, mins:22,
+mod({ phase:'con', title:'Agrupar: COUNT, SUM, AVG, MIN, MAX, GROUP BY y HAVING', qt:['group'], env:'read', spool:false, mins:22,
   lead:'Resumir muchas filas en una por grupo y filtrar esos grupos.',
   concept:{ t:'WHERE ≠ HAVING', d:'WHERE filtra filas antes de agrupar; HAVING filtra grupos después de calcular COUNT, SUM, AVG…' },
   build(){ return [
     flowH([{ t:'FROM / JOIN', s:'filas' }, { t:'WHERE', s:'filtra filas' }, { t:'GROUP BY', s:'forma grupos' }, { t:'HAVING', s:'filtra grupos' }, { t:'SELECT', s:'calcula' }, { t:'ORDER BY', s:'ordena' }], 'Orden lógico de evaluación'),
+    '<div class="lab blk" id="gb-lab">' + gbHtml() + '</div>',
+    sec('Comparaciones clave con resultados reales'), cmpHtml(),
     table(['Función', 'Hace', 'Con NULL'], [['COUNT(*)', 'Cuenta filas.', 'Las cuenta todas.'], ['COUNT(columna)', 'Cuenta valores no nulos.', 'Ignora NULL: útil tras un LEFT JOIN.'], ['COUNT(DISTINCT col)', 'Cuenta valores distintos.', 'Ignora NULL.'], ['SUM · AVG', 'Suma · promedio.', 'Ignoran NULL.'], ['MIN · MAX', 'Menor · mayor.', 'Ignoran NULL.']]),
     callout('warn', 'Conteos duplicados con una tabla intermedia', '<p>Al unir con PROP_VEH o DETALLE_PEDIDO, cada fila padre se repite una vez por cada fila de la intersección. Para contar vehículos o pedidos distintos, usa <code class="i">COUNT(DISTINCT …)</code> o no unas con la intersección si no la necesitas. La consulta e1q8 lo demuestra con datos reales.</p>'),
     callout('info', 'Regla del GROUP BY', '<p>Toda columna del SELECT que no esté dentro de una función de grupo debe aparecer en GROUP BY (si no: ORA-00979). Una función de grupo sin GROUP BY convierte toda la tabla en un solo grupo.</p>'),
@@ -3563,6 +4067,8 @@ function stab(mid, i){
 document.addEventListener('click', e => {
   const tok = e.target.closest('.tok');
   if(tok){ showTok(tok); return; }
+  const selEl = e.target.closest('svg.er [data-sel]');
+  if(selEl){ const svg = selEl.closest('svg'); $$('.sel', svg).forEach(x => x.classList.remove('sel')); selEl.classList.add('sel'); svg.classList.add('has-sel'); const fig = selEl.closest('figure'); const info = fig && fig.querySelector('.er-info'); if(info && fig.dataset.ex){ const h = selInfo(+fig.dataset.ex, selEl.dataset.sel); if(h) info.innerHTML = h; } return; }
   const modeBtn = e.target.closest('.seg [data-mode]');
   if(modeBtn){ setMode(modeBtn.dataset.mode); return; }
   const el = e.target.closest('[data-act]');
@@ -3586,11 +4092,27 @@ document.addEventListener('click', e => {
     case 'cls': { const row = el.closest('.cls-row'); const ok = row.dataset.ans === el.dataset.v; $$('.cls-o', row).forEach(b => b.classList.remove('right', 'wrong')); el.classList.add(ok ? 'right' : 'wrong'); if(!ok){ const r = $$('.cls-o', row).find(b => b.dataset.v === row.dataset.ans); if(r) r.classList.add('right'); } const lab = CLS_OPTS.find(o => o[0] === row.dataset.ans)[1]; row.querySelector('.cls-fb').innerHTML = (ok ? '<b class="ok-t">✓ ' + lab + '.</b> ' : '<b class="bad-t">✗ Es: ' + lab + '.</b> ') + esc(row.dataset.expl); break; }
     case 'cmp': { const box = el.closest('.cmp'); $$('[data-act="cmp"]', box).forEach(b => b.setAttribute('aria-pressed', String(b === el))); $$('.cmp-p', box).forEach(p => { p.hidden = p.dataset.cmp !== el.dataset.v; }); break; }
     case 'stab': stab(el.dataset.m, +el.dataset.i); break;
+    case 'pv-next': case 'pv-prev': case 'pv-go': case 'pv-sub': case 'pv-rel': {
+      const k = +el.dataset.k, P = pvState(k);
+      if(act === 'pv-next'){ if(P.v === 3 && P.sub < 2) P.sub++; else if(P.v < 4){ P.v++; if(P.v === 3) P.sub = 0; } }
+      else if(act === 'pv-prev'){ if(P.v === 3 && P.sub > 0) P.sub--; else if(P.v > 0){ P.v--; if(P.v === 3) P.sub = 2; } }
+      else if(act === 'pv-go'){ P.v = +el.dataset.i; P.sub = 0; }
+      else if(act === 'pv-sub') P.sub = +el.dataset.i; else P.rel = +el.dataset.i;
+      save(); const box = $('#pv-' + k); box.innerHTML = pvHtml(k); if(act !== 'pv-sub' && act !== 'pv-rel' && box.getBoundingClientRect().top < 0) box.scrollIntoView({ block:'start' }); break; }
+    case 'hl-toggle': { const on = el.getAttribute('aria-pressed') !== 'true'; el.setAttribute('aria-pressed', String(on)); el.closest('.pv-body').querySelector('.hl-enun').classList.toggle('off-' + el.dataset.c, !on); break; }
+    case 'zoom': { const fig = el.closest('figure'); const svg = fig.querySelector('svg'); const zb = $('#zoom-body'); zb.innerHTML = ''; const c = svg.cloneNode(true); c.style.minWidth = '0'; zb.appendChild(c); ZM = 1; zoomApply(); $('#dlg-zoom-t').textContent = fig.querySelector('.diagram-cap span') ? fig.querySelector('.diagram-cap span').textContent : 'Diagrama'; openDialog('dlg-zoom'); break; }
+    case 'zoom-in': ZM = Math.min(3, ZM + 0.25); zoomApply(); break;
+    case 'zoom-out': ZM = Math.max(0.5, ZM - 0.25); zoomApply(); break;
+    case 'uq': UQ[el.dataset.k] = !UQ[el.dataset.k]; $('#uq-lab').innerHTML = uqSimHtml(); break;
+    case 'gb': { const k = el.dataset.k; if(k === 'having') GB.having = !GB.having; else if(k === 'step') GB.step = +el.dataset.v; else GB[k] = el.dataset.v; $('#gb-lab').innerHTML = gbHtml(); break; }
+    case 'jl-mode': JL.mode = el.dataset.v; JL.i = -1; paintJoin(); break;
+    case 'lv': LV.i = +el.dataset.i; $('#lv-lab').innerHTML = lvHtml(); break;
+    case 'goto-q': { const qq = QMAP[el.dataset.q]; const idx = modIndex(m => m.qt && m.qt.includes(qq.topic)); closeDrawers(); renderModule(idx); const card = $('#qc-' + qq.id); if(card){ const d = card.querySelector('details'); if(d) d.open = true; card.scrollIntoView({ block:'start' }); window.scrollBy(0, -130); card.classList.add('flash-card'); } break; }
     case 'dt': DT[el.dataset.q] = el.dataset.v; if(el.dataset.q === 'q1' || el.dataset.q === 'q2'){ DT.q3 = DT.q4 = DT.q5 = null; } paintDT(); break;
     case 'dt-preset': { const p = DT_PRESETS[+el.dataset.i]; Object.assign(DT, { a:p[0], b:p[1], q1:p[2], q2:p[3], q3:p[4], q4:p[5], q5:p[6] }); paintDT(); break; }
     case 'dt-reset': Object.assign(DT, { q1:null, q2:null, q3:null, q4:null, q5:null }); paintDT(); break;
-    case 'join-next': if(JL.i < JOIN_V.length - 1) JL.i++; paintJoin(); break;
-    case 'join-all': JL.i = JOIN_V.length - 1; paintJoin(); break;
+    case 'join-next': if(JL.i < jlMax() - 1) JL.i++; paintJoin(); break;
+    case 'join-all': JL.i = jlMax() - 1; paintJoin(); break;
     case 'join-reset': JL.i = -1; paintJoin(); break;
     case 'join-row': JL.i = +el.dataset.i; paintJoin(); break;
     case 'cl': clOp(el.dataset.op); break;
@@ -3606,7 +4128,7 @@ document.addEventListener('click', e => {
     case 'df-save': dfSave(); break;
     case 'reset-ask': { const c = $('#reset-confirm'); c.hidden = false; el.setAttribute('aria-expanded', 'true'); c.querySelector('button').focus(); break; }
     case 'reset-no': { $('#reset-confirm').hidden = true; const b = $('[data-act="reset-ask"]'); if(b){ b.setAttribute('aria-expanded', 'false'); b.focus(); } break; }
-    case 'reset-yes': ST.done = {}; ST.quiz = {}; ST.tabs = {}; ST.dfDir = DEF_DF_DIR; save(); $('#df-in').value = dfDir(); Object.keys(FCACHE).forEach(k => delete FCACHE[k]); updateProgress(); renderModule(0, { focus:true }); toast('Progreso reiniciado'); break;
+    case 'reset-yes': ST.done = {}; ST.quiz = {}; ST.tabs = {}; ST.pv = {}; ST.dfDir = DEF_DF_DIR; save(); $('#df-in').value = dfDir(); Object.keys(FCACHE).forEach(k => delete FCACHE[k]); updateProgress(); renderModule(0, { focus:true }); toast('Progreso reiniciado'); break;
   }
 });
 document.addEventListener('keydown', e => {
@@ -3628,6 +4150,9 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   if(e.target.id === 'dt-a' || e.target.id === 'dt-b'){ const v = e.target.value.trim().toUpperCase().replace(/[^A-Z0-9_]/g, '_').slice(0, 24); DT[e.target.id === 'dt-a' ? 'a' : 'b'] = v || (e.target.id === 'dt-a' ? 'A' : 'B'); paintDT(); }
 });
+let ZM = 1;
+function zoomApply(){ const s = $('#zoom-body svg'); if(s){ s.style.width = (ZM * 100) + '%'; s.style.maxWidth = 'none'; } }
+function jlMax(){ return JL.mode === 'left' ? EX[0].tmap.MARCA.rows.length : JOIN_V.length; }
 function paintJoin(){ const b = $('#join-lab'); if(b) b.innerHTML = joinLabHtml(); }
 function clOp(op){
   const pend = CL.pending.length;

@@ -6,7 +6,7 @@ Laboratorio universitario interactivo: del **enunciado** al **modelo relacional*
 
 ## Contenido
 1. **Fundamentos**: enunciado y reglas de negocio, entidades y atributos, niveles de modelo, relaciones y cardinalidades, claves y restricciones, árbol de decisión (¿intersección o FK?), normalización hasta 3FN y tipos de datos.
-2. **Laboratorio relacional**: cuatro ejercicios con enunciado, clasificación de términos, predicción de cardinalidades, justificación de PK/FK, diagrama, modelo correcto frente a incorrecto, errores típicos, solución razonada y preguntas tipo parcial.
+2. **Laboratorio relacional**: cuatro ejercicios con construcción progresiva en cinco vistas (enunciado analizado, modelo conceptual, cardinalidades, transformación y modelo relacional final, con elementos seleccionables), enunciado, clasificación de términos, predicción de cardinalidades, justificación de PK/FK, diagrama, modelo correcto frente a incorrecto, errores típicos, solución razonada y preguntas tipo parcial.
 3. **Laboratorio SQL*Plus**: cada ejercicio completo con la Ruta práctica Oracle (SYSTEM: tablespace → usuario administrador → privilegios y tablas, PK, FK, UNIQUE/CHECK → usuario de consultas → privilegios del sistema y sobre objetos → INSERT con ESQUEMA.TABLA, COMMIT y consultas), con SPOOL sin capturar contraseñas.
 4. **Consultas**: SELECT, filtros, JOIN, GROUP BY, HAVING y preguntas tipo parcial con resultados verificados.
 5. **Repaso**: laboratorio de diagnóstico de errores ORA/SP2, retos de modelado, glosario, evaluación y descargas.
