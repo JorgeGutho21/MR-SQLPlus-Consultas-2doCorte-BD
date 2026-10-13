@@ -747,7 +747,6 @@ dl.glos dd{margin:4px 0 0;font-size:14px;color:var(--ink-2)}
 .er-hit{stroke:transparent;stroke-width:14;fill:transparent;cursor:pointer}
 rect.er-hit{stroke:none}
 svg.er [data-sel]{cursor:pointer}
-svg.er.has-sel [data-sel]:not(.sel):not(:has(.sel)){opacity:.45}
 svg.er .er-t.sel .er-box,svg.er .er-t.sel .cx-e{stroke:var(--warn);stroke-width:3}
 svg.er .er-col.sel rect.er-hit{fill:color-mix(in srgb,var(--warn) 22%,transparent)}
 svg.er .er-rel.sel line:not(.er-hit),svg.er .er-rel.sel path,svg.er .cx-r.sel line:not(.er-hit){stroke:var(--warn);stroke-width:3}
@@ -946,6 +945,95 @@ details.step-more>summary .ic{width:15px;height:15px}
   .ccard-g{grid-template-columns:minmax(0,1fr)}
   .cc-fig,.ccard-g>div{min-width:0}
   .cc-fig pre{overflow-x:auto}
+}
+
+
+/* ===== v5: colores semánticos de claves, selección enlazada, intersección paso a paso ===== */
+:root{--k-pk:#a8660a;--k-fk:#0b6aa2;--k-pf:#7c3aed;--k-sk:#0e7490;--k-uq:#0b7a52;--k-bad:#c0262d;--k-link:#2457d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--k-pk:#f2b84b;--k-fk:#62b6ef;--k-pf:#b69cff;--k-sk:#3fc6d9;--k-uq:#3fcf8e;--k-bad:#ff7b72;--k-link:#7aa2ff}}
+:root[data-theme="dark"]{--k-pk:#f2b84b;--k-fk:#62b6ef;--k-pf:#b69cff;--k-sk:#3fc6d9;--k-uq:#3fcf8e;--k-bad:#ff7b72;--k-link:#7aa2ff}
+.er-pk{fill:var(--k-pk)}.er-fk{fill:var(--k-fk)}.er-pf{fill:var(--k-pf)}.er-uq{fill:var(--k-uq)}
+.er-sk{fill:var(--k-sk);font-size:9.5px;font-weight:800;letter-spacing:.04em}
+.lg-pk{color:var(--k-pk)}.lg-fk{color:var(--k-fk)}.lg-pf{color:var(--k-pf)}.lg-uq{color:var(--k-uq)}.lg-sk{color:var(--k-sk)}
+.er-legend b{border:1.5px solid currentColor}
+svg.er .er-box{filter:drop-shadow(0 1px 2px rgba(15,23,42,.10))}
+svg.er .er-col:hover rect.er-hit{fill:color-mix(in srgb,var(--accent) 9%,transparent)}
+svg.er .er-cn.er-key{font-weight:700}
+/* selección enlazada FK ↔ PK ↔ relación */
+svg.er.has-sel [data-sel]:not(.sel):not(.sel-link):not(:has(.sel)):not(:has(.sel-link)){opacity:.38}
+svg.er .er-t.sel-link .er-box{stroke:var(--k-link);stroke-width:3}
+svg.er .er-col.sel-link rect.er-hit{fill:color-mix(in srgb,var(--k-link) 22%,transparent)}
+svg.er .er-rel.sel-link line:not(.er-hit),svg.er .er-rel.sel-link path{stroke:var(--k-link);stroke-width:3}
+svg.er .er-rel.sel-link .er-card{fill:var(--k-link)}
+/* diferencias frente al modelo correcto */
+svg.er .er-bad .er-box,svg.er .er-t.er-bad .er-box{stroke:var(--k-bad);stroke-width:2.6;stroke-dasharray:6 3}
+svg.er .er-col.er-bad rect.er-hit{fill:color-mix(in srgb,var(--k-bad) 18%,transparent)}
+svg.er .er-col.er-bad .er-cn{fill:var(--k-bad);font-weight:700}
+svg.er .er-rel.er-bad line:not(.er-hit),svg.er .er-rel.er-bad path{stroke:var(--k-bad);stroke-dasharray:5 3}
+.diff-note{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);margin:8px 0 0}
+.diff-k{width:22px;height:12px;border:2px dashed var(--k-bad);border-radius:3px;flex:none}
+/* construcción progresiva: lo nuevo entra con suavidad */
+@keyframes erIn{from{opacity:0}to{opacity:1}}
+svg.er .er-new{animation:erIn .55s ease both}
+@media (prefers-reduced-motion:reduce){svg.er .er-new{animation:none}}
+/* insignias de clave y panel «¿por qué está aquí?» */
+.kb{display:inline-block;font:700 11px var(--mono);padding:2px 8px;border-radius:99px;border:1.5px solid currentColor;white-space:nowrap;vertical-align:1px}
+.kb-nat{color:var(--k-pk)}.kb-sk{color:var(--k-sk)}.kb-comp,.kb-pf{color:var(--k-pf)}.kb-fk,.kb-fkuq{color:var(--k-fk)}.kb-uq{color:var(--k-uq)}
+.kwhy{margin-top:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);border-left:4px solid var(--k-link);background:var(--surface)}
+.kwhy-h{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-weight:700;color:var(--ink);margin-bottom:4px}
+.kwhy-h .ic{width:15px;height:15px;color:var(--k-link)}
+.kwhy p{margin:4px 0;font-size:13.5px}
+.kwhy-bad{color:var(--ink-2)}.kwhy-bad b{color:var(--k-bad)}
+.kwhy-crit{display:flex;gap:6px;align-items:flex-start;color:var(--warn)}
+.kwhy-crit .ic{flex:none;margin-top:2px;width:15px;height:15px}
+.ktable td{vertical-align:top;font-size:13.5px}
+/* intersección paso a paso */
+.ix .lab-h{margin-bottom:10px}
+.ix-steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.ix-lead{font-size:15.5px;color:var(--ink);margin:4px 0 10px}
+.ix-body{min-height:220px}
+.ix-read{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:12px 0}
+.ix-read>div{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.ix-read b{font:700 13px var(--mono)}
+.ix-read span{font-size:14px;color:var(--ink-2)}
+.ix-read em{align-self:flex-start;font:800 12px var(--mono);font-style:normal;color:var(--k-pf);border:1.5px solid currentColor;border-radius:99px;padding:1px 9px}
+.ix-seg{flex-wrap:wrap;margin-bottom:10px}
+.ix-cmp{border:2px solid var(--line-2);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.ix-cmp.bad{border-color:color-mix(in srgb,var(--k-bad) 55%,var(--line))}
+.ix-cmp.ok{border-color:color-mix(in srgb,var(--ok) 55%,var(--line))}
+.ix-cmp-h{font:800 11.5px var(--mono);letter-spacing:.06em;margin-bottom:6px}
+.ix-cmp.bad .ix-cmp-h{color:var(--k-bad)}.ix-cmp.ok .ix-cmp-h{color:var(--ok)}
+.ix-mini{font:13.5px var(--mono);margin:4px 0 8px}
+.ix-bad{color:var(--k-bad);font-weight:700;text-decoration:underline wavy}
+.ix-cons{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:4px}
+.ix-cons li{font-size:14px;padding:5px 9px;border-radius:7px}
+.ix-cons li.bad{background:var(--danger-soft);color:var(--ink)}.ix-cons li.ok{background:var(--ok-soft);color:var(--ink)}
+td.ix-cell-bad{background:var(--danger-soft);color:var(--k-bad)!important;font-weight:700}
+td.ix-cell-rep{background:color-mix(in srgb,var(--warn) 18%,transparent);font-weight:700}
+.ix-mig{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.ix-where{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0}
+.ix-w{border:2px solid var(--line-2);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.ix-w.bad{border-color:color-mix(in srgb,var(--k-bad) 50%,var(--line))}.ix-w.ok{border-color:color-mix(in srgb,var(--ok) 60%,var(--line));background:var(--ok-soft)}
+.ix-w b{font:700 13px var(--mono)}.ix-w p{margin:6px 0 0;font-size:14px}
+/* ¿cuándo necesito otra tabla? */
+.nt-card{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0;background:var(--surface)}
+.nt-card h4{font-size:15px;margin-bottom:8px}
+.nt-ba{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;align-items:center}
+.nt-fig svg.er{max-width:var(--nt-w,640px)}
+.nt-arrow{font-size:22px;color:var(--ink-3);transform:rotate(90deg);justify-self:start;margin-left:40px}
+.nt-tag{display:inline-block;font:700 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);margin-bottom:4px}
+.nt-tag.nt-new{color:var(--ok)}
+.nt-cap{display:block;font-size:12px;color:var(--ink-3);margin-bottom:2px}
+.nt-fig svg.er{min-width:0!important}
+.nt-why{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.nt-why p{margin:0;font-size:13.5px;color:var(--ink-2)}
+@media (max-width:760px){
+  .nt-ba{grid-template-columns:minmax(0,1fr)}
+  .nt-arrow{transform:rotate(90deg);justify-self:center}
+  .nt-why{grid-template-columns:1fr}
+  .ix-steps{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x proximity}
+  .ix-steps .pv-dot{flex:none;scroll-snap-align:start}
+  .nt-fig svg.er{min-width:420px!important}
 }
 
 </style>
@@ -1422,7 +1510,7 @@ const EX = [
   ],
   keys:[
     ['PROPIETARIO','PK id_propietario','Clave natural: el número de identificación ya es único en la vida real.'],
-    ['MARCA','PK id_marca · UNIQUE nom_marca','id_marca es un código corto; nom_marca también identifica (clave candidata) y se protege con UNIQUE: queda como clave alternativa.'],
+    ['MARCA','PK id_marca (SK) · UNIQUE nom_marca','id_marca es un número que asigna el sistema, sin significado fuera de la base: PK + SK. nom_marca es la clave natural candidata y se protege con UNIQUE (clave alternativa).'],
     ['VEHICULO','PK placa · FK id_marca','La placa es única en el país (clave natural). id_marca es FK obligatoria: va en el lado N de MARCA–VEHICULO.'],
     ['PROP_VEH','PK (id_propietario, placa) · 2 FK','PK compuesta por las dos FK: una pareja propietario–vehículo aparece una sola vez. Es una relación identificadora: la fila no existe sin sus dos padres.']
   ],
@@ -1576,7 +1664,7 @@ const EX = [
   keys:[
     ['FACULTAD','PK cod_fac','Código corto, estable y único.'],
     ['CARRERA','PK cod_carrera · FK cod_fac','La FK va en CARRERA porque es el lado N de FACULTAD–CARRERA.'],
-    ['BARRIOS','PK id_barrio','Código numérico del listado.'],
+    ['BARRIOS','PK id_barrio (SK)','Consecutivo del listado, sin significado fuera del sistema: PK + SK. Si se usara un código oficial del municipio, sería natural.'],
     ['ALUMNOS','PK ced_alumno · FK cod_carrera · FK id_barrio','Dos FK, ambas en el lado N. cod_carrera es NOT NULL (obligatoria); id_barrio admite NULL (opcional).']
   ],
   wrong:[
@@ -1723,9 +1811,9 @@ const EX = [
     ['Un CLIENTE realiza ____ pedidos.', 2, 'Cero o muchos: 0..N.']
   ],
   keys:[
-    ['CLIENTE','PK id_cliente · UNIQUE correo','correo también identifica (clave candidata): se elige id_cliente como PK porque es corto y estable, y correo queda como clave alternativa.'],
-    ['PRODUCTO','PK id_producto · UNIQUE nom_producto','Mismo razonamiento: código corto como PK y nombre único como alternativa.'],
-    ['PEDIDO','PK id_pedido · FK id_cliente','La FK va en PEDIDO, el lado N de CLIENTE–PEDIDO.'],
+    ['CLIENTE','PK id_cliente (SK) · UNIQUE correo','id_cliente lo asigna la tienda: PK + SK. correo también identifica (clave natural candidata), pero es largo y puede cambiar: queda como clave alternativa (UNIQUE).'],
+    ['PRODUCTO','PK id_producto (SK) · UNIQUE nom_producto','Código interno como PK + SK; el nombre único es la clave natural candidata (UNIQUE).'],
+    ['PEDIDO','PK id_pedido (SK) · FK id_cliente','El número de pedido lo genera la tienda: no existe clave natural, así que la SK es necesaria. La FK va en PEDIDO, el lado N de CLIENTE–PEDIDO.'],
     ['DETALLE_PEDIDO','PK (id_pedido, id_producto) · 2 FK','Un producto aparece una sola vez por pedido (si se compran 3, cantidad = 3). Alternativa: id_detalle subrogado + UNIQUE (id_pedido, id_producto).']
   ],
   wrong:[
@@ -1934,6 +2022,35 @@ EX.forEach(ex => {
 });
 const ALLQ = EX.flatMap(ex => ex.queries);
 const QMAP = Object.fromEntries(ALLQ.map(q => [q.id, q]));
+
+/* ---------- clasificación de claves (natural, SK, compuesta, candidata) ---------- */
+const KEYCLS = {
+  1:{ pk:{
+      PROPIETARIO:['nat', 'Es el número de identificación (documento) de la persona: existe fuera de la base, es único y no cambia.', 'Con nombre o apellido como PK, dos personas homónimas chocarían (ORA-00001).'],
+      MARCA:['sk', 'id_marca es un número que asigna el sistema (1, 2, 3…) y no significa nada fuera de la base: es una clave artificial (SK). La marca se reconoce en la vida real por su nombre: nom_marca es la clave natural candidata y se protege con UNIQUE.', 'Con nom_marca como PK también funcionaría (es candidata), pero cada vehículo copiaría un texto de 20 caracteres y corregir un nombre obligaría a cambiarlo en todos sus vehículos.'],
+      VEHICULO:['nat', 'La placa es única en el país y, bajo las reglas del ejercicio, no cambia: clave natural simple.', 'Con línea o color como PK, dos «Spark» rojos chocarían. Una SK id_vehiculo funcionaría, pero obligaría a mantener UNIQUE (placa) y a unir tablas para mostrar la placa.'],
+      PROP_VEH:['comp', 'La pareja (id_propietario, placa) identifica cada adquisición. Ninguna columna basta sola: Carlos aparece dos veces y ABC123 también. Las dos columnas son FK que vienen de las PK de sus padres.', 'Con solo placa como PK, un vehículo no podría tener un segundo propietario; con solo id_propietario, una persona no podría tener un segundo vehículo.'] },
+    cand:{ 'MARCA.nom_marca':'Clave candidata natural: también identifica una marca, pero no se eligió como PK. Se protege con UNIQUE (clave alternativa).' } },
+  2:{ pk:{
+      FACULTAD:['nat', 'Código institucional de tres letras (ING, SAL…): lo usa la universidad, es corto, estable y tiene significado.', 'Con nom_facultad como PK, cambiar el nombre de una facultad obligaría a cambiarlo en todas sus carreras.'],
+      CARRERA:['nat', 'Código institucional de tres letras (SIS, MED…): clave natural corta y estable.', 'Con nom_carrera como PK, cada alumno copiaría un texto de 30 caracteres.'],
+      BARRIOS:['sk', 'id_barrio es el consecutivo del listado (1, 2, 3…), sin significado fuera del sistema: funciona como SK. Si el municipio publicara un código oficial de barrio y se usara ese, sería una clave natural.', 'Con nom_barrio como PK, dos barrios homónimos de comunas distintas chocarían.'],
+      ALUMNOS:['nat', 'La cédula identifica a la persona en la vida real: clave natural simple.', 'Con un id artificial habría que añadir UNIQUE (ced_alumno) para no registrar dos veces al mismo estudiante.'] },
+    cand:{} },
+  3:{ pk:{
+      CLIENTE:['sk', 'id_cliente es un consecutivo que asigna la tienda (1, 2, 3…): clave artificial (SK). El correo también identifica al cliente (clave natural candidata), pero puede cambiar y es largo: queda como UNIQUE.', 'Con correo como PK, cada pedido copiaría un texto de hasta 100 caracteres y cambiar el correo obligaría a actualizar todos sus pedidos.'],
+      PRODUCTO:['sk', 'id_producto es un código interno (101, 102…): SK. El nombre del producto no se repite (clave natural candidata) y se protege con UNIQUE.', 'Con nom_producto como PK, renombrar un producto obligaría a cambiar todas sus líneas de pedido.'],
+      PEDIDO:['sk', 'El número de pedido lo genera la tienda (5001, 5002…). No existe ninguna clave natural: ni el cliente ni la fecha identifican un pedido. Aquí la SK no es una opción: es la única forma de identificarlo.', 'Con (id_cliente, fecha_pedido) como PK, un cliente no podría hacer dos pedidos el mismo día.'],
+      DETALLE_PEDIDO:['comp', 'La pareja (id_pedido, id_producto) identifica cada línea: un producto aparece una sola vez por pedido (si se compran 3, cantidad = 3).', 'Con solo id_pedido como PK, un pedido tendría un único producto; con solo id_producto, un producto se vendería una sola vez.'] },
+    cand:{ 'CLIENTE.correo':'Clave candidata natural (UNIQUE): la usa el cliente para iniciar sesión.', 'PRODUCTO.nom_producto':'Clave candidata natural (UNIQUE): el nombre no se repite.' } },
+  4:{ pk:{
+      PAIS:['nat', 'Código ISO 3166-1 alfa-3 (COL, ECU…): estándar internacional, natural, corto y estable.', 'Con nom_pais como PK, «Perú» y «Peru» serían dos países distintos.'],
+      PERSONA:['nat', 'Número de documento de la persona: clave natural.', 'Con nombre como PK, dos personas homónimas chocarían.'],
+      PASAPORTE_VIGENTE:['nat', 'El número del pasaporte es único y lo asigna el país emisor: clave natural.', 'Con id_persona como PK (variante 1:1 de PK compartida) también se cumpliría «máximo uno por persona», pero se pierde el número del pasaporte como identificador propio.'] },
+    cand:{ 'PASAPORTE_VIGENTE.id_persona':'FK con UNIQUE y NOT NULL: cada persona aparece como máximo una vez. Por eso la relación es 1:1.' } }
+};
+const KCL = { nat:'PK natural', sk:'PK + SK (clave artificial)', comp:'PK compuesta', fk:'FK', pf:'PK compuesta + FK', uq:'UNIQUE · clave candidata', fkuq:'FK + UNIQUE (1:1)' };
+const pkKind = (ex, tn) => ((KEYCLS[ex.k] || {}).pk || {})[tn] || ['nat', '', ''];
 
 
 /* =========================================================
@@ -2316,6 +2433,9 @@ function summaryFile(ex){
   ex.fk.forEach(f => L.push('FK     ' + f[0] + ': ' + f[1] + ' (' + f[2].join(', ') + ') -> ' + f[3] + ' (' + f[4].join(', ') + ')'));
   ex.uq.forEach(u => L.push('UNIQUE ' + u[0] + ' ON ' + u[1] + ' (' + u[2].join(', ') + ')'));
   ex.ck.forEach(k => L.push('CHECK  ' + k[0] + ' ON ' + k[1] + ': ' + k[2]));
+  L.push('', 'CLASIFICACION DE CLAVES (natural / SK / compuesta)');
+  ex.tables.forEach(t => { const kc = pkKind(ex, t.n); L.push(t.n + ' (' + ex.pk.find(p => p[1] === t.n)[2].join(', ') + '): ' + asciiz(KCL[kc[0]]) + ' - ' + asciiz(kc[1])); });
+  Object.keys((KEYCLS[ex.k] || {}).cand || {}).forEach(c => L.push(c + ': ' + asciiz(KEYCLS[ex.k].cand[c])));
   L.push('', 'RUTA PRACTICA ORACLE', '0. Etapa previa: enunciado -> entidades -> relaciones -> cardinalidades -> PK/FK -> interseccion -> modelo relacional.', '1. SYSTEM: CREATE TABLESPACE ' + ex.ts + ' DATAFILE ' + ex.df + ' SIZE ' + (ex.size || '20M') + ' AUTOEXTEND ON NEXT 5M MAXSIZE 100M.', '2. SYSTEM: CREATE USER ' + ex.adm + ' (DEFAULT TABLESPACE, QUOTA 20M).',
     '3. SYSTEM: GRANT CREATE SESSION, CREATE TABLE, CREATE USER y CREATE SESSION WITH ADMIN OPTION. ' + ex.adm + ': CREATE TABLE -> PK -> FK -> UNIQUE/CHECK.', '4. ' + ex.adm + ': CREATE USER ' + ex.con + ' (ya NO lo crea SYSTEM).', '5. ' + ex.adm + ': GRANT CREATE SESSION y GRANT SELECT, INSERT ON cada tabla TO ' + ex.con + '.',
     '6. ' + ex.con + ': INSERT INTO ' + ex.S + '.tabla, COMMIT, conteos y consultas.', '', 'SCRIPTS', '- ej' + ex.k + '_01_administracion.sql (SYSTEM) -> ej' + ex.k + '_02_esquema.sql (' + ex.adm + ') -> ej' + ex.k + '_03_datos_consultas.sql (' + ex.con + ')', '- ej' + ex.k + '_00_completo.sql: todo en orden. ej' + ex.k + '_paso1 a _paso7: un bloque por archivo.', '', 'CONSULTAS');
@@ -2794,7 +2914,7 @@ function exModel(ex){
   return { tables:ex.tables.map(t => ({ n:t.n, cols:t.cols.map(c => c[0]).concat(t.addCol ? [t.addCol[0]] : []).map((cn, i) => {
       const col = t.cols[i] || [cn, t.addCol[1], ''];
       const p = pkc(t).includes(cn), f = fkc(t).includes(cn);
-      return { n:cn, t:col[1].replace(' CHAR)', ')'), k:p && f ? 'pf' : p ? 'pk' : f ? 'fk' : '', nn:/nn/.test(col[2] || '') || p, uq:uqc(t).includes(cn) };
+      return { n:cn, t:col[1].replace(' CHAR)', ')'), k:p && f ? 'pf' : p ? 'pk' : f ? 'fk' : '', nn:/nn/.test(col[2] || '') || p, uq:uqc(t).includes(cn), sk:p && !f && pkKind(ex, t.n)[0] === 'sk' };
     }) })), rels:ex.rels.map(r => ({ p:r.p, c:r.c, pc:r.pc, cc:r.cc, v:r.v })), pos:ex.pos };
 }
 function wrongModel(w){
@@ -2835,7 +2955,7 @@ function erSvg(M, opts){
       const pIsL = L === A;
       d1 = pIsL ? [1, 0] : [-1, 0]; d2 = pIsL ? [-1, 0] : [1, 0];
       const ax = pIsL ? x1 : x2, bx = pIsL ? x2 : x1;
-      s += '<g class="er-rel' + (r.isNew ? ' er-new' : '') + '" data-sel="r:' + r.p + '>' + r.c + '"><line class="er-hit" x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/><line x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/>' + sym(ax, y, d1[0], d1[1], r.pc) + sym(bx, y, d2[0], d2[1], r.cc) +
+      s += '<g class="er-rel' + (r.isNew ? ' er-new' : '') + (r.bad ? ' er-bad' : '') + '" data-sel="r:' + r.p + '>' + r.c + '"><line class="er-hit" x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/><line x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"/>' + sym(ax, y, d1[0], d1[1], r.pc) + sym(bx, y, d2[0], d2[1], r.cc) +
         '<text class="er-card" x="' + (ax + d1[0] * 8) + '" y="' + (y - 13) + '" text-anchor="' + (d1[0] > 0 ? 'start' : 'end') + '">' + r.pc + '</text><text class="er-card" x="' + (bx + d2[0] * 8) + '" y="' + (y - 13) + '" text-anchor="' + (d2[0] > 0 ? 'start' : 'end') + '">' + r.cc + '</text>' +
         (r.v ? '<text class="er-verb" x="' + ((x1 + x2) / 2) + '" y="' + (y + 22) + '" text-anchor="middle">' + esc(r.v) + '</text>' : '') + '</g>';
     } else {
@@ -2844,7 +2964,7 @@ function erSvg(M, opts){
       y1 = T.y + T.h; y2 = Bo.y;
       const pIsT = T === A;
       const ay = pIsT ? y1 : y2, by = pIsT ? y2 : y1;
-      s += '<g class="er-rel' + (r.isNew ? ' er-new' : '') + '" data-sel="r:' + r.p + '>' + r.c + '"><line class="er-hit" x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/><line x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/>' + sym(x, ay, 0, pIsT ? 1 : -1, r.pc) + sym(x, by, 0, pIsT ? -1 : 1, r.cc) +
+      s += '<g class="er-rel' + (r.isNew ? ' er-new' : '') + (r.bad ? ' er-bad' : '') + '" data-sel="r:' + r.p + '>' + r.c + '"><line class="er-hit" x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/><line x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '"/>' + sym(x, ay, 0, pIsT ? 1 : -1, r.pc) + sym(x, by, 0, pIsT ? -1 : 1, r.cc) +
         '<text class="er-card" x="' + (x + 14) + '" y="' + (ay + (pIsT ? 16 : -8)) + '">' + r.pc + '</text><text class="er-card" x="' + (x + 14) + '" y="' + (by + (pIsT ? -8 : 16)) + '">' + r.cc + '</text>' +
         (r.v ? '<text class="er-verb" x="' + (x - 12) + '" y="' + ((y1 + y2) / 2 + 4) + '" text-anchor="end">' + esc(r.v) + '</text>' : '') + '</g>';
     }
@@ -2852,13 +2972,13 @@ function erSvg(M, opts){
   /* tablas */
   M.tables.forEach(t => {
     const b = box[t.n];
-    s += '<g class="er-t' + (t.isNew ? ' er-new' : '') + '" data-sel="t:' + t.n + '"><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + b.h + '" rx="8" class="er-box"/><path d="M' + b.x + ' ' + (b.y + HH) + ' H' + (b.x + b.w) + '" class="er-sep"/><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + HH + '" rx="8" class="er-head"/><rect x="' + b.x + '" y="' + (b.y + HH - 8) + '" width="' + b.w + '" height="8" class="er-head"/>' +
+    s += '<g class="er-t' + (t.isNew ? ' er-new' : '') + (t.bad ? ' er-bad' : '') + '" data-sel="t:' + t.n + '"><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + b.h + '" rx="8" class="er-box"/><path d="M' + b.x + ' ' + (b.y + HH) + ' H' + (b.x + b.w) + '" class="er-sep"/><rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + HH + '" rx="8" class="er-head"/><rect x="' + b.x + '" y="' + (b.y + HH - 8) + '" width="' + b.w + '" height="8" class="er-head"/>' +
       '<text x="' + (b.x + 12) + '" y="' + (b.y + 20) + '" class="er-tn">' + esc(t.n) + '</text>';
     t.cols.forEach((c, i) => {
       const y = b.y + HH + 17 + i * RH;
       const tag = c.k === 'uid' ? '#' : c.k === 'pf' ? 'PF' : c.k === 'pk' ? 'PK' : c.k === 'fk' ? 'FK' : c.uq ? 'UQ' : '';
-      s += '<g class="er-col' + (c.isNew ? ' er-new' : '') + '" data-sel="c:' + t.n + '.' + c.n + '"><rect class="er-hit" x="' + (b.x + 4) + '" y="' + (y - 14) + '" width="' + (b.w - 8) + '" height="19"/>' + (tag ? '<text x="' + (b.x + 10) + '" y="' + y + '" class="er-tag er-' + (tag === '#' ? 'uid' : tag.toLowerCase()) + '">' + tag + '</text>' : '') +
-        '<text x="' + (b.x + 38) + '" y="' + y + '" class="er-cn' + (c.k === 'pk' || c.k === 'pf' || c.k === 'uid' ? ' er-key' : '') + '">' + (c.nn && !/p|uid/.test(c.k) ? '* ' : '') + esc(c.n) + '</text>' +
+      s += '<g class="er-col' + (c.isNew ? ' er-new' : '') + (c.bad ? ' er-bad' : '') + '" data-sel="c:' + t.n + '.' + c.n + '"><rect class="er-hit" x="' + (b.x + 4) + '" y="' + (y - 14) + '" width="' + (b.w - 8) + '" height="19"/>' + (tag ? '<text x="' + (b.x + 10) + '" y="' + y + '" class="er-tag er-' + (tag === '#' ? 'uid' : tag.toLowerCase()) + '">' + tag + '</text>' : '') +
+        '<text x="' + (b.x + 38) + '" y="' + y + '" class="er-cn' + (c.k === 'pk' || c.k === 'pf' || c.k === 'uid' ? ' er-key' : '') + '">' + (c.nn && !/p|uid/.test(c.k) ? '* ' : '') + esc(c.n) + '</text>' + (c.sk ? '<text x="' + Math.round(b.x + 38 + (c.n.length + (c.nn && !/p|uid/.test(c.k) ? 2 : 0)) * 7.25 + 7) + '" y="' + y + '" class="er-tag er-sk">SK</text>' : '') +
         (opts.types !== false && c.t ? '<text x="' + (b.x + b.w - 10) + '" y="' + y + '" class="er-ty" text-anchor="end">' + esc(c.t) + '</text>' : '') + '</g>';
     });
     s += '</g>';
@@ -2869,7 +2989,7 @@ function erFigure(M, cap, opts){
   opts = opts || {};
   return '<figure class="diagram er-fig blk"' + (opts.ex ? ' data-ex="' + opts.ex + '"' : '') + '><figcaption class="diagram-cap"><span>' + cap + '</span><button type="button" class="btn btn-sm zoom-btn" data-act="zoom">' + ic('search') + 'Ampliar</button></figcaption><p class="er-hint">Desliza horizontalmente para ver todo el diagrama →</p><div class="er-scroll" tabindex="0">' + erSvg(M, Object.assign({ label:cap }, opts)) + '</div>' +
     (opts.ex ? '<div class="er-info" aria-live="polite"><span class="hint">' + ic('help') + 'Pulsa una tabla, una columna o una línea de relación para ver qué significa y de dónde viene.</span></div>' : '') +
-    '<p class="er-legend"><span class="er-l"><b class="lg-pk">PK</b> clave primaria</span><span class="er-l"><b class="lg-fk">FK</b> clave foránea</span><span class="er-l"><b class="lg-pf">PF</b> PK y FK a la vez</span><span class="er-l"><b class="lg-uq">UQ</b> UNIQUE</span><span class="er-l">* NOT NULL</span><span class="er-l">○ mínimo 0 · | mínimo/máximo 1 · ⋔ máximo N</span></p></figure>';
+    '<p class="er-legend"><span class="er-l"><b class="lg-pk">PK</b> clave primaria</span><span class="er-l"><b class="lg-fk">FK</b> clave foránea</span><span class="er-l"><b class="lg-pf">PF</b> PK y FK a la vez</span><span class="er-l"><b class="lg-sk">SK</b> clave artificial (subrogada)</span><span class="er-l"><b class="lg-uq">UQ</b> UNIQUE · candidata</span><span class="er-l">* NOT NULL</span><span class="er-l">○ mínimo 0 · | mínimo/máximo 1 · ⋔ máximo N</span></p></figure>';
 }
 /* tabla de un modelo en notación relacional textual */
 function relText(ex){
@@ -3089,7 +3209,7 @@ function selInfo(k, sel){
     else if(pk) h += '<br><b>Es PK</b>: identifica cada fila (única y nunca NULL).';
     if(uq) h += '<br><b>UNIQUE</b> (' + uq[0] + '): no admite valores repetidos' + (f ? ', por eso cada padre aparece como máximo una vez: 1:1.' : ': es una clave alternativa.');
     if(ck.length) h += '<br><b>CHECK</b>: ' + ck.map(c => '<code class="i">' + esc(c[2]) + '</code>').join(', ') + '.';
-    return h;
+    return h + keyWhy(ex, tn, cn);
   }
   if(ty === 'r'){
     const [p, c] = v.split('>'); const r = ex.rels.find(x => x.p === p && x.c === c); if(!r) return '';
@@ -3125,7 +3245,7 @@ function pvHtml(k){
     body = '<p class="pv-lead">Paso ' + (sub + 1) + ' de 3 · Lo resaltado en color es lo que aparece en este paso. Pulsa cualquier tabla, columna o línea.</p><div class="pv-sub">' + ['1 · Entidades → tablas y PK', '2 · Relaciones 1:N y 1:1 → FK', '3 · N:M → intersección'].map((n, i) => '<button type="button" class="tab" data-act="pv-sub" data-k="' + k + '" data-i="' + i + '" aria-selected="' + (i === sub) + '">' + n + '</button>').join('') + '</div>' +
       erFigure(transModel(ex, sub), 'Transformación · paso ' + (sub + 1), { ex:k }) + '<div class="pv-text">' + transText(ex, sub) + '</div>';
   } else {
-    body = '<p class="pv-lead">Tablas, columnas, PK, FK, PK compuestas, UNIQUE y CHECK. Pulsa un elemento para ver de dónde proviene.</p>' + erFigure(exModel(ex), 'Ejercicio ' + ex.k + ' · modelo relacional final', { ex:k }) +
+    body = '<p class="pv-lead">Tablas, columnas, PK, FK, SK, PK compuestas, UNIQUE y CHECK. Pulsa una columna: se resaltan su origen, la tabla referenciada y la relación.</p>' + erFigure(exModel(ex), 'Ejercicio ' + ex.k + ' · modelo relacional final', { ex:k }) + reveal('Ver de dónde nace cada clave y qué pasaría si se ubicara mal', keyOriginHtml(ex)) +
       '<div class="pv-rules">' + ex.uq.map(u => '<span class="pv-rule"><b class="lg-uq">UQ</b> ' + u[0] + ' (' + u[1] + '.' + u[2].join(',') + ')</span>').concat(ex.ck.map(c => '<span class="pv-rule"><b>CK</b> ' + c[0] + ': ' + esc(c[2]) + '</span>')).join('') + '</div>' +
       (ex.tables.some(t => t.addCol) ? callout('info', 'Columna agregada después', '<p>' + ex.tables.filter(t => t.addCol).map(t => '<b>' + t.n + '.' + t.addCol[0] + '</b> se agrega en la etapa 3 con <code class="i">ALTER TABLE ' + lc(t.n) + ' ADD ' + t.addCol[0] + ' ' + t.addCol[1] + '</code>, sin DEFAULT: ' + t.addCol[2]).join('') + '</p>') : '') +
       sec('Reglas que una FK no puede garantizar') + '<ul class="clean">' + ex.limits.map(l => '<li>' + l + '</li>').join('') + '</ul>' +
@@ -3273,6 +3393,194 @@ function lvHtml(){
   const c = L[LV.i];
   return '<div class="seg lv-seg" role="group" aria-label="Nivel de modelo">' + L.map((l, i) => '<button type="button" data-act="lv" data-i="' + i + '" aria-pressed="' + (i === LV.i) + '">' + (i + 1) + ' · ' + l[0] + '</button>').join('') + '</div>' +
     '<div class="lv-b"><h3>' + c[0] + '</h3><p>' + c[1] + '</p>' + c[2] + '<p class="exp-note">' + c[3] + '</p></div>';
+}
+
+
+/* =========================================================
+   CLASIFICACIÓN DE CLAVES, INTERSECCIÓN PASO A PASO Y «¿OTRA TABLA?»
+   Las columnas conservan sus nombres (id_…): que una clave sea natural o SK
+   depende de su origen según el enunciado, no del nombre ni del tipo NUMBER.
+   ========================================================= */
+/* qué tipo tiene una columna concreta */
+function colKind(ex, tn, cn){
+  const pk = pkCols(ex, tn).includes(cn), f = ex.fk.find(x => x[1] === tn && x[2].includes(cn)), uq = ex.uq.some(u => u[1] === tn && u[2].includes(cn));
+  if(pk && f) return 'pf';
+  if(pk) return pkKind(ex, tn)[0];
+  if(f) return uq ? 'fkuq' : 'fk';
+  if(uq) return 'uq';
+  return '';
+}
+/* qué pasaría si la FK estuviera en el otro lado */
+function fkWrong(ex, f){
+  const ch = f[1], par = f[3];
+  if(isInter(ex, ch)){ const other = ex.fk.find(x => x[1] === ch && x[3] !== par)[3];
+    return 'Si ' + f[2][0] + ' se pusiera directamente en ' + other + ', cada ' + other + ' solo podría tener un ' + par + ': las demás parejas se perderían o habría que repetir filas de ' + other + ' (ORA-00001 en su PK).'; }
+  if(ex.uq.some(u => u[1] === ch && u[2].join() === f[2].join()))
+    return 'Si la FK estuviera en ' + par + ', cada fila de ' + par + ' sin ' + ch + ' quedaría con NULL, y ya no se podría exigir con NOT NULL que cada fila de ' + ch + ' tenga su ' + par + '.';
+  return 'Si estuviera en ' + par + ' (el lado 1), cada ' + par + ' tendría que guardar varios ' + ch + ' en una sola celda (viola 1FN) o repetir su propia fila por cada ' + ch + '.';
+}
+function keyBadge(kind){ return kind ? '<span class="kb kb-' + kind + '">' + KCL[kind] + '</span>' : ''; }
+
+/* ---------- panel «¿Por qué está aquí esta clave?» ---------- */
+function keyWhy(ex, tn, cn){
+  const kind = colKind(ex, tn, cn); if(!kind) return '';
+  const f = ex.fk.find(x => x[1] === tn && x[2].includes(cn));
+  const cand = ((KEYCLS[ex.k] || {}).cand || {})[tn + '.' + cn];
+  let h = '<div class="kwhy"><div class="kwhy-h">' + ic('key') + '¿Por qué está aquí esta clave? ' + keyBadge(kind) + '</div>';
+  if(kind === 'nat' || kind === 'sk' || kind === 'comp'){ const p = pkKind(ex, tn); h += '<p><b>Origen:</b> ' + p[1] + '</p><p class="kwhy-bad"><b>Si se eligiera otra:</b> ' + p[2] + '</p>'; }
+  if(f){ h += '<p><b>Origen:</b> nace en <b>' + f[3] + '.' + f[4].join(',') + '</b> (su PK) y migra a ' + tn + ' como FK' + (kind === 'pf' ? '; aquí además forma parte de la PK compuesta' : '') + '.</p>' + (kind === 'pf' && cn === 'placa' ? '<p class="kwhy-crit">' + ic('alert') + 'VEHICULO.placa es la <b>PK</b> de VEHICULO; PROP_VEH.placa es una <b>FK</b> que apunta a ella. Tienen el mismo nombre y el mismo tipo, pero cumplen papeles distintos.</p>' : '') + '<p class="kwhy-bad"><b>Si se ubicara mal:</b> ' + fkWrong(ex, f) + '</p>'; }
+  if(cand) h += '<p><b>Candidata:</b> ' + cand + '</p>';
+  return h + '</div>';
+}
+
+/* ---------- clasificador de claves (pestaña 4) ---------- */
+const KOPTS = [['nat', 'PK natural'], ['sk', 'PK + SK'], ['pf', 'PK/FK (compuesta)'], ['fk', 'Solo FK'], ['uq', 'UNIQUE']];
+function keyClassifier(ex){
+  const items = [];
+  ex.tables.forEach(t => t.cols.forEach(c => { const k = colKind(ex, t.n, c[0]); if(k) items.push([t.n, c[0], k === 'fkuq' ? 'fk' : k === 'comp' ? 'pf' : k]); }));
+  return '<div class="lab blk"><div class="lab-h">' + ic('key') + 'Clasifica cada clave antes de ver la solución</div><p class="exp-note" style="margin-top:0">Decide por el <b>origen</b> del dato según el enunciado, no por el nombre (id_…) ni por el tipo NUMBER.</p>' +
+    items.map(it => { const kind = colKind(ex, it[0], it[1]); const f = ex.fk.find(x => x[1] === it[0] && x[2].includes(it[1]));
+      const expl = (kind === 'pf' || kind === 'fk' || kind === 'fkuq') ? 'Viene de ' + f[3] + '.' + f[4].join(',') + '. ' + (kind === 'pf' ? pkKind(ex, it[0])[1] : kind === 'fkuq' ? 'Lleva UNIQUE: relación 1:1.' : 'Va en el lado N de la relación con ' + f[3] + '.') : kind === 'uq' ? (((KEYCLS[ex.k] || {}).cand || {})[it[0] + '.' + it[1]] || '') : pkKind(ex, it[0])[1];
+      return '<div class="cls-row" data-ans="' + it[2] + '" data-expl="' + esc(expl.replace(/<[^>]+>/g, '')) + '"><span class="cls-term"><code class="i">' + it[0] + '.' + it[1] + '</code></span><span class="cls-opts">' + KOPTS.map(o => '<button type="button" class="cls-o" data-act="cls" data-v="' + o[0] + '">' + o[1] + '</button>').join('') + '</span><span class="cls-fb" aria-live="polite"></span></div>'; }).join('') + '</div>';
+}
+/* ---------- tabla de origen de claves (vista 5, tras razonar) ---------- */
+function keyOriginHtml(ex){
+  const rows = [];
+  ex.tables.forEach(t => t.cols.forEach(c => { const k = colKind(ex, t.n, c[0]); if(!k) return; const f = ex.fk.find(x => x[1] === t.n && x[2].includes(c[0]));
+    rows.push(['<code class="i">' + t.n + '.' + c[0] + '</code>', keyBadge(k), f ? 'PK de ' + f[3] : k === 'uq' ? 'Dato del enunciado' : pkKind(ex, t.n)[0] === 'sk' ? 'La asigna el sistema' : pkKind(ex, t.n)[0] === 'comp' ? 'Unión de las FK' : 'Dato del enunciado',
+      (f ? (k === 'pf' ? 'Identifica la pareja junto a la otra FK.' : k === 'fkuq' ? 'Hija en una 1:1: FK + UNIQUE.' : 'Hija en una 1:N: va en el lado N.') : k === 'uq' ? (((KEYCLS[ex.k] || {}).cand || {})[t.n + '.' + c[0]] || 'Sin repetidos.') : pkKind(ex, t.n)[1]),
+      f ? fkWrong(ex, f) : k === 'uq' ? 'Sin UNIQUE se aceptarían duplicados (ORA-00001 nunca aparecería).' : pkKind(ex, t.n)[2]]); }));
+  return table(['Columna', 'Clasificación', 'Dónde nace', 'Por qué', 'Si se ubicara o eligiera mal'], rows, 'ktable');
+}
+
+/* ---------- selección enlazada: FK ↔ PK ↔ relación ---------- */
+function linkSel(k, sel){
+  const ex = EX[k - 1]; if(!ex) return [];
+  const i = sel.indexOf(':'), ty = sel.slice(0, i), v = sel.slice(i + 1); const out = [];
+  if(ty === 'c'){ const [tn, cn] = v.split('.');
+    ex.fk.filter(f => f[1] === tn && f[2].includes(cn)).forEach(f => out.push('t:' + f[3], 'c:' + f[3] + '.' + f[4][f[2].indexOf(cn)], 'r:' + f[3] + '>' + tn));
+    ex.fk.filter(f => f[3] === tn && f[4].includes(cn)).forEach(f => out.push('c:' + f[1] + '.' + f[2][f[4].indexOf(cn)], 'r:' + tn + '>' + f[1])); }
+  if(ty === 'r'){ const [p, c] = v.split('>'); ex.fk.filter(f => f[1] === c && f[3] === p).forEach(f => out.push('c:' + c + '.' + f[2][0], 'c:' + p + '.' + f[4][0], 't:' + p, 't:' + c)); }
+  return out;
+}
+
+/* =========================================================
+   INTERSECCIÓN PASO A PASO (ejercicios con N:M)
+   ========================================================= */
+const IX = {};
+const IX_STEPS = ['Leer el enunciado', 'Entidades', 'La relación N:M', '¿Basta una FK?', 'Nace la intersección', 'Dos FK = PK compuesta', 'Atributo de la relación', 'Comparar con una 1:N'];
+function ixData(ex){
+  const nm = ex.cx.find(c => c.type === 'N:M'), one = ex.cx.find(c => c.type !== 'N:M');
+  const I = ex.tables.find(t => isInter(ex, t.n)); if(!nm || !I) return null;
+  const fa = ex.fk.find(f => f[1] === I.n && f[3] === nm.a), fb = ex.fk.find(f => f[1] === I.n && f[3] === nm.b);
+  const cols = I.cols.map(c => c[0]), ia = cols.indexOf(fa[2][0]), ib = cols.indexOf(fb[2][0]);
+  const cnt = (j, v) => I.rows.filter(r => r[j] === v).length;
+  const bMulti = I.rows.map(r => r[ib]).find(v => cnt(ib, v) > 1);
+  const aMulti = I.rows.filter(r => r[ib] === bMulti).map(r => r[ia]).find(v => cnt(ia, v) > 1) || I.rows.map(r => r[ia]).find(v => cnt(ia, v) > 1);
+  const sample = I.rows.filter(r => r[ia] === aMulti || r[ib] === bMulti).slice(0, 4);
+  const A = ex.tmap[nm.a], B = ex.tmap[nm.b];
+  const nameOf = (T, v) => { const r = T.rows.find(x => x[0] === v); const ni = T.cols.findIndex(c => /^nom|^nombre/.test(c[0])); return r && ni > 0 ? r[ni] : String(v); };
+  const shared = one.b === nm.a || one.a === nm.a ? nm.a : nm.b, C = one.a === shared ? one.b : one.a;
+  return { nm, one, I, A, B, C, shared, fa, fb, ia, ib, aMulti, bMulti, sample, cols, an:v => nameOf(A, v), bn:v => nameOf(B, v), attrs:nm.attrs || [] };
+}
+function ixModel(ex, D, names, newSet, opts){
+  const full = exModel(ex); opts = opts || {};
+  const pos = {}; pos[D.nm.a] = [0, 0]; pos[D.I.n] = [1, 0]; pos[D.nm.b] = [2, 0]; pos[D.C] = [D.shared === D.nm.a ? 0 : 2, 1];
+  const tables = full.tables.filter(t => names.includes(t.n)).map(t => Object.assign({}, t, { isNew:newSet.has(t.n), cols:t.cols.filter(c => opts.noFk ? !(c.k === 'fk') : true).map(c => Object.assign({}, c, { isNew:newSet.has(t.n + '.' + c.n) })) }));
+  const rels = opts.noRels ? [] : full.rels.filter(r => names.includes(r.p) && names.includes(r.c)).map(r => Object.assign({}, r, { isNew:newSet.has(r.p + '>' + r.c) }));
+  const P = {}; names.forEach(n => { P[n] = pos[n]; });
+  const minx = Math.min(...Object.values(P).map(p => p[0])); Object.keys(P).forEach(n => { P[n] = [P[n][0] - minx, P[n][1]]; });
+  return { tables, rels, pos:P };
+}
+function ixFig(ex, M, cap, full){ return erFigure(M, cap, full ? { ex:ex.k } : { ex:ex.k, types:false }); }
+function rowsTable(cols, rows, mark){ return table(cols, rows.map(r => r.map((v, j) => ({ v:v === null ? 'NULL' : esc(String(v)), c:'mono' + (mark ? mark(r, j) : '') })))); }
+function ixCompare(ex, D, m){
+  const pa = D.fa[4][0], pb = D.fb[4][0], aN = D.nm.a, bN = D.nm.b;
+  const two = D.sample.filter(r => r[D.ib] === D.bMulti), twoA = D.sample.filter(r => r[D.ia] === D.aMulti);
+  let diag, data, cons;
+  if(m === 'inB'){
+    diag = '<div class="ix-mini"><b>' + bN + '</b>(' + pb + ', …, <span class="ix-bad">' + pa + '</span>)</div>';
+    data = '<p>' + bN + ' <code class="i">' + D.bMulti + '</code> se relaciona con ' + two.map(r => '<b>' + esc(D.an(r[D.ia])) + '</b>').join(' y con ') + '. Una celda solo guarda un valor:</p>' + rowsTable([pb, '…', pa], [[D.bMulti, '…', two.map(r => r[D.ia]).join(' ¿o? ')]], (r, j) => j === 2 ? ' ix-cell-bad' : '');
+    cons = [[false, 'Se pierde a uno de los dos ' + aN + ' (o la historia anterior).'], [false, 'Repetir la fila de ' + bN + ' choca con su PK ' + pb + ' (ORA-00001).'], [false, D.attrs.length ? 'No hay dónde guardar ' + D.attrs.join(' y ') + ' de cada pareja.' : 'No hay dónde guardar los datos de cada pareja.']];
+  } else if(m === 'inA'){
+    diag = '<div class="ix-mini"><b>' + aN + '</b>(' + pa + ', …, <span class="ix-bad">' + pb + '</span>)</div>';
+    data = '<p><b>' + esc(D.an(D.aMulti)) + '</b> (' + D.aMulti + ') se relaciona con ' + twoA.length + ' filas de ' + bN + ': ' + twoA.map(r => '<code class="i">' + r[D.ib] + '</code>').join(', ') + '. ¿Cuál se escribe?</p>' + rowsTable([pa, '…', pb], [[D.aMulti, '…', twoA.map(r => r[D.ib]).join(', ')]], (r, j) => j === 2 ? ' ix-cell-bad' : '');
+    cons = [[false, 'Dos valores en una celda violan la 1FN.'], [false, 'Repetir la fila de ' + aN + ' choca con su PK ' + pa + ' (ORA-00001).'], [false, 'Buscar «quién tuvo este ' + bN + '» obliga a recorrer texto.']];
+  } else {
+    diag = '<div class="ix-mini"><b>' + D.I.n + '</b>(<u>' + D.fa[2][0] + '</u>, <u>' + D.fb[2][0] + '</u>' + (D.attrs.length ? ', ' + D.attrs.join(', ') : '') + ')</div>';
+    data = '<p>Una fila por pareja. El mismo ' + aN + ' y el mismo ' + bN + ' pueden repetirse; la <b>pareja</b> no.</p>' + rowsTable(D.cols, D.sample, (r, j) => (j === D.ia && r[D.ia] === D.aMulti) || (j === D.ib && r[D.ib] === D.bMulti) ? ' ix-cell-rep' : '');
+    cons = [[true, 'Cada ' + aN + ' puede tener varios ' + bN + ' y viceversa.'], [true, 'La PK compuesta impide registrar dos veces la misma pareja.'], [true, D.attrs.length ? D.attrs.join(' y ') + ' tiene(n) su lugar: uno por pareja.' : 'Cada pareja tiene su propia fila.']];
+  }
+  return '<div class="seg ix-seg" role="group" aria-label="Diseños">' + [['inB', 'FK de ' + aN + ' en ' + bN], ['inA', 'FK de ' + bN + ' en ' + aN], ['con', 'Con intersección ' + D.I.n]].map(o => '<button type="button" data-act="ix" data-k="' + ex.k + '" data-m="' + o[0] + '" aria-pressed="' + (o[0] === m) + '">' + (o[0] === 'con' ? '✓ ' : '✗ ') + o[1] + '</button>').join('') + '</div>' +
+    '<div class="ix-cmp ' + (m === 'con' ? 'ok' : 'bad') + '"><div class="ix-cmp-h">' + (m === 'con' ? 'CON INTERSECCIÓN' : 'SIN INTERSECCIÓN') + '</div>' + diag + data + '<ul class="ix-cons">' + cons.map(c => '<li class="' + (c[0] ? 'ok' : 'bad') + '">' + (c[0] ? '✓ ' : '✗ ') + c[1] + '</li>').join('') + '</ul></div>';
+}
+function ixHtml(k){
+  const ex = EX[k - 1], D = ixData(ex); if(!D) return '';
+  const S = IX[k] = IX[k] || { s:0, m:'inB' }; const s = S.s;
+  const aN = D.nm.a, bN = D.nm.b, In = D.I.n, ents = [D.nm.a, D.nm.b, D.C];
+  let body = '';
+  if(s === 0) body = '<p class="ix-lead">La regla que decide todo está en una sola frase. Mírala en los dos sentidos.</p><div class="enun hl-enun">' + enunHl(Object.assign({}, ex, { enun:[ex.enun.find(p => /varios|muchos/.test(p) && new RegExp(D.nm.v.slice(0, 4) + '|' + aN.slice(0, 5), 'i').test(p)) || ex.enun[4]] })) + '</div>' +
+    '<div class="ix-read"><div><b>' + aN + ' → ' + bN + '</b><span>' + D.nm.ra + '</span><em>máximo N</em></div><div><b>' + bN + ' → ' + aN + '</b><span>' + D.nm.rb + '</span><em>máximo N</em></div></div>';
+  else if(s === 1) body = '<p class="ix-lead">Cada sustantivo con datos propios es una entidad con su identificador. Todavía no hay FK.</p>' + ixFig(ex, ixModel(ex, D, ents, new Set(ents), { noFk:true, noRels:true }), 'Entidades y sus PK') + '<p class="exp-note">' + ents.map(n => '<b>' + n + '</b>: ' + KCL[pkKind(ex, n)[0]] + ' (' + pkCols(ex, n).join(', ') + ')').join(' · ') + '</p>';
+  else if(s === 2) body = '<p class="ix-lead">Los dos máximos son <b>N</b>: es una relación <b>muchos a muchos</b>.</p><div class="er-scroll">' + conceptSvg(ex, { hi:ex.cx.indexOf(D.nm), attrs:true }) + '</div>';
+  else if(s === 3) body = '<p class="ix-lead">Intenta resolverla con una sola FK. Elige un diseño y observa las filas reales del ejercicio.</p>' + ixCompare(ex, D, S.m);
+  else if(s === 4) body = '<p class="ix-lead">La N:M se descompone en <b>dos relaciones 1:N</b> que se encuentran en una tabla nueva: <b>' + In + '</b>.</p>' + ixFig(ex, ixModel(ex, D, [aN, In, bN], new Set([In, aN + '>' + In, bN + '>' + In])), aN + ' 1 — N ' + In + ' N — 1 ' + bN) +
+    '<div class="ix-read"><div><b>' + aN + ' → ' + In + '</b><span>Un ' + aN + ' aparece en 0, 1 o muchas filas de ' + In + '.</span><em>1 : N</em></div><div><b>' + bN + ' → ' + In + '</b><span>Un ' + bN + ' aparece en una o muchas filas de ' + In + '.</span><em>1 : N</em></div></div>';
+  else if(s === 5) body = '<p class="ix-lead">Cada lado <b>presta su PK</b> a ' + In + ', donde llega como FK. Juntas forman la PK compuesta.</p>' + ixFig(ex, ixModel(ex, D, [aN, In, bN], new Set([In + '.' + D.fa[2][0], In + '.' + D.fb[2][0], aN + '.' + D.fa[4][0], bN + '.' + D.fb[4][0]])), 'Origen de las dos FK') +
+    '<div class="ix-mig"><span class="mig">' + aN + '.' + D.fa[4][0] + ' (PK) → ' + In + '.' + D.fa[2][0] + ' (PK/FK)</span><span class="mig">' + bN + '.' + D.fb[4][0] + ' (PK) → ' + In + '.' + D.fb[2][0] + ' (PK/FK)</span></div>' +
+    (k === 1 ? callout('warn', 'Punto crítico', '<p><b>VEHICULO.placa</b> es la PK de VEHICULO. <b>PROP_VEH.placa</b> es una FK que apunta a ella y, junto con id_propietario, forma la PK compuesta de PROP_VEH. Mismo nombre, papeles distintos.</p>') : '') +
+    '<p>En las filas, cada columna sola se repite (en color), pero la <b>pareja</b> nunca:</p>' + rowsTable(D.cols, D.sample, (r, j) => (j === D.ia && r[D.ia] === D.aMulti) || (j === D.ib && r[D.ib] === D.bMulti) ? ' ix-cell-rep' : '') +
+    '<p class="exp-note">La PK compuesta permite una sola asociación por pareja. Si el negocio necesitara registrar varias adquisiciones históricas de la misma pareja, la alternativa sería una SK de la fila (por ejemplo id_adquisicion) más UNIQUE sobre la combinación que deba ser única: es una variante, no el modelo base.</p>';
+  else if(s === 6){
+    const at = D.attrs, ai = at.map(a => D.cols.indexOf(a));
+    const val = (r, other) => '<code class="i">' + other + ': ' + ai.map(j => r[j]).join(' / ') + '</code>';
+    const ra = D.sample.filter(r => r[D.ia] === D.aMulti), rb = D.sample.filter(r => r[D.ib] === D.bMulti);
+    body = '<p class="ix-lead">¿Dónde se guarda <b>' + at.join(' y ') + '</b>? Prueba cada lugar con los datos.</p><div class="ix-where">' +
+      '<div class="ix-w bad"><b>En ' + aN + '</b><p>' + esc(D.an(D.aMulti)) + ' necesita ' + ra.length + ' valores, uno por cada ' + bN + ': ' + ra.map(r => val(r, r[D.ib])).join(' ') + '. Una sola celda no alcanza.</p></div>' +
+      '<div class="ix-w bad"><b>En ' + bN + '</b><p>' + esc(D.bn(D.bMulti)) + ' necesita ' + rb.length + ' valores, uno por cada ' + aN + ': ' + rb.map(r => val(r, r[D.ia])).join(' ') + '.</p></div>' +
+      '<div class="ix-w ok"><b>En ' + In + '</b><p>Un valor por <b>pareja</b>: depende de los dos a la vez. Es un atributo de la relación.</p></div></div>';
+  } else {
+    const oneRel = ex.rels.find(r => r.p === D.one.a && r.c === D.one.b) || ex.rels.find(r => (r.p === D.C || r.c === D.C));
+    body = '<p class="ix-lead"><b>' + D.one.a + ' – ' + D.one.b + '</b> es ' + D.one.type + ': un lado tiene máximo 1, así que basta una FK en el lado N. <b>No necesita intersección.</b></p>' +
+      '<div class="ix-read"><div><b>' + D.nm.a + ' – ' + D.nm.b + '</b><span>N y N → tabla ' + In + '</span><em>N:M</em></div><div><b>' + D.one.a + ' – ' + D.one.b + '</b><span>1 y N → FK ' + (oneRel ? oneRel.c + '.' + ex.fk.find(f => f[1] === oneRel.c && f[3] === oneRel.p)[2][0] : '') + '</span><em>1:N</em></div></div>' +
+      ixFig(ex, exModel(ex), 'Modelo relacional final: pulsa una FK para ver su origen', true);
+  }
+  return '<div class="ix-steps" role="group" aria-label="Pasos">' + IX_STEPS.map((n, i) => '<button type="button" class="pv-dot' + (i === s ? ' on' : i < s ? ' done' : '') + '" data-act="ix" data-k="' + k + '" data-s="' + i + '"><span>' + (i + 1) + '</span>' + n + '</button>').join('') + '</div><div class="ix-body">' + body + '</div>' +
+    '<div class="pv-ctl"><button type="button" class="btn" data-act="ix" data-k="' + k + '" data-s="' + Math.max(0, s - 1) + '"' + (s ? '' : ' disabled') + '>' + ic('chevL') + 'Anterior</button>' + (s < IX_STEPS.length - 1 ? '<button type="button" class="btn btn-primary" data-act="ix" data-k="' + k + '" data-s="' + (s + 1) + '">Siguiente' + ic('chevR') + '</button>' : '') + '</div>';
+}
+
+/* =========================================================
+   ¿CUÁNDO NECESITO OTRA TABLA? (Ejercicio 1, sin alterar el modelo base)
+   ========================================================= */
+function miniEr(tables, rels, pos, cap){
+  const M = { tables:tables.map(t => ({ n:t[0], isNew:!!t[2], cols:t[1].map(c => ({ n:c[0], k:c[1] || '', t:c[2] || '', nn:/^p/.test(c[1] || ''), uq:!!c[3], sk:!!c[4], isNew:!!c[5] })) })), rels:rels.map(r => ({ p:r[0], c:r[1], pc:r[2], cc:r[3], isNew:!!r[4] })), pos:pos };
+  return '<div class="nt-fig" style="--nt-w:' + (tables.length * 235) + 'px"><span class="nt-cap">' + cap + '</span><div class="er-scroll">' + erSvg(M, { label:cap, types:false }) + '</div></div>';
+}
+function needTableHtml(){
+  const V = ['VEHICULO', [['placa', 'pk', 'VARCHAR2(6)'], ['linea', '', 'VARCHAR2(20)'], ['color', '', 'VARCHAR2(15)'], ['id_marca', 'fk', 'NUMBER(3)']]];
+  const V2 = ['VEHICULO', [['placa', 'pk', 'VARCHAR2(6)'], ['linea', '', 'VARCHAR2(20)'], ['id_color', 'fk', 'NUMBER(3)', 0, 0, 1], ['id_marca', 'fk', 'NUMBER(3)']]];
+  const COL = ['COLOR', [['id_color', 'pk', 'NUMBER(3)', 0, 1], ['nom_color', '', 'VARCHAR2(15)', 1]], 1];
+  const M1 = ['MARCA', [['id_marca', 'pk', 'NUMBER(3)', 0, 1], ['nom_marca', '', 'VARCHAR2(20)', 1], ['pais_origen', '', 'VARCHAR2(20)']]];
+  const M2 = ['MARCA', [['id_marca', 'pk', 'NUMBER(3)', 0, 1], ['nom_marca', '', 'VARCHAR2(20)', 1], ['cod_pais', 'fk', 'CHAR(3)', 0, 0, 1]]];
+  const PA = ['PAIS', [['cod_pais', 'pk', 'CHAR(3)'], ['nom_pais', '', 'VARCHAR2(40)']], 1];
+  const VC = ['VEHICULO_COLOR', [['placa', 'pf', 'VARCHAR2(6)'], ['id_color', 'pf', 'NUMBER(3)']], 1];
+  const card = (title, before, after, yes, no) => '<div class="nt-card"><h4>' + title + '</h4><div class="nt-ba"><div><span class="nt-tag">Modelo base</span>' + before + '</div><div class="nt-arrow" aria-hidden="true">→</div><div><span class="nt-tag nt-new">Ampliación</span>' + after + '</div></div><div class="nt-why"><p><b>Conviene la tabla si…</b> ' + yes + '</p><p><b>Basta el atributo si…</b> ' + no + '</p></div></div>';
+  return fold('¿Cuándo necesito otra tabla? COLOR, PAÍS y varios colores', '<p>El ejercicio se queda con <b>cuatro tablas</b>: color y país de origen son atributos sencillos. Estas ampliaciones muestran cuándo dejarían de serlo. Lo nuevo aparece en verde.</p>' +
+    card('COLOR: atributo o catálogo', miniEr([V], [], { VEHICULO:[0, 0] }, 'color como texto'), miniEr([COL, V2], [['COLOR', 'VEHICULO', '1..1', '0..N', 1]], { COLOR:[0, 0], VEHICULO:[1, 0] }, 'COLOR 1 — N VEHICULO'),
+      'hay un catálogo cerrado de colores, se necesita escribirlos siempre igual («Rojo» y no «rojo»/«ROJO»), o el color tiene datos propios (código RGB, si es metalizado). La FK id_color va en VEHICULO, el lado N.', 'solo se muestra el color y no se filtra ni se valida contra una lista. Un CHECK (color IN (…)) es un punto intermedio.') +
+    card('PAÍS: atributo de MARCA o tabla PAIS', miniEr([M1], [], { MARCA:[0, 0] }, 'pais_origen como texto'), miniEr([PA, M2], [['PAIS', 'MARCA', '1..1', '0..N', 1]], { PAIS:[0, 0], MARCA:[1, 0] }, 'PAIS 1 — N MARCA'),
+      'el país se reutiliza en otras tablas o tiene datos propios. cod_pais (ISO alfa-3) es una clave <b>natural</b>: no hace falta SK. La FK va en MARCA, el lado N.', 'solo se muestra el nombre del país de cada marca.') +
+    card('Si un vehículo admite VARIOS colores', miniEr([COL, V2], [['COLOR', 'VEHICULO', '1..1', '0..N']], { COLOR:[0, 0], VEHICULO:[1, 0] }, 'Con FK: un color por vehículo'), miniEr([['VEHICULO', [['placa', 'pk', 'VARCHAR2(6)'], ['linea', '', 'VARCHAR2(20)']]], VC, COL], [['VEHICULO', 'VEHICULO_COLOR', '1..1', '1..N', 1], ['COLOR', 'VEHICULO_COLOR', '1..1', '0..N', 1]], { VEHICULO:[0, 0], VEHICULO_COLOR:[1, 0], COLOR:[2, 0] }, 'N:M → VEHICULO_COLOR'),
+      'la regla cambia a «un vehículo puede tener varios colores y un color está en muchos vehículos»: ahora es <b>N:M</b> y aparece una intersección con PK compuesta (placa, id_color), igual que PROP_VEH.', 'cada vehículo tiene un solo color: una FK (o un atributo) es suficiente.'));
+}
+
+/* ---------- diferencias del modelo incorrecto ---------- */
+function wrongDiff(ex, M){
+  const ok = exModel(ex); const T = {}; ok.tables.forEach(t => { T[t.n] = new Set(t.cols.map(c => c.n + ':' + (c.k === 'pf' ? 'p' : c.k))); });
+  M.tables.forEach(t => { if(!T[t.n]){ t.bad = true; return; } t.cols.forEach(c => { if(!T[t.n].has(c.n + ':' + (c.k === 'pf' ? 'p' : c.k)) && !(ok.tables.find(x => x.n === t.n).cols.some(x => x.n === c.n) && !c.k)) c.bad = true; }); });
+  const R = new Set(ok.rels.map(r => r.p + '>' + r.c)); M.rels.forEach(r => { if(!R.has(r.p + '>' + r.c)) r.bad = true; });
+  const miss = ok.tables.filter(t => !M.tables.some(x => x.n === t.n)).map(t => t.n);
+  return { M, miss };
 }
 
 
@@ -3535,7 +3843,7 @@ function tabsHtml(mid, names, panels){
 }
 function wrongHtml(ex){
   const opts = [['ok', 'Modelo correcto']].concat(ex.wrong.map((w, i) => [String(i), 'Incorrecto ' + (i + 1)]));
-  const panels = ['<div class="cmp-p" data-cmp="ok">' + erFigure(exModel(ex), 'Correcto · ' + cntDesc(ex)) + '</div>'].concat(ex.wrong.map((w, i) => '<div class="cmp-p" data-cmp="' + i + '" hidden>' + erFigure(wrongModel(w), 'Incorrecto · ' + w.t, { types:false }) + '<ul class="clean bad-list">' + w.p.map(x => '<li>' + ic('x') + x + '</li>').join('') + '</ul></div>'));
+  const panels = ['<div class="cmp-p" data-cmp="ok">' + erFigure(exModel(ex), 'Correcto · ' + cntDesc(ex)) + '</div>'].concat(ex.wrong.map((w, i) => '<div class="cmp-p" data-cmp="' + i + '" hidden>' + (() => { const d = wrongDiff(ex, wrongModel(w)); return erFigure(d.M, 'Incorrecto · ' + w.t, { types:false }) + '<p class="diff-note"><span class="diff-k"></span>En rojo: lo que no coincide con el modelo correcto' + (d.miss.length ? '. Falta: <b>' + d.miss.join(', ') + '</b>' : '') + '.</p>'; })() + '<ul class="clean bad-list">' + w.p.map(x => '<li>' + ic('x') + x + '</li>').join('') + '</ul></div>'));
   return '<div class="lab blk cmp"><div class="lab-h">' + ic('layers') + 'Compara: modelo correcto frente a incorrecto</div><div class="seg cmp-seg" role="group">' + opts.map((o, i) => '<button type="button" data-act="cmp" data-v="' + o[0] + '" aria-pressed="' + (i === 0) + '">' + o[1] + '</button>').join('') + '</div>' + panels.join('') + '</div>';
 }
 function exModelModule(ex){
@@ -3550,9 +3858,9 @@ function exModelModule(ex){
       const p3 = '<p>Antes de mirar la respuesta, elige la cardinalidad de cada frase.</p>' + ex.predict.map((pr, i) => miniCheck('pr' + ex.k + i, pr[0], pr[3] || CARDS, pr[1], pr[2])).join('') +
         reveal('Ver el análisis de cada relación', sec('Lectura en los dos sentidos') + table(['Relación', 'Lectura', 'Tipo'], ex.cx.map(c => [c.v, c.ra + '<br>' + c.rb, '<b>' + c.type + '</b>'])) +
         sec('Cómo queda en el modelo relacional') + table(['Padre', 'Hija', 'Cardinalidad', 'Por qué'], ex.rels.map(r => ['<b>' + r.p + '</b> ' + r.pc, '<b>' + r.c + '</b> ' + r.cc, r.v, r.a])));
-      const p4 = '<p>Antes de mirar: ¿qué columna identifica cada tabla? ¿qué FK tendrá cada hija?</p>' + reveal('Ver las claves justificadas', table(['Tabla', 'Claves', 'Justificación'], ex.keys.map(k => ['<b>' + k[0] + '</b>', '<code class="i">' + k[1] + '</code>', k[2]]))) + (ex.k === 3 ? keyCmpHtml() : '') + (ex.k === 4 ? '<div class="lab blk" id="uq-lab">' + uqSimHtml() + '</div>' : '') +
+      const p4 = '<p>Antes de mirar: ¿qué columna identifica cada tabla? ¿qué FK tendrá cada hija? ¿la PK es un dato real (natural) o un número que asigna el sistema (SK)?</p>' + keyClassifier(ex) + reveal('Ver las claves justificadas', table(['Tabla', 'Claves', 'Justificación'], ex.keys.map(k => ['<b>' + k[0] + '</b>', '<code class="i">' + k[1] + '</code>', k[2]]))) + (ex.k === 3 ? keyCmpHtml() : '') + (ex.k === 4 ? '<div class="lab blk" id="uq-lab">' + uqSimHtml() + '</div>' : '') +
         (ex.variants.length ? sec('Alternativas que debes saber defender') + ex.variants.map(v => '<div class="card variant"><h3>' + ic('flask') + v.t + '</h3><p>' + v.d + '</p>' + codeView(v.code, { label:'Variante · no forma parte de la práctica principal' }) + '</div>').join('') : '');
-      const p5 = '<div class="lab blk pv" id="pv-' + ex.k + '">' + pvHtml(ex.k) + '</div>' + sec('Notación relacional') + relText(ex) + wrongHtml(ex);
+      const p5 = '<div class="lab blk pv" id="pv-' + ex.k + '">' + pvHtml(ex.k) + '</div>' + (ixData(ex) ? '<div class="lab blk ix"><div class="lab-h">' + ic('layers') + 'La intersección ' + ex.tables.find(t => isInter(ex, t.n)).n + ', paso a paso</div><div id="ix-' + ex.k + '">' + ixHtml(ex.k) + '</div></div>' : '') + (ex.k === 1 ? needTableHtml() : '') + sec('Notación relacional') + relText(ex) + wrongHtml(ex);
       const p6 = '<div class="errs">' + ex.errors.map(e => '<div class="err-card"><b>' + ic('x') + e[0] + '</b><p>' + e[1] + '</p></div>').join('') + '</div>';
       const p7 = reveal('Ver la solución razonada', '<ol class="steps-ol sol">' +
         '<li><b>Entidades:</b> ' + ex.terms.filter(t => t[1] === 'E').map(t => t[0]).join(', ') + '.</li>' +
@@ -4088,8 +4396,9 @@ const GLOS = [
   ['CONSTRAINT', 'res', 'Palabra que da nombre a una restricción.'],
   ['Clave candidata', 'res', 'Cualquier columna o combinación mínima que podría identificar la fila.'],
   ['Clave alternativa', 'res', 'Candidata no elegida como PK; lleva UNIQUE.'],
-  ['Clave natural', 'res', 'Existe en el mundo real (placa, documento).'],
-  ['Clave compuesta', 'res', 'Formada por varias columnas.'],
+  ['Clave natural', 'res', 'Identificador propio del negocio que existe fuera de la base: placa, documento, código ISO. Se prefiere si es único, estable y corto.'],
+  ['Clave compuesta', 'res', 'PK formada por varias columnas, como (id_propietario, placa) en PROP_VEH: en una intersección, las dos FK juntas.'],
+  ['PK / FK', 'res', 'Columna que es a la vez parte de la PK de su tabla y FK hacia otra (PROP_VEH.placa → VEHICULO.placa).'],
   ['Clave subrogada (SK)', 'res', 'Surrogate Key: número inventado por el sistema, sin significado de negocio (IDENTITY o secuencia). Se declara como PRIMARY KEY y la clave natural se protege con UNIQUE.'],
   ['IDENTITY', 'res', 'Columna numérica que Oracle llena con un generador de secuencia (12c+). Requiere CREATE SEQUENCE.'],
   ['SEQUENCE', 'res', 'Objeto que genera números: sq.NEXTVAL.'],
@@ -4188,7 +4497,10 @@ const QUIZ = [
   { c:'Oracle', q:'¿Qué permite WITH ADMIN OPTION?', o:['Borrar usuarios', 'Delegar a otros un privilegio del sistema recibido', 'Ser DBA', 'Crear tablas en otro esquema'], a:1, e:'Por eso USR_ADMIN puede conceder CREATE SESSION al usuario de consultas.' },
   { c:'Oracle', q:'WITH ADMIN OPTION frente a WITH GRANT OPTION:', o:['Son iguales', 'ADMIN: privilegios del sistema; GRANT: privilegios sobre objetos', 'GRANT es solo para roles', 'ADMIN solo lo usa SYS'], a:1, e:'Además, revocar un privilegio sobre objetos se propaga en cascada; uno del sistema, no.' },
   { c:'Modelado', q:'¿Por qué IDENTITY no sustituye a PRIMARY KEY?', o:['Porque es más lento', 'Porque solo genera valores: no impide duplicados', 'Porque no es numérico', 'Sí la sustituye'], a:1, e:'Verificado: con BY DEFAULT entró un id repetido y la PK posterior falló con ORA-02437.' },
-  { c:'SQL', q:'¿Cuál de estas sentencias hace COMMIT implícito?', o:['UPDATE', 'DELETE', 'TRUNCATE', 'SELECT'], a:2, e:'TRUNCATE es DDL.' }
+  { c:'SQL', q:'¿Cuál de estas sentencias hace COMMIT implícito?', o:['UPDATE', 'DELETE', 'TRUNCATE', 'SELECT'], a:2, e:'TRUNCATE es DDL.' },
+  { c:'Modelado', q:'MARCA.id_marca (1, 2, 3…) asignado por el sistema es…', o:['PK natural', 'PK + SK (clave artificial)', 'FK', 'Clave candidata natural'], a:1, e:'No significa nada fuera de la base. La clave natural candidata es nom_marca (UNIQUE).' },
+  { c:'Modelado', q:'En PROP_VEH, la columna placa es…', o:['Solo PK', 'Solo FK', 'Parte de la PK compuesta y FK hacia VEHICULO', 'Una SK'], a:2, e:'VEHICULO.placa es la PK; PROP_VEH.placa es FK y forma la PK compuesta con id_propietario.' },
+  { c:'Modelado', q:'¿Por qué PEDIDO necesita una SK (id_pedido)?', o:['Porque es NUMBER', 'Porque ningún dato del negocio identifica un pedido', 'Porque Oracle lo exige', 'No la necesita'], a:1, e:'Ni el cliente ni la fecha identifican un pedido: sin la SK no hay clave.' }
 ];
 mod({ phase:'rep', title:'Evaluación final', env:'read', spool:false, mins:20,
   lead:QUIZ.length + ' preguntas con retroalimentación inmediata sobre modelado, la ruta, Oracle, SQL y errores.',
@@ -4477,7 +4789,7 @@ document.addEventListener('click', e => {
   const tok = e.target.closest('.tok');
   if(tok){ showTok(tok); return; }
   const selEl = e.target.closest('svg.er [data-sel]');
-  if(selEl){ const svg = selEl.closest('svg'); $$('.sel', svg).forEach(x => x.classList.remove('sel')); selEl.classList.add('sel'); svg.classList.add('has-sel'); const fig = selEl.closest('figure'); const info = fig && fig.querySelector('.er-info'); if(info && fig.dataset.ex){ const h = selInfo(+fig.dataset.ex, selEl.dataset.sel); if(h) info.innerHTML = h; } return; }
+  if(selEl){ const svg = selEl.closest('svg'); $$('.sel, .sel-link', svg).forEach(x => x.classList.remove('sel', 'sel-link')); selEl.classList.add('sel'); svg.classList.add('has-sel'); const fig = selEl.closest('figure'); if(fig && fig.dataset.ex) linkSel(+fig.dataset.ex, selEl.dataset.sel).forEach(s => { const x = svg.querySelector('[data-sel="' + s + '"]'); if(x && x !== selEl) x.classList.add('sel-link'); }); const info = fig && fig.querySelector('.er-info'); if(info && fig.dataset.ex){ const h = selInfo(+fig.dataset.ex, selEl.dataset.sel); if(h) info.innerHTML = h; } return; }
   const modeBtn = e.target.closest('.seg [data-mode]');
   if(modeBtn){ setMode(modeBtn.dataset.mode); return; }
   const el = e.target.closest('[data-act]');
@@ -4498,7 +4810,7 @@ document.addEventListener('click', e => {
     case 'close-dlg': el.closest('dialog').close(); break;
     case 'anat': { const fig = el.closest('figure'); $$('.anat-part', fig).forEach(b => b.setAttribute('aria-pressed', 'false')); el.setAttribute('aria-pressed', 'true'); fig.querySelector('.anat-out').innerHTML = el.dataset.d; break; }
     case 'mini': { const box = el.closest('[data-mini]'); const ok = +el.dataset.ok, i = +el.dataset.i; $$('.opt', box).forEach((b, j) => { b.disabled = true; if(j === ok) b.classList.add('right'); else if(j === i) b.classList.add('wrong'); }); const fb = box.querySelector('.fb'); fb.hidden = false; fb.className = 'fb ' + (i === ok ? 'good' : 'bad'); fb.innerHTML = (i === ok ? '<b>¡Correcto!</b> ' : '<b>No exactamente.</b> ') + esc(fb.dataset.expl); break; }
-    case 'cls': { const row = el.closest('.cls-row'); const ok = row.dataset.ans === el.dataset.v; $$('.cls-o', row).forEach(b => b.classList.remove('right', 'wrong')); el.classList.add(ok ? 'right' : 'wrong'); if(!ok){ const r = $$('.cls-o', row).find(b => b.dataset.v === row.dataset.ans); if(r) r.classList.add('right'); } const lab = CLS_OPTS.find(o => o[0] === row.dataset.ans)[1]; row.querySelector('.cls-fb').innerHTML = (ok ? '<b class="ok-t">✓ ' + lab + '.</b> ' : '<b class="bad-t">✗ Es: ' + lab + '.</b> ') + esc(row.dataset.expl); break; }
+    case 'cls': { const row = el.closest('.cls-row'); const ok = row.dataset.ans === el.dataset.v; $$('.cls-o', row).forEach(b => b.classList.remove('right', 'wrong')); el.classList.add(ok ? 'right' : 'wrong'); if(!ok){ const r = $$('.cls-o', row).find(b => b.dataset.v === row.dataset.ans); if(r) r.classList.add('right'); } const lab = ($$('.cls-o', row).find(b => b.dataset.v === row.dataset.ans) || { textContent:'' }).textContent; row.querySelector('.cls-fb').innerHTML = (ok ? '<b class="ok-t">✓ ' + lab + '.</b> ' : '<b class="bad-t">✗ Es: ' + lab + '.</b> ') + esc(row.dataset.expl); break; }
     case 'cmp': { const box = el.closest('.cmp'); $$('[data-act="cmp"]', box).forEach(b => b.setAttribute('aria-pressed', String(b === el))); $$('.cmp-p', box).forEach(p => { p.hidden = p.dataset.cmp !== el.dataset.v; }); break; }
     case 'stab': stab(el.dataset.m, +el.dataset.i); break;
     case 'pv-next': case 'pv-prev': case 'pv-go': case 'pv-sub': case 'pv-rel': {
@@ -4513,6 +4825,7 @@ document.addEventListener('click', e => {
     case 'zoom-in': ZM = Math.min(3, ZM + 0.25); zoomApply(); break;
     case 'zoom-out': ZM = Math.max(0.5, ZM - 0.25); zoomApply(); break;
     case 'uq': UQ[el.dataset.k] = !UQ[el.dataset.k]; $('#uq-lab').innerHTML = uqSimHtml(); break;
+    case 'ix': { const k = +el.dataset.k; IX[k] = IX[k] || { s:0, m:'inB' }; const ch = el.dataset.s !== undefined; if(ch) IX[k].s = +el.dataset.s; if(el.dataset.m) IX[k].m = el.dataset.m; const box = $('#ix-' + k); box.innerHTML = ixHtml(k); if(ch) box.closest('.ix').scrollIntoView({ block:'start', behavior:'smooth' }); break; }
     case 'pl': { const i = +el.dataset.i; if(i < 0) Object.assign(PL, { sess:true, sel:true, ins:true, upd:false, last:null }); else { const a = PL_ACT[i]; PL[a[1]] = a[2]; PL.last = a[1]; } $('#pl-lab').innerHTML = plHtml(); break; }
     case 'gb': { const k = el.dataset.k; if(k === 'having') GB.having = !GB.having; else if(k === 'step') GB.step = +el.dataset.v; else GB[k] = el.dataset.v; $('#gb-lab').innerHTML = gbHtml(); break; }
     case 'jl-mode': JL.mode = el.dataset.v; JL.i = -1; paintJoin(); break;

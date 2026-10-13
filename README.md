@@ -17,6 +17,18 @@ Laboratorio universitario interactivo: del **enunciado** al **modelo relacional*
 
 No se otorga DBA. `CREATE SEQUENCE` solo haría falta con IDENTITY o secuencias (los cuatro modelos no las usan).
 
+## Claves de los cuatro modelos
+La clasificación depende del **origen** del dato según el enunciado, no del nombre `id_…` ni del tipo `NUMBER`. Las columnas conservan sus nombres.
+
+| Ejercicio | PK natural | PK + SK (artificial) | PK compuesta (PK/FK) | UNIQUE (candidata) |
+|---|---|---|---|---|
+| 1 Vehículos | `PROPIETARIO.id_propietario` (documento), `VEHICULO.placa` | `MARCA.id_marca` | `PROP_VEH (id_propietario, placa)` | `MARCA.nom_marca` |
+| 2 Universidad | `FACULTAD.cod_fac`, `CARRERA.cod_carrera`, `ALUMNOS.ced_alumno` | `BARRIOS.id_barrio` | — | — |
+| 3 Pedidos | — | `CLIENTE.id_cliente`, `PRODUCTO.id_producto`, `PEDIDO.id_pedido` | `DETALLE_PEDIDO (id_pedido, id_producto)` | `CLIENTE.correo`, `PRODUCTO.nom_producto` |
+| 4 Pasaportes | `PAIS.cod_pais` (ISO), `PERSONA.id_persona`, `PASAPORTE_VIGENTE.num_pasaporte` | — | — | `PASAPORTE_VIGENTE.id_persona` (FK + UNIQUE → 1:1) |
+
+`VEHICULO.placa` es PK; `PROP_VEH.placa` es FK hacia VEHICULO y forma la PK compuesta con `id_propietario`. Una SK de adquisición se presenta solo como alternativa para historiales con recompras.
+
 ## Contenido
 1. **Fundamentos**: enunciado y reglas de negocio, entidades y atributos, niveles de modelo, relaciones y cardinalidades, claves y restricciones (incluye claves subrogadas, SK), árbol de decisión, normalización hasta 3FN y tipos de datos.
 2. **Laboratorio relacional**: cuatro ejercicios con construcción progresiva en cinco vistas, clasificación de términos, predicción de cardinalidades, diagrama, modelo correcto frente a incorrecto, solución razonada y preguntas tipo parcial.

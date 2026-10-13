@@ -33,6 +33,12 @@ FK     fk_pasaporte_pais: PASAPORTE_VIGENTE (cod_pais) -> PAIS (cod_pais)
 UNIQUE uq_pasaporte_persona ON PASAPORTE_VIGENTE (id_persona)
 CHECK  chk_pasaporte_fechas ON PASAPORTE_VIGENTE: fecha_vencimiento > fecha_expedicion
 
+CLASIFICACION DE CLAVES (natural / SK / compuesta)
+PAIS (cod_pais): PK natural - Codigo ISO 3166-1 alfa-3 (COL, ECU): estandar internacional, natural, corto y estable.
+PERSONA (id_persona): PK natural - Numero de documento de la persona: clave natural.
+PASAPORTE_VIGENTE (num_pasaporte): PK natural - El numero del pasaporte es unico y lo asigna el pais emisor: clave natural.
+PASAPORTE_VIGENTE.id_persona: FK con UNIQUE y NOT NULL: cada persona aparece como maximo una vez. Por eso la relacion es 1:1.
+
 RUTA PRACTICA ORACLE
 0. Etapa previa: enunciado -> entidades -> relaciones -> cardinalidades -> PK/FK -> interseccion -> modelo relacional.
 1. SYSTEM: CREATE TABLESPACE TS_PASAPORTES DATAFILE TS_PASAPORTES01.DBF SIZE 20M AUTOEXTEND ON NEXT 5M MAXSIZE 100M.

@@ -40,6 +40,12 @@ FK     fk_alumnos_barrios: ALUMNOS (id_barrio) -> BARRIOS (id_barrio)
 CHECK  chk_alumnos_genero ON ALUMNOS: genero IN ('M', 'F')
 CHECK  chk_alumnos_promedio ON ALUMNOS: promedio BETWEEN 0 AND 5
 
+CLASIFICACION DE CLAVES (natural / SK / compuesta)
+FACULTAD (cod_fac): PK natural - Codigo institucional de tres letras (ING, SAL): lo usa la universidad, es corto, estable y tiene significado.
+CARRERA (cod_carrera): PK natural - Codigo institucional de tres letras (SIS, MED): clave natural corta y estable.
+BARRIOS (id_barrio): PK + SK (clave artificial) - id_barrio es el consecutivo del listado (1, 2, 3), sin significado fuera del sistema: funciona como SK. Si el municipio publicara un codigo oficial de barrio y se usara ese, seria una clave natural.
+ALUMNOS (ced_alumno): PK natural - La cedula identifica a la persona en la vida real: clave natural simple.
+
 RUTA PRACTICA ORACLE
 0. Etapa previa: enunciado -> entidades -> relaciones -> cardinalidades -> PK/FK -> interseccion -> modelo relacional.
 1. SYSTEM: CREATE TABLESPACE TS_UNIVERSIDAD DATAFILE TS_UNIVERSIDAD01.DBF SIZE 20M AUTOEXTEND ON NEXT 5M MAXSIZE 100M.

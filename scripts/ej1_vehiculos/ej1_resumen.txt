@@ -42,6 +42,13 @@ FK     fk_propveh_vehiculo: PROP_VEH (placa) -> VEHICULO (placa)
 UNIQUE uq_marca_nombre ON MARCA (nom_marca)
 CHECK  chk_vehiculo_modelo ON VEHICULO: modelo >= 1950
 
+CLASIFICACION DE CLAVES (natural / SK / compuesta)
+PROPIETARIO (id_propietario): PK natural - Es el numero de identificacion (documento) de la persona: existe fuera de la base, es unico y no cambia.
+MARCA (id_marca): PK + SK (clave artificial) - id_marca es un numero que asigna el sistema (1, 2, 3) y no significa nada fuera de la base: es una clave artificial (SK). La marca se reconoce en la vida real por su nombre: nom_marca es la clave natural candidata y se protege con UNIQUE.
+VEHICULO (placa): PK natural - La placa es unica en el pais y, bajo las reglas del ejercicio, no cambia: clave natural simple.
+PROP_VEH (id_propietario, placa): PK compuesta - La pareja (id_propietario, placa) identifica cada adquisicion. Ninguna columna basta sola: Carlos aparece dos veces y ABC123 tambien. Las dos columnas son FK que vienen de las PK de sus padres.
+MARCA.nom_marca: Clave candidata natural: tambien identifica una marca, pero no se eligio como PK. Se protege con UNIQUE (clave alternativa).
+
 RUTA PRACTICA ORACLE
 0. Etapa previa: enunciado -> entidades -> relaciones -> cardinalidades -> PK/FK -> interseccion -> modelo relacional.
 1. SYSTEM: CREATE TABLESPACE TS_VEHICULOS DATAFILE TS_VEHICULOS01.DBF SIZE 10M AUTOEXTEND ON NEXT 5M MAXSIZE 100M.

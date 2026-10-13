@@ -45,6 +45,14 @@ CHECK  chk_pedido_estado ON PEDIDO: estado IN ('PENDIENTE', 'ENVIADO', 'ENTREGAD
 CHECK  chk_detalle_cantidad ON DETALLE_PEDIDO: cantidad > 0
 CHECK  chk_detalle_precio ON DETALLE_PEDIDO: precio_venta >= 0
 
+CLASIFICACION DE CLAVES (natural / SK / compuesta)
+CLIENTE (id_cliente): PK + SK (clave artificial) - id_cliente es un consecutivo que asigna la tienda (1, 2, 3): clave artificial (SK). El correo tambien identifica al cliente (clave natural candidata), pero puede cambiar y es largo: queda como UNIQUE.
+PRODUCTO (id_producto): PK + SK (clave artificial) - id_producto es un codigo interno (101, 102): SK. El nombre del producto no se repite (clave natural candidata) y se protege con UNIQUE.
+PEDIDO (id_pedido): PK + SK (clave artificial) - El numero de pedido lo genera la tienda (5001, 5002). No existe ninguna clave natural: ni el cliente ni la fecha identifican un pedido. Aqui la SK no es una opcion: es la unica forma de identificarlo.
+DETALLE_PEDIDO (id_pedido, id_producto): PK compuesta - La pareja (id_pedido, id_producto) identifica cada linea: un producto aparece una sola vez por pedido (si se compran 3, cantidad = 3).
+CLIENTE.correo: Clave candidata natural (UNIQUE): la usa el cliente para iniciar sesion.
+PRODUCTO.nom_producto: Clave candidata natural (UNIQUE): el nombre no se repite.
+
 RUTA PRACTICA ORACLE
 0. Etapa previa: enunciado -> entidades -> relaciones -> cardinalidades -> PK/FK -> interseccion -> modelo relacional.
 1. SYSTEM: CREATE TABLESPACE TS_PEDIDOS DATAFILE TS_PEDIDOS01.DBF SIZE 20M AUTOEXTEND ON NEXT 5M MAXSIZE 100M.
