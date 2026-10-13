@@ -53,44 +53,44 @@ VALUES (6, 'Volkswagen');
 -- ------------------------------------------------------------
 -- Insertar en PROPIETARIO (8 filas)
 INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
-VALUES ('1001234567', 'Carlos', NULL, 'Restrepo', NULL, '3001112233', 'carlos.restrepo@correo.com', 'M');
+VALUES ('1001234567', 'Carlos', 'Alberto', 'Restrepo', 'Gil', '3001112233', 'carlos.restrepo@correo.com', 'M');
 INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
-VALUES ('1002345678', 'Laura', NULL, 'Gomez', NULL, '3012223344', NULL, 'F');
+VALUES ('1002345678', 'Laura', NULL, 'Gomez', 'Diaz', '3012223344', NULL, 'F');
 INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
-VALUES ('1003456789', 'Andres', NULL, 'Ramirez', NULL, '3023334455', 'andres.ramirez@correo.com', 'M');
+VALUES ('1003456789', 'Andres', 'Mauricio', 'Ramirez', NULL, '3023334455', 'andres.ramirez@correo.com', 'M');
 INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
-VALUES ('1004567890', 'Natalia', NULL, 'Herrera', NULL, '3034445566', 'natalia.herrera@correo.com', 'F');
+VALUES ('1004567890', 'Natalia', NULL, 'Herrera', 'Lopez', '3034445566', 'natalia.herrera@correo.com', 'F');
 INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
-VALUES ('1005678901', 'Julian', NULL, 'Moreno', NULL, '3045556677', NULL, 'M');
+VALUES ('1005678901', 'Julian', 'David', 'Moreno', 'Ruiz', '3045556677', NULL, 'M');
 INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
-VALUES ('1006789012', 'Paola', NULL, 'Castro', NULL, '3056667788', 'paola.castro@correo.com', 'F');
+VALUES ('1006789012', 'Paola', 'Andrea', 'Castro', NULL, '3056667788', 'paola.castro@correo.com', 'F');
 INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
-VALUES ('1007890123', 'Felipe', NULL, 'Rojas', NULL, NULL, 'felipe.rojas@correo.com', 'M');
+VALUES ('1007890123', 'Felipe', NULL, 'Rojas', 'Mejia', NULL, 'felipe.rojas@correo.com', 'M');
 INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
-VALUES ('1008901234', 'Diana', NULL, 'Vargas', NULL, '3078889900', NULL, 'F');
+VALUES ('1008901234', 'Diana', 'Marcela', 'Vargas', 'Perez', '3078889900', NULL, 'F');
 
 -- ------------------------------------------------------------
 -- Insertar en VEHICULO (10 filas)
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('ABC123', 'Spark', 2015, 1206, 1);
+VALUES ('ABC123', 'Spark', 2015, 1200, 1);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('BCD234', 'Onix', 2021, 999, 1);
+VALUES ('BCD234', 'Onix', 2021, 1000, 1);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
 VALUES ('CDE345', 'Tracker', 2022, 1200, 1);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('DEF456', 'Logan', 2018, 1598, 2);
+VALUES ('DEF456', 'Logan', 2018, 1600, 2);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('EFG567', 'Duster', 2022, 1333, 2);
+VALUES ('EFG567', 'Duster', 2022, 1300, 2);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('FGH678', 'Mazda 3', 2020, 1998, 3);
+VALUES ('FGH678', 'Mazda 3', 2020, 2000, 3);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('GHI789', 'CX-5', 2023, 2488, 3);
+VALUES ('GHI789', 'CX-5', 2023, 2500, 3);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('HIJ890', 'Corolla', 2019, 1798, 4);
+VALUES ('HIJ890', 'Corolla', 2019, 1800, 4);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('IJK901', 'Hilux', 2016, 2393, 4);
+VALUES ('IJK901', 'Hilux', 2016, 2400, 4);
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('JKL012', 'Picanto', 2017, 1248, 5);
+VALUES ('JKL012', 'Picanto', 2017, 1000, 5);
 
 -- ------------------------------------------------------------
 -- Insertar en PROP_VEH (12 filas)
@@ -133,13 +133,16 @@ SELECT 'PROP_VEH' AS tabla, COUNT(*) AS filas FROM usr_admin_veh.prop_veh;
 
 -- ------------------------------------------------------------
 -- Pruebas de integridad: errores esperados
--- ERRORES ESPERADOS (prueba intencional): ORA-02291, ORA-02290, ORA-00001, ORA-01031
+-- ERRORES ESPERADOS (prueba intencional): ORA-02291, ORA-02290, ORA-02290, ORA-00001, ORA-01031
 PROMPT Pruebas intencionales: cada sentencia debe fallar
 INSERT INTO usr_admin_veh.prop_veh (id_propietario, placa, fecha_adquisicion)
 VALUES ('1002345678', 'ZZZ999', DATE '2024-01-15');
 
 INSERT INTO usr_admin_veh.vehiculo (placa, linea, modelo, cilindraje, id_marca)
-VALUES ('XYZ987', 'Renault 4', 1940, 1600, 2);
+VALUES ('XYZ987', 'Renault 4', 1940, 1100, 2);
+
+INSERT INTO usr_admin_veh.propietario (id_propietario, primer_nombre, primer_apellido, sexo)
+VALUES ('1009999999', 'Ana', 'Lopez', 'X');
 
 INSERT INTO usr_admin_veh.marca (id_marca, nom_marca)
 VALUES (7, 'Mazda');
@@ -229,17 +232,24 @@ WHERE correo IS NULL
 ORDER BY primer_apellido;
 
 -- ------------------------------------------------------------
--- Consulta: Que cilindrajees distintos hay?
+-- Consulta: Que cilindrajes distintos hay?
 SELECT DISTINCT cilindraje
 FROM usr_admin_veh.vehiculo
 ORDER BY cilindraje;
 
 -- ------------------------------------------------------------
--- Consulta: Que vehiculos tienen cilindraje entre 1200 y 1800 cm?
+-- Consulta: Cuantos propietarios hay de cada sexo?
+SELECT sexo, COUNT(*) AS propietarios
+FROM usr_admin_veh.propietario
+GROUP BY sexo
+ORDER BY sexo;
+
+-- ------------------------------------------------------------
+-- Consulta: Que vehiculos tienen 2000 cc o mas?
 SELECT v.placa, v.linea, m.nom_marca, v.cilindraje
 FROM usr_admin_veh.vehiculo v
 JOIN usr_admin_veh.marca m ON m.id_marca = v.id_marca
-WHERE v.cilindraje BETWEEN 1200 AND 1800
-ORDER BY m.nom_marca, v.placa;
+WHERE v.cilindraje >= 2000
+ORDER BY v.cilindraje DESC, v.placa;
 
 SPOOL OFF

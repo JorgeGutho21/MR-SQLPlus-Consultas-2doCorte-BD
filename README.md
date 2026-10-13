@@ -29,6 +29,15 @@ La clasificación depende del **origen** del dato según el enunciado, no del no
 
 `VEHICULO.placa` es PK; `PROP_VEH.placa` es FK hacia VEHICULO y forma la PK compuesta con `id_propietario`. Una SK de adquisición se presenta solo como alternativa para historiales con recompras.
 
+Vehículos, columnas definitivas:
+
+| Tabla | Columnas | Restricciones |
+|---|---|---|
+| PROPIETARIO | `id_propietario`, `primer_nombre`, `segundo_nombre` (opcional), `primer_apellido`, `segundo_apellido` (opcional), `telefono`, `correo`, `sexo CHAR(1)` | PK natural; `chk_propietario_sexo`: `sexo IN ('M', 'F')` |
+| MARCA | `id_marca`, `nom_marca` | PK + SK; UNIQUE `nom_marca` |
+| VEHICULO | `placa`, `linea`, `modelo`, `cilindraje NUMBER(5)`, `id_marca` | PK natural; FK → MARCA; `chk_vehiculo_modelo` |
+| PROP_VEH | `id_propietario`, `placa`, `fecha_adquisicion` | PK compuesta (id_propietario, placa), cada parte FK |
+
 ## Contenido
 1. **Fundamentos**: enunciado y reglas de negocio, entidades y atributos, niveles de modelo, relaciones y cardinalidades, claves y restricciones (incluye claves subrogadas, SK), árbol de decisión, normalización hasta 3FN y tipos de datos.
 2. **Laboratorio relacional**: cuatro ejercicios con construcción progresiva en cinco vistas, clasificación de términos, predicción de cardinalidades, diagrama, modelo correcto frente a incorrecto, solución razonada y preguntas tipo parcial.
@@ -53,7 +62,13 @@ Carpeta [`scripts/`](scripts/), por ejercicio:
 Los scripts no contienen contraseñas: SQL*Plus las pide ocultas con `ACCEPT … HIDE`, con `SET VERIFY OFF` y con el SPOOL en pausa mientras se piden y se usan.
 
 ## Verificación
-Revisión del 13 de octubre de 2026: validación estática de modelos y scripts, 165 registros de ejemplo, 42 consultas y 14 INSERT inválidos contrastados en SQLite con adaptación de sintaxis Oracle. **Esta revisión no ejecutó Oracle ni modificó una instalación local.** Los resultados de los ejercicios se muestran como esperados y calculados; las capturas históricas de HR conservan su identificación.
+Revisión del 13 de octubre de 2026 (cilindraje, nombres separados y sexo):
+
+- **Ejecución real en Oracle Database XE 18c (PDB XEPDB1)** con objetos de prueba aislados, contraseñas aleatorias que no se imprimen y limpieza al final. No se tocaron usuarios, tablas ni tablespaces preexistentes.
+- Los cuatro ejercicios paso a paso, los 53 archivos descargables (`_00_completo`, `_01`/`_02`/`_03` y `_paso1`…`_paso7`) y los laboratorios de privilegios, sentencias SQL, SK y HR (solo lectura): sin errores inesperados.
+- Pruebas intencionales de Vehículos: ORA-02291 (FK), ORA-02290 (modelo), ORA-02290 (sexo), ORA-00001 (UNIQUE) y ORA-01031 (DELETE sin privilegio). Laboratorio de errores: 64 casos reproducen su código ORA esperado.
+- Las salidas que muestra la página (consultas, conteos, GROUP BY) son las capturadas en esa ejecución.
+- Además: validación estática de modelos y datos y contraste de consultas en SQLite (ver [VALIDACION.md](VALIDACION.md)).
 
 Página estática (HTML, CSS y JavaScript sin dependencias). El progreso se guarda en el navegador.
 

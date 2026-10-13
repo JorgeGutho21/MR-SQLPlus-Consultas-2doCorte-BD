@@ -3,9 +3,9 @@ RESUMEN DE PRACTICA - EJERCICIO 1: PROPIETARIOS Y VEHICULOS
 
 ENUNCIADO
 - La Secretaria de Movilidad de un municipio necesita una base de datos para registrar quienes son o han sido propietarios de cada vehiculo.
-- De cada propietario se registra su numero de identificacion, primer nombre, segundo nombre (opcional), primer apellido, segundo apellido (opcional), telefono y correo electronico; el telefono y el correo pueden faltar. Tambien se registra el sexo (M/F).
-- De cada vehiculo se registra la placa (tres letras y tres caracteres, por ejemplo ABC123), la linea (Spark, Logan), el modelo (ano de fabricacion, no anterior a 1950) y el cilindraje en cm.
-- Cada vehiculo pertenece a una unica marca. De cada marca se guarda un codigo, su nombre -que no puede repetirse-.
+- De cada propietario se registra su numero de identificacion, primer nombre, segundo nombre, primer apellido, segundo apellido, telefono, correo electronico y sexo (M o F). El segundo nombre, el segundo apellido, el telefono y el correo pueden faltar.
+- De cada vehiculo se registra la placa (tres letras y tres caracteres, por ejemplo ABC123), la linea (Spark, Logan), el modelo (ano de fabricacion, no anterior a 1950) y el cilindraje en centimetros cubicos.
+- Cada vehiculo pertenece a una unica marca. De cada marca se guarda un codigo y su nombre, que no puede repetirse.
 - Una persona puede adquirir varios vehiculos y un mismo vehiculo puede pasar por varios propietarios a lo largo del tiempo. Por cada adquisicion se debe guardar la fecha en que ese propietario adquirio ese vehiculo.
 - Se puede registrar una marca que todavia no tenga vehiculos y un propietario antes de asociarle un vehiculo.
 
@@ -17,8 +17,8 @@ R4. Cada vehiculo es de una sola marca y la marca es obligatoria.  ->  1:N con F
 R5. Una marca puede no tener vehiculos todavia.  ->  Participacion opcional (0..N) de MARCA.
 R6. El nombre de la marca no se repite.  ->  Restriccion UNIQUE (clave alternativa).
 R7. El modelo no es anterior a 1950.  ->  Restriccion CHECK.
-R8. Telefono y correo pueden faltar.  ->  Columnas que admiten NULL.
-R9. El sexo registrado es M o F.  ->  CHAR(1), NOT NULL y CHECK.
+R8. Segundo nombre, segundo apellido, telefono y correo pueden faltar.  ->  Columnas que admiten NULL.
+R9. El sexo es M o F.  ->  Restriccion CHECK (sexo IN ('M', 'F')) con NOT NULL.
 
 MODELO RELACIONAL
 PROPIETARIO (#id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
@@ -136,17 +136,23 @@ CONSULTAS
     WHERE correo IS NULL
     ORDER BY primer_apellido;
 
-- Que cilindrajees distintos hay?
+- Que cilindrajes distintos hay?
     SELECT DISTINCT cilindraje
     FROM usr_admin_veh.vehiculo
     ORDER BY cilindraje;
 
-- Que vehiculos tienen cilindraje entre 1200 y 1800 cm?
+- Cuantos propietarios hay de cada sexo?
+    SELECT sexo, COUNT(*) AS propietarios
+    FROM usr_admin_veh.propietario
+    GROUP BY sexo
+    ORDER BY sexo;
+
+- Que vehiculos tienen 2000 cc o mas?
     SELECT v.placa, v.linea, m.nom_marca, v.cilindraje
     FROM usr_admin_veh.vehiculo v
     JOIN usr_admin_veh.marca m ON m.id_marca = v.id_marca
-    WHERE v.cilindraje BETWEEN 1200 AND 1800
-    ORDER BY m.nom_marca, v.placa;
+    WHERE v.cilindraje >= 2000
+    ORDER BY v.cilindraje DESC, v.placa;
 
 PREGUNTAS TIPO PARCIAL
 1. Por que existe la tabla PROP_VEH?
@@ -158,4 +164,4 @@ PREGUNTAS TIPO PARCIAL
 4. Donde va la FK entre VEHICULO y MARCA y por que?
    R: En VEHICULO (lado N): cada vehiculo guarda una sola marca. Si se pusiera en MARCA, una marca solo podria apuntar a un vehiculo. Es NOT NULL porque la marca es obligatoria.
 5. Cuantas tablas tiene el modelo y cuantas restricciones?
-   R: 4 tablas; 4 PK, 3 FK, 1 UNIQUE y 2 CHECK (ademas de los NOT NULL de columna).
+   R: 4 tablas; 4 PK, 3 FK, 1 UNIQUE y 2 CHECK (modelo y sexo), ademas de los NOT NULL de columna.

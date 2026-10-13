@@ -27,11 +27,21 @@ Pruebas en Chrome con Playwright:
 - Sin errores JavaScript en las pruebas.
 - html-validate con configuración recommended: sin errores en el documento HTML estático. El JavaScript inline se compiló con Node vm.Script.
 
+## Ejecución real en Oracle XE 18c
+
+La versión publicada después de esta revisión se ejecutó en Oracle Database XE 18c (PDB XEPDB1, SQL*Plus), con objetos de prueba propios y limpieza al final. No se modificaron usuarios, tablas ni tablespaces preexistentes de la instalación; HR solo se consultó.
+
+- Los cuatro ejercicios completos, en sus seis etapas: tablespace, administrador, tablas, PK/FK/UNIQUE/CHECK, usuario de consultas, permisos, INSERT, COMMIT y consultas. Resultado: sin problemas.
+- Los 53 archivos descargables en sus tres formas: `_00_completo`, el trío `_01`/`_02`/`_03` y `_paso1` a `_paso7`. Ninguna contraseña aparece en la salida ni en la evidencia del SPOOL.
+- Vehículos: pruebas intencionales ORA-02291, ORA-02290 (modelo), ORA-02290 (sexo), ORA-00001 y ORA-01031. Consultas: 8 cilindrajes distintos, 4 propietarios F y 4 M, 3 vehículos de 2000 cc o más.
+- Laboratorio de errores: 64 casos, cada uno con su código ORA o SP2 esperado.
+- Laboratorios de privilegios, sentencias SQL (tabla de demostración propia), IDENTITY/SK y HR (solo lectura).
+
+Las salidas de consultas y errores que muestra la página son las capturadas en esa ejecución. El comando `node tools/build-scripts.cjs --check` confirma que los 53 archivos de `scripts/` coinciden con los generadores de index.html.
+
 ## Límite de las pruebas
 
-**No se ejecutó Oracle Database 18c ni se tocó una instalación Oracle.** La revisión de sintaxis y permisos es estática, contrastada con las referencias oficiales de CREATE TABLE y restricciones. SQLite comprueba los datos y la lógica de consultas, pero no certifica los comandos de SQL*Plus, tablespaces, administración de usuarios ni privilegios Oracle.
-
-Las salidas actualizadas de ejercicios se identifican como resultados esperados, calculados con los datos. Las capturas históricas de consultas HR se conservan como ejemplos históricos, sin afirmar que se volvieron a ejecutar en esta revisión.
+SQLite (sección anterior) comprueba datos y lógica de consultas, pero no certifica SQL*Plus, tablespaces, usuarios ni privilegios. Esos puntos quedan cubiertos por la ejecución en Oracle descrita arriba.
 
 ## Repetir las comprobaciones
 

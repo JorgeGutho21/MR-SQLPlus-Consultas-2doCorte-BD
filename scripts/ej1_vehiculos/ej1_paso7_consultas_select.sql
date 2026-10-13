@@ -97,17 +97,24 @@ WHERE correo IS NULL
 ORDER BY primer_apellido;
 
 -- ------------------------------------------------------------
--- Consulta: Que cilindrajees distintos hay?
+-- Consulta: Que cilindrajes distintos hay?
 SELECT DISTINCT cilindraje
 FROM usr_admin_veh.vehiculo
 ORDER BY cilindraje;
 
 -- ------------------------------------------------------------
--- Consulta: Que vehiculos tienen cilindraje entre 1200 y 1800 cm?
+-- Consulta: Cuantos propietarios hay de cada sexo?
+SELECT sexo, COUNT(*) AS propietarios
+FROM usr_admin_veh.propietario
+GROUP BY sexo
+ORDER BY sexo;
+
+-- ------------------------------------------------------------
+-- Consulta: Que vehiculos tienen 2000 cc o mas?
 SELECT v.placa, v.linea, m.nom_marca, v.cilindraje
 FROM usr_admin_veh.vehiculo v
 JOIN usr_admin_veh.marca m ON m.id_marca = v.id_marca
-WHERE v.cilindraje BETWEEN 1200 AND 1800
-ORDER BY m.nom_marca, v.placa;
+WHERE v.cilindraje >= 2000
+ORDER BY v.cilindraje DESC, v.placa;
 
 SPOOL OFF

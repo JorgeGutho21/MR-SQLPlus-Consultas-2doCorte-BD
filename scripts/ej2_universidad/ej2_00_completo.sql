@@ -354,17 +354,17 @@ SELECT 'ALUMNOS' AS tabla, COUNT(*) AS filas FROM usr_admin_uni.alumnos;
 -- [Etapa 6] Pruebas de integridad: errores esperados
 -- ERRORES ESPERADOS (prueba intencional): ORA-02290, ORA-02291, ORA-02290, ORA-00001
 PROMPT Pruebas intencionales: cada sentencia debe fallar
-INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, primer_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
-VALUES ('1000000060', 'Mario', 'Diaz', 'X', 3.5, 'SIS', 1, DATE '2003-02-02');
+INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
+VALUES ('1000000060', 'Mario', NULL, 'Diaz', 'Leon', 'X', 3.5, 'SIS', 1, DATE '2003-02-02');
 
-INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, primer_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
-VALUES ('1000000061', 'Ana', 'Soto', 'F', 3.0, 'XYZ', 1, DATE '2004-01-01');
+INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
+VALUES ('1000000061', 'Ana', 'Maria', 'Soto', NULL, 'F', 3.0, 'XYZ', 1, DATE '2004-01-01');
 
-INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, primer_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
-VALUES ('1000000062', 'Luis', 'Paz', 'M', 6, 'SIS', 1, DATE '2003-05-05');
+INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
+VALUES ('1000000062', 'Luis', NULL, 'Paz', 'Rios', 'M', 6, 'SIS', 1, DATE '2003-05-05');
 
-INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, primer_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
-VALUES ('1000000001', 'Pedro', 'Lozano', 'M', 3.5, 'SIS', 2, DATE '2003-08-08');
+INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
+VALUES ('1000000001', 'Pedro', NULL, 'Lozano', NULL, 'M', 3.5, 'SIS', 2, DATE '2003-08-08');
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Cuantos alumnos hay en cada carrera?

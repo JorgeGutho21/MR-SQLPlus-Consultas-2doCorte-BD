@@ -271,21 +271,21 @@ VALUES ('ESP', 'Espana');
 -- ------------------------------------------------------------
 -- [Etapa 6] Insertar en PERSONA (8 filas)
 INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
-VALUES ('52123456', 'Camila', NULL, 'Ruiz', NULL, DATE '1995-04-18');
+VALUES ('52123456', 'Camila', 'Andrea', 'Ruiz', 'Gomez', DATE '1995-04-18');
 INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
-VALUES ('79234567', 'Andres', NULL, 'Salazar', NULL, DATE '1988-11-02');
+VALUES ('79234567', 'Andres', NULL, 'Salazar', 'Pena', DATE '1988-11-02');
 INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
-VALUES ('1010345678', 'Lucia', NULL, 'Mejia', NULL, DATE '2001-07-25');
+VALUES ('1010345678', 'Lucia', 'Fernanda', 'Mejia', NULL, DATE '2001-07-25');
 INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
-VALUES ('1020456789', 'Mateo', NULL, 'Cardenas', NULL, DATE '1999-01-09');
+VALUES ('1020456789', 'Mateo', NULL, 'Cardenas', 'Ruiz', DATE '1999-01-09');
 INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
-VALUES ('1030567890', 'Isabel', NULL, 'Torres', NULL, DATE '1992-09-30');
+VALUES ('1030567890', 'Isabel', 'Cristina', 'Torres', 'Vela', DATE '1992-09-30');
 INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
-VALUES ('1040678901', 'Santiago', NULL, 'Rincon', NULL, DATE '2003-03-14');
+VALUES ('1040678901', 'Santiago', 'Jose', 'Rincon', NULL, DATE '2003-03-14');
 INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
-VALUES ('1050789012', 'Valentina', NULL, 'Ospina', NULL, DATE '1997-12-05');
+VALUES ('1050789012', 'Valentina', NULL, 'Ospina', 'Mejia', DATE '1997-12-05');
 INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
-VALUES ('1060890123', 'Diego', NULL, 'Navarro', NULL, DATE '1985-06-21');
+VALUES ('1060890123', 'Diego', 'Alejandro', 'Navarro', 'Soto', DATE '1985-06-21');
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Insertar en PASAPORTE_VIGENTE (5 filas)

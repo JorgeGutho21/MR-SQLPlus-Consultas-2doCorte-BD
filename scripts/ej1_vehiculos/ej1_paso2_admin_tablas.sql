@@ -45,7 +45,7 @@ CREATE TABLE vehiculo (
   placa      VARCHAR2(6 CHAR),
   linea      VARCHAR2(20 CHAR) NOT NULL,
   modelo     NUMBER(4) NOT NULL,
-  cilindraje NUMBER(5),
+  cilindraje NUMBER(5) NOT NULL,
   id_marca   NUMBER(3) NOT NULL
 );
 
