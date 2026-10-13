@@ -2,7 +2,7 @@
 -- ej1_00_completo.sql
 -- Ruta practica Oracle - Ejercicio 1: Propietarios y vehiculos
 -- Script completo: las seis etapas en orden, con cambios de usuario y evidencia SPOOL.
--- Usuario: SYSTEM -> USR_ADMIN_VEH -> SYSTEM -> USR_ADMIN_VEH -> USR_CONSULTAS_VEH  |  Servicio: localhost:1521/XEPDB1
+-- Usuario: SYSTEM -> USR_ADMIN_VEH -> USR_CONSULTAS_VEH  |  Servicio: localhost:1521/XEPDB1
 -- Ejecutar desde SQL*Plus con:  @C:\archivosbd\ej1_00_completo.sql
 -- Las contrasenas NO estan en el archivo: SQL*Plus las pide ocultas.
 -- ============================================================
@@ -25,7 +25,7 @@ SHOW CON_NAME
 -- [Etapa 1] Crear el TABLESPACE y su DATAFILE
 CREATE TABLESPACE ts_vehiculos
   DATAFILE 'C:\ORACLE_EXE\ORADATA\XE\XEPDB1\TS_VEHICULOS01.DBF'
-  SIZE 20M
+  SIZE 10M
   AUTOEXTEND ON NEXT 5M
   MAXSIZE 100M;
 
@@ -42,6 +42,7 @@ WHERE tablespace_name = 'TS_VEHICULOS';
 
 -- ------------------------------------------------------------
 -- [Etapa 2] Crear el usuario administrador USR_ADMIN_VEH
+SPOOL OFF
 ACCEPT clave_admin CHAR PROMPT 'Clave para USR_ADMIN_VEH: ' HIDE
 CREATE USER usr_admin_veh
   IDENTIFIED BY "&clave_admin"
@@ -49,6 +50,7 @@ CREATE USER usr_admin_veh
   TEMPORARY TABLESPACE temp
   QUOTA 20M ON ts_vehiculos;
 UNDEFINE clave_admin
+SPOOL C:\archivosbd\evidencia_ej1_vehiculos.txt APPEND
 PROMPT Etapa 2 - SYSTEM creo el usuario administrador USR_ADMIN_VEH
 
 -- Verificacion
@@ -67,12 +69,13 @@ WHERE username = 'USR_ADMIN_VEH';
 -- ------------------------------------------------------------
 -- [Etapa 3] Etapa 3 (SYSTEM): privilegios del sistema para USR_ADMIN_VEH
 PROMPT Etapa 3 - SYSTEM otorga privilegios a USR_ADMIN_VEH
-GRANT CREATE SESSION, CREATE TABLE TO usr_admin_veh;
+GRANT CREATE SESSION, CREATE TABLE, CREATE USER TO usr_admin_veh;
+GRANT CREATE SESSION TO usr_admin_veh WITH ADMIN OPTION;
 
 -- Verificacion
 COLUMN grantee FORMAT A18
 COLUMN privilege FORMAT A16
-SELECT grantee, privilege
+SELECT grantee, privilege, admin_option
 FROM dba_sys_privs
 WHERE grantee = 'USR_ADMIN_VEH'
 ORDER BY privilege;
@@ -198,45 +201,34 @@ WHERE constraint_name NOT LIKE 'SYS%'
 ORDER BY table_name, constraint_type, constraint_name;
 
 -- ------------------------------------------------------------
--- [Etapa 4] Etapa 4: volver a SYSTEM
-CONNECT system@localhost:1521/XEPDB1
-PROMPT Etapa 4 - SYSTEM crea el usuario de consultas
-
--- ------------------------------------------------------------
--- [Etapa 4] Crear el usuario de consultas USR_CONSULTAS_VEH
+-- [Etapa 4] Etapa 4 (USR_ADMIN_VEH): crear el usuario de consultas USR_CONSULTAS_VEH
+PROMPT Etapa 4 - USR_ADMIN_VEH crea el usuario de consultas
+SPOOL OFF
 ACCEPT clave_cons CHAR PROMPT 'Clave para USR_CONSULTAS_VEH: ' HIDE
 CREATE USER usr_consultas_veh
   IDENTIFIED BY "&clave_cons"
   DEFAULT TABLESPACE ts_vehiculos
   TEMPORARY TABLESPACE temp;
 UNDEFINE clave_cons
-PROMPT Etapa 4 - SYSTEM creo el usuario USR_CONSULTAS_VEH
+SPOOL C:\archivosbd\evidencia_ej1_vehiculos.txt APPEND
+PROMPT Etapa 4 - USR_ADMIN_VEH creo el usuario USR_CONSULTAS_VEH
 
 -- Verificacion
 COLUMN username FORMAT A18
-COLUMN default_tablespace FORMAT A16
-COLUMN temporary_tablespace FORMAT A10
-COLUMN account_status FORMAT A14
-SELECT username, default_tablespace, temporary_tablespace, account_status
-FROM dba_users
+SELECT username, created
+FROM all_users
 WHERE username = 'USR_CONSULTAS_VEH';
 
 -- ------------------------------------------------------------
--- [Etapa 5] Etapa 5 (SYSTEM): privilegio del sistema CREATE SESSION
-PROMPT Etapa 5 - Privilegios del usuario de consultas
+-- [Etapa 5] Etapa 5 (USR_ADMIN_VEH): conceder CREATE SESSION al usuario de consultas
+PROMPT Etapa 5 - USR_ADMIN_VEH concede privilegios al usuario de consultas
 GRANT CREATE SESSION TO usr_consultas_veh;
 
 -- Verificacion
-COLUMN grantee FORMAT A18
 COLUMN privilege FORMAT A16
-SELECT grantee, privilege
-FROM dba_sys_privs
-WHERE grantee = 'USR_CONSULTAS_VEH'
+SELECT privilege, admin_option
+FROM user_sys_privs
 ORDER BY privilege;
-
--- ------------------------------------------------------------
--- [Etapa 5] Volver a USR_ADMIN_VEH, dueno de las tablas
-CONNECT usr_admin_veh@localhost:1521/XEPDB1
 
 -- ------------------------------------------------------------
 -- [Etapa 5] Etapa 5 (USR_ADMIN_VEH): privilegios sobre objetos
@@ -261,6 +253,19 @@ SHOW USER
 PROMPT Etapa 6 - USR_CONSULTAS_VEH inserta, confirma y consulta
 SET LINESIZE 200
 SET PAGESIZE 100
+
+-- ------------------------------------------------------------
+-- [Etapa 6] Comprobar que puede hacer USR_CONSULTAS_VEH
+COLUMN privilege FORMAT A16
+SELECT privilege FROM session_privs;
+
+COLUMN owner FORMAT A16
+COLUMN table_name FORMAT A18
+COLUMN privilege FORMAT A10
+SELECT owner, table_name, privilege
+FROM user_tab_privs_recd
+WHERE owner = 'USR_ADMIN_VEH'
+ORDER BY table_name, privilege;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Comprobar por que hace falta ESQUEMA.TABLA

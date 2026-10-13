@@ -2,7 +2,7 @@
 -- ej2_00_completo.sql
 -- Ruta practica Oracle - Ejercicio 2: Sistema universitario
 -- Script completo: las seis etapas en orden, con cambios de usuario y evidencia SPOOL.
--- Usuario: SYSTEM -> USR_ADMIN_UNI -> SYSTEM -> USR_ADMIN_UNI -> USR_CONSULTAS_UNI  |  Servicio: localhost:1521/XEPDB1
+-- Usuario: SYSTEM -> USR_ADMIN_UNI -> USR_CONSULTAS_UNI  |  Servicio: localhost:1521/XEPDB1
 -- Ejecutar desde SQL*Plus con:  @C:\archivosbd\ej2_00_completo.sql
 -- Las contrasenas NO estan en el archivo: SQL*Plus las pide ocultas.
 -- ============================================================
@@ -42,6 +42,7 @@ WHERE tablespace_name = 'TS_UNIVERSIDAD';
 
 -- ------------------------------------------------------------
 -- [Etapa 2] Crear el usuario administrador USR_ADMIN_UNI
+SPOOL OFF
 ACCEPT clave_admin CHAR PROMPT 'Clave para USR_ADMIN_UNI: ' HIDE
 CREATE USER usr_admin_uni
   IDENTIFIED BY "&clave_admin"
@@ -49,6 +50,7 @@ CREATE USER usr_admin_uni
   TEMPORARY TABLESPACE temp
   QUOTA 20M ON ts_universidad;
 UNDEFINE clave_admin
+SPOOL C:\archivosbd\evidencia_ej2_universidad.txt APPEND
 PROMPT Etapa 2 - SYSTEM creo el usuario administrador USR_ADMIN_UNI
 
 -- Verificacion
@@ -67,12 +69,13 @@ WHERE username = 'USR_ADMIN_UNI';
 -- ------------------------------------------------------------
 -- [Etapa 3] Etapa 3 (SYSTEM): privilegios del sistema para USR_ADMIN_UNI
 PROMPT Etapa 3 - SYSTEM otorga privilegios a USR_ADMIN_UNI
-GRANT CREATE SESSION, CREATE TABLE TO usr_admin_uni;
+GRANT CREATE SESSION, CREATE TABLE, CREATE USER TO usr_admin_uni;
+GRANT CREATE SESSION TO usr_admin_uni WITH ADMIN OPTION;
 
 -- Verificacion
 COLUMN grantee FORMAT A18
 COLUMN privilege FORMAT A16
-SELECT grantee, privilege
+SELECT grantee, privilege, admin_option
 FROM dba_sys_privs
 WHERE grantee = 'USR_ADMIN_UNI'
 ORDER BY privilege;
@@ -205,45 +208,34 @@ ALTER TABLE alumnos
 DESC alumnos
 
 -- ------------------------------------------------------------
--- [Etapa 4] Etapa 4: volver a SYSTEM
-CONNECT system@localhost:1521/XEPDB1
-PROMPT Etapa 4 - SYSTEM crea el usuario de consultas
-
--- ------------------------------------------------------------
--- [Etapa 4] Crear el usuario de consultas USR_CONSULTAS_UNI
+-- [Etapa 4] Etapa 4 (USR_ADMIN_UNI): crear el usuario de consultas USR_CONSULTAS_UNI
+PROMPT Etapa 4 - USR_ADMIN_UNI crea el usuario de consultas
+SPOOL OFF
 ACCEPT clave_cons CHAR PROMPT 'Clave para USR_CONSULTAS_UNI: ' HIDE
 CREATE USER usr_consultas_uni
   IDENTIFIED BY "&clave_cons"
   DEFAULT TABLESPACE ts_universidad
   TEMPORARY TABLESPACE temp;
 UNDEFINE clave_cons
-PROMPT Etapa 4 - SYSTEM creo el usuario USR_CONSULTAS_UNI
+SPOOL C:\archivosbd\evidencia_ej2_universidad.txt APPEND
+PROMPT Etapa 4 - USR_ADMIN_UNI creo el usuario USR_CONSULTAS_UNI
 
 -- Verificacion
 COLUMN username FORMAT A18
-COLUMN default_tablespace FORMAT A16
-COLUMN temporary_tablespace FORMAT A10
-COLUMN account_status FORMAT A14
-SELECT username, default_tablespace, temporary_tablespace, account_status
-FROM dba_users
+SELECT username, created
+FROM all_users
 WHERE username = 'USR_CONSULTAS_UNI';
 
 -- ------------------------------------------------------------
--- [Etapa 5] Etapa 5 (SYSTEM): privilegio del sistema CREATE SESSION
-PROMPT Etapa 5 - Privilegios del usuario de consultas
+-- [Etapa 5] Etapa 5 (USR_ADMIN_UNI): conceder CREATE SESSION al usuario de consultas
+PROMPT Etapa 5 - USR_ADMIN_UNI concede privilegios al usuario de consultas
 GRANT CREATE SESSION TO usr_consultas_uni;
 
 -- Verificacion
-COLUMN grantee FORMAT A18
 COLUMN privilege FORMAT A16
-SELECT grantee, privilege
-FROM dba_sys_privs
-WHERE grantee = 'USR_CONSULTAS_UNI'
+SELECT privilege, admin_option
+FROM user_sys_privs
 ORDER BY privilege;
-
--- ------------------------------------------------------------
--- [Etapa 5] Volver a USR_ADMIN_UNI, dueno de las tablas
-CONNECT usr_admin_uni@localhost:1521/XEPDB1
 
 -- ------------------------------------------------------------
 -- [Etapa 5] Etapa 5 (USR_ADMIN_UNI): privilegios sobre objetos
@@ -268,6 +260,19 @@ SHOW USER
 PROMPT Etapa 6 - USR_CONSULTAS_UNI inserta, confirma y consulta
 SET LINESIZE 200
 SET PAGESIZE 100
+
+-- ------------------------------------------------------------
+-- [Etapa 6] Comprobar que puede hacer USR_CONSULTAS_UNI
+COLUMN privilege FORMAT A16
+SELECT privilege FROM session_privs;
+
+COLUMN owner FORMAT A16
+COLUMN table_name FORMAT A18
+COLUMN privilege FORMAT A10
+SELECT owner, table_name, privilege
+FROM user_tab_privs_recd
+WHERE owner = 'USR_ADMIN_UNI'
+ORDER BY table_name, privilege;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Comprobar por que hace falta ESQUEMA.TABLA
