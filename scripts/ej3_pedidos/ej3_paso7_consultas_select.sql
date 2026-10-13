@@ -17,24 +17,24 @@ SET PAGESIZE 100
 
 -- ------------------------------------------------------------
 -- Consulta: Cual es el total de cada pedido?
-SELECT p.id_pedido, c.nombre || ' ' || c.apellido AS cliente, p.estado,
+SELECT p.id_pedido, c.primer_nombre || ' ' || c.primer_apellido AS cliente, p.estado,
        SUM(d.cantidad * d.precio_venta) AS total
 FROM usr_admin_ped.pedido p
 JOIN usr_admin_ped.cliente c ON c.id_cliente = p.id_cliente
 JOIN usr_admin_ped.detalle_pedido d ON d.id_pedido = p.id_pedido
-GROUP BY p.id_pedido, c.nombre, c.apellido, p.estado
+GROUP BY p.id_pedido, c.primer_nombre, c.primer_apellido, p.estado
 ORDER BY p.id_pedido;
 
 -- ------------------------------------------------------------
 -- Consulta: Cuanto ha comprado cada cliente (sin pedidos anulados)?
-SELECT c.nombre, c.apellido,
+SELECT c.primer_nombre, c.primer_apellido,
        COUNT(DISTINCT p.id_pedido) AS pedidos,
        SUM(d.cantidad * d.precio_venta) AS total_comprado
 FROM usr_admin_ped.cliente c
 JOIN usr_admin_ped.pedido p ON p.id_cliente = c.id_cliente
 JOIN usr_admin_ped.detalle_pedido d ON d.id_pedido = p.id_pedido
 WHERE p.estado <> 'ANULADO'
-GROUP BY c.nombre, c.apellido
+GROUP BY c.primer_nombre, c.primer_apellido
 ORDER BY total_comprado DESC;
 
 -- ------------------------------------------------------------
@@ -66,7 +66,7 @@ ORDER BY total DESC;
 
 -- ------------------------------------------------------------
 -- Consulta: Que clientes no han hecho pedidos?
-SELECT c.id_cliente, c.nombre, c.apellido
+SELECT c.id_cliente, c.primer_nombre, c.primer_apellido
 FROM usr_admin_ped.cliente c
 LEFT JOIN usr_admin_ped.pedido p ON p.id_cliente = c.id_cliente
 WHERE p.id_pedido IS NULL;

@@ -4,7 +4,7 @@ RESUMEN DE PRACTICA - EJERCICIO 2: SISTEMA UNIVERSITARIO
 ENUNCIADO
 - Una universidad organiza sus carreras en facultades. De cada facultad se guarda un codigo de tres letras y su nombre; una facultad nueva puede crearse antes de tener carreras.
 - Cada carrera pertenece a una sola facultad; de cada carrera se guarda un codigo de tres letras y su nombre.
-- De cada alumno se registra su cedula, nombre, apellido, genero (M o F) y promedio acumulado de 0 a 5, que puede no existir aun si el alumno esta en primer semestre.
+- De cada alumno se registra su cedula, primer nombre, segundo nombre (opcional), primer apellido, segundo apellido (opcional), genero (M o F) y promedio acumulado de 0 a 5, que puede no existir aun si el alumno esta en primer semestre.
 - Cada alumno esta matriculado en una unica carrera; una carrera puede tener muchos alumnos o ninguno.
 - La universidad registra el barrio de residencia de cada alumno, tomado de un listado de barrios con codigo y nombre. Un alumno puede no haber informado su barrio.
 - Requisito posterior: cuando la base ya esta creada, la universidad pide registrar tambien la fecha de nacimiento de cada alumno.
@@ -21,7 +21,7 @@ MODELO RELACIONAL
 FACULTAD (#cod_fac, nom_facultad)
 CARRERA (#cod_carrera, nom_carrera, cod_fac*)
 BARRIOS (#id_barrio, nom_barrio)
-ALUMNOS (#ced_alumno, nombre, apellido, genero, promedio, cod_carrera*, id_barrio*, fecha_nac)
+ALUMNOS (#ced_alumno, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, genero, promedio, cod_carrera*, id_barrio*, fecha_nac)
   (# = parte de la PK, * = FK)
 
 RELACIONES Y CARDINALIDADES
@@ -83,7 +83,7 @@ CONSULTAS
     ORDER BY alumnos DESC, b.nom_barrio;
 
 - Que alumnos no informaron su barrio?
-    SELECT ced_alumno, nombre, apellido
+    SELECT ced_alumno, primer_nombre, primer_apellido
     FROM usr_admin_uni.alumnos
     WHERE id_barrio IS NULL;
 
@@ -99,26 +99,26 @@ CONSULTAS
     ORDER BY promedio DESC;
 
 - Que alumnas estudian Ingenieria de Sistemas?
-    SELECT nombre, apellido, promedio
+    SELECT primer_nombre, primer_apellido, promedio
     FROM usr_admin_uni.alumnos
     WHERE genero = 'F'
       AND cod_carrera = 'SIS'
-    ORDER BY apellido;
+    ORDER BY primer_apellido;
 
 - Que alumnos todavia no tienen promedio?
-    SELECT nombre, apellido, cod_carrera
+    SELECT primer_nombre, primer_apellido, cod_carrera
     FROM usr_admin_uni.alumnos
     WHERE promedio IS NULL
-    ORDER BY apellido;
+    ORDER BY primer_apellido;
 
 - Que alumnos tienen un apellido que empieza por M?
-    SELECT nombre, apellido
+    SELECT primer_nombre, primer_apellido
     FROM usr_admin_uni.alumnos
-    WHERE apellido LIKE 'M%'
-    ORDER BY apellido, nombre;
+    WHERE primer_apellido LIKE 'M%'
+    ORDER BY primer_apellido, primer_nombre;
 
 - Que alumnos nacieron en 2004?
-    SELECT nombre, apellido, TO_CHAR(fecha_nac, 'YYYY-MM-DD') AS nacimiento
+    SELECT primer_nombre, primer_apellido, TO_CHAR(fecha_nac, 'YYYY-MM-DD') AS nacimiento
     FROM usr_admin_uni.alumnos
     WHERE fecha_nac BETWEEN DATE '2004-01-01' AND DATE '2004-12-31'
     ORDER BY fecha_nac;
@@ -131,11 +131,11 @@ CONSULTAS
     ORDER BY alumnos DESC, cod_carrera;
 
 - Que alumnos de Medicina o Enfermeria tienen promedio de 4.0 o mas?
-    SELECT nombre, apellido, cod_carrera, promedio
+    SELECT primer_nombre, primer_apellido, cod_carrera, promedio
     FROM usr_admin_uni.alumnos
     WHERE cod_carrera IN ('MED', 'ENF')
       AND promedio >= 4
-    ORDER BY promedio DESC, apellido;
+    ORDER BY promedio DESC, primer_apellido;
 
 - AND se evalua antes que OR: cuantas filas devuelve cada version?
     SELECT COUNT(*) AS sin_parentesis
@@ -154,12 +154,12 @@ CONSULTAS
     ORDER BY b.nom_barrio;
 
 - Que alumnos pertenecen a la facultad de Ciencias de la Salud?
-    SELECT a.nombre, a.apellido, c.nom_carrera
+    SELECT a.primer_nombre, a.primer_apellido, c.nom_carrera
     FROM usr_admin_uni.alumnos a
     JOIN usr_admin_uni.carrera c ON c.cod_carrera = a.cod_carrera
     JOIN usr_admin_uni.facultad f ON f.cod_fac = c.cod_fac
     WHERE f.cod_fac = 'SAL'
-    ORDER BY c.nom_carrera, a.apellido;
+    ORDER BY c.nom_carrera, a.primer_apellido;
 
 PREGUNTAS TIPO PARCIAL
 1. Por que este modelo no necesita tablas de interseccion?

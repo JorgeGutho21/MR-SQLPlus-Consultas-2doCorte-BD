@@ -89,11 +89,13 @@ PROMPT Etapa 3 - USR_ADMIN_PED crea las tablas
 -- ------------------------------------------------------------
 -- [Etapa 3] Crear la tabla CLIENTE
 CREATE TABLE cliente (
-  id_cliente NUMBER(6),
-  nombre     VARCHAR2(15 CHAR) NOT NULL,
-  apellido   VARCHAR2(20 CHAR) NOT NULL,
-  correo     VARCHAR2(100 CHAR) NOT NULL,
-  ciudad     VARCHAR2(30 CHAR)
+  id_cliente       NUMBER(6),
+  primer_nombre    VARCHAR2(15 CHAR) NOT NULL,
+  segundo_nombre   VARCHAR2(15 CHAR),
+  primer_apellido  VARCHAR2(20 CHAR) NOT NULL,
+  segundo_apellido VARCHAR2(20 CHAR),
+  correo           VARCHAR2(100 CHAR) NOT NULL,
+  ciudad           VARCHAR2(30 CHAR)
 );
 
 -- Verificacion
@@ -288,18 +290,18 @@ SELECT COUNT(*) FROM usr_admin_ped.cliente;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Insertar en CLIENTE (6 filas)
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (1, 'Mariana', 'Lopez', 'mariana.lopez@correo.com', 'Cali');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (2, 'Jorge', 'Mendez', 'jorge.mendez@correo.com', 'Bogota');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (3, 'Sofia', 'Arango', 'sofia.arango@correo.com', 'Medellin');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (4, 'Ricardo', 'Pineda', 'ricardo.pineda@correo.com', 'Cali');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (5, 'Valeria', 'Ortiz', 'valeria.ortiz@correo.com', 'Barranquilla');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (6, 'Tomas', 'Galvis', 'tomas.galvis@correo.com', 'Bogota');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (1, 'Mariana', NULL, 'Lopez', NULL, 'mariana.lopez@correo.com', 'Cali');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (2, 'Jorge', NULL, 'Mendez', NULL, 'jorge.mendez@correo.com', 'Bogota');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (3, 'Sofia', NULL, 'Arango', NULL, 'sofia.arango@correo.com', 'Medellin');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (4, 'Ricardo', NULL, 'Pineda', NULL, 'ricardo.pineda@correo.com', 'Cali');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (5, 'Valeria', NULL, 'Ortiz', NULL, 'valeria.ortiz@correo.com', 'Barranquilla');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (6, 'Tomas', NULL, 'Galvis', NULL, 'tomas.galvis@correo.com', 'Bogota');
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Insertar en PRODUCTO (8 filas)
@@ -412,7 +414,7 @@ VALUES (5007, 101, 0, 180000);
 INSERT INTO usr_admin_ped.pedido (id_pedido, fecha_pedido, estado, id_cliente)
 VALUES (5010, DATE '2026-09-25', 'PERDIDO', 2);
 
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, primer_apellido, correo, ciudad)
 VALUES (7, 'Mario', 'Lopez', 'mariana.lopez@correo.com', 'Cali');
 
 DELETE FROM usr_admin_ped.cliente
@@ -420,24 +422,24 @@ WHERE id_cliente = 6;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Cual es el total de cada pedido?
-SELECT p.id_pedido, c.nombre || ' ' || c.apellido AS cliente, p.estado,
+SELECT p.id_pedido, c.primer_nombre || ' ' || c.primer_apellido AS cliente, p.estado,
        SUM(d.cantidad * d.precio_venta) AS total
 FROM usr_admin_ped.pedido p
 JOIN usr_admin_ped.cliente c ON c.id_cliente = p.id_cliente
 JOIN usr_admin_ped.detalle_pedido d ON d.id_pedido = p.id_pedido
-GROUP BY p.id_pedido, c.nombre, c.apellido, p.estado
+GROUP BY p.id_pedido, c.primer_nombre, c.primer_apellido, p.estado
 ORDER BY p.id_pedido;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Cuanto ha comprado cada cliente (sin pedidos anulados)?
-SELECT c.nombre, c.apellido,
+SELECT c.primer_nombre, c.primer_apellido,
        COUNT(DISTINCT p.id_pedido) AS pedidos,
        SUM(d.cantidad * d.precio_venta) AS total_comprado
 FROM usr_admin_ped.cliente c
 JOIN usr_admin_ped.pedido p ON p.id_cliente = c.id_cliente
 JOIN usr_admin_ped.detalle_pedido d ON d.id_pedido = p.id_pedido
 WHERE p.estado <> 'ANULADO'
-GROUP BY c.nombre, c.apellido
+GROUP BY c.primer_nombre, c.primer_apellido
 ORDER BY total_comprado DESC;
 
 -- ------------------------------------------------------------
@@ -469,7 +471,7 @@ ORDER BY total DESC;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Que clientes no han hecho pedidos?
-SELECT c.id_cliente, c.nombre, c.apellido
+SELECT c.id_cliente, c.primer_nombre, c.primer_apellido
 FROM usr_admin_ped.cliente c
 LEFT JOIN usr_admin_ped.pedido p ON p.id_cliente = c.id_cliente
 WHERE p.id_pedido IS NULL;

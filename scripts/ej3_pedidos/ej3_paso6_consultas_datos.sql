@@ -37,18 +37,18 @@ SELECT COUNT(*) FROM usr_admin_ped.cliente;
 
 -- ------------------------------------------------------------
 -- Insertar en CLIENTE (6 filas)
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (1, 'Mariana', 'Lopez', 'mariana.lopez@correo.com', 'Cali');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (2, 'Jorge', 'Mendez', 'jorge.mendez@correo.com', 'Bogota');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (3, 'Sofia', 'Arango', 'sofia.arango@correo.com', 'Medellin');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (4, 'Ricardo', 'Pineda', 'ricardo.pineda@correo.com', 'Cali');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (5, 'Valeria', 'Ortiz', 'valeria.ortiz@correo.com', 'Barranquilla');
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
-VALUES (6, 'Tomas', 'Galvis', 'tomas.galvis@correo.com', 'Bogota');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (1, 'Mariana', NULL, 'Lopez', NULL, 'mariana.lopez@correo.com', 'Cali');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (2, 'Jorge', NULL, 'Mendez', NULL, 'jorge.mendez@correo.com', 'Bogota');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (3, 'Sofia', NULL, 'Arango', NULL, 'sofia.arango@correo.com', 'Medellin');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (4, 'Ricardo', NULL, 'Pineda', NULL, 'ricardo.pineda@correo.com', 'Cali');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (5, 'Valeria', NULL, 'Ortiz', NULL, 'valeria.ortiz@correo.com', 'Barranquilla');
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, ciudad)
+VALUES (6, 'Tomas', NULL, 'Galvis', NULL, 'tomas.galvis@correo.com', 'Bogota');
 
 -- ------------------------------------------------------------
 -- Insertar en PRODUCTO (8 filas)
@@ -161,7 +161,7 @@ VALUES (5007, 101, 0, 180000);
 INSERT INTO usr_admin_ped.pedido (id_pedido, fecha_pedido, estado, id_cliente)
 VALUES (5010, DATE '2026-09-25', 'PERDIDO', 2);
 
-INSERT INTO usr_admin_ped.cliente (id_cliente, nombre, apellido, correo, ciudad)
+INSERT INTO usr_admin_ped.cliente (id_cliente, primer_nombre, primer_apellido, correo, ciudad)
 VALUES (7, 'Mario', 'Lopez', 'mariana.lopez@correo.com', 'Cali');
 
 DELETE FROM usr_admin_ped.cliente

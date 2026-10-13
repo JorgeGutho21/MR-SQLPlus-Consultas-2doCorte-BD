@@ -16,11 +16,13 @@ PROMPT Etapa 3 - USR_ADMIN_PED crea las tablas
 -- ------------------------------------------------------------
 -- Crear la tabla CLIENTE
 CREATE TABLE cliente (
-  id_cliente NUMBER(6),
-  nombre     VARCHAR2(15 CHAR) NOT NULL,
-  apellido   VARCHAR2(20 CHAR) NOT NULL,
-  correo     VARCHAR2(100 CHAR) NOT NULL,
-  ciudad     VARCHAR2(30 CHAR)
+  id_cliente       NUMBER(6),
+  primer_nombre    VARCHAR2(15 CHAR) NOT NULL,
+  segundo_nombre   VARCHAR2(15 CHAR),
+  primer_apellido  VARCHAR2(20 CHAR) NOT NULL,
+  segundo_apellido VARCHAR2(20 CHAR),
+  correo           VARCHAR2(100 CHAR) NOT NULL,
+  ciudad           VARCHAR2(30 CHAR)
 );
 
 -- Verificacion

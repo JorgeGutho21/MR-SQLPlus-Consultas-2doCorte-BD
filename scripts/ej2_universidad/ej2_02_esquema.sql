@@ -47,13 +47,15 @@ DESC barrios
 -- ------------------------------------------------------------
 -- Crear la tabla ALUMNOS
 CREATE TABLE alumnos (
-  ced_alumno  VARCHAR2(10 CHAR),
-  nombre      VARCHAR2(15 CHAR) NOT NULL,
-  apellido    VARCHAR2(20 CHAR) NOT NULL,
-  genero      CHAR(1) NOT NULL,
-  promedio    NUMBER(2,1),
-  cod_carrera VARCHAR2(3 CHAR) NOT NULL,
-  id_barrio   NUMBER(3)
+  ced_alumno       VARCHAR2(10 CHAR),
+  primer_nombre    VARCHAR2(15 CHAR) NOT NULL,
+  segundo_nombre   VARCHAR2(15 CHAR),
+  primer_apellido  VARCHAR2(20 CHAR) NOT NULL,
+  segundo_apellido VARCHAR2(20 CHAR),
+  genero           CHAR(1) NOT NULL,
+  promedio         NUMBER(2,1),
+  cod_carrera      VARCHAR2(3 CHAR) NOT NULL,
+  id_barrio        NUMBER(3)
 );
 
 -- Verificacion

@@ -53,6 +53,24 @@ Carpeta [`scripts/`](scripts/), por ejercicio:
 Los scripts no contienen contraseñas: SQL*Plus las pide ocultas con `ACCEPT … HIDE`, con `SET VERIFY OFF` y con el SPOOL en pausa mientras se piden y se usan.
 
 ## Verificación
-Todos los scripts (completos, agrupados, por paso y paso a paso) se ejecutaron en Oracle Database XE 18c (servicio XEPDB1) con usuarios y tablespaces de prueba que luego se eliminaron. Las salidas que la página marca como «salida real» son las obtenidas en esa ejecución; las consultas HR se leyeron sin modificar el esquema.
+Revisión del 13 de octubre de 2026: validación estática de modelos y scripts, 165 registros de ejemplo, 42 consultas y 14 INSERT inválidos contrastados en SQLite con adaptación de sintaxis Oracle. **Esta revisión no ejecutó Oracle ni modificó una instalación local.** Los resultados de los ejercicios se muestran como esperados y calculados; las capturas históricas de HR conservan su identificación.
 
 Página estática (HTML, CSS y JavaScript sin dependencias). El progreso se guarda en el navegador.
+
+## Modelo definitivo y ampliaciones
+Vehículos conserva PROPIETARIO, MARCA, VEHICULO y PROP_VEH. Todas las tablas de personas de los cuatro ejercicios usan primer_nombre, segundo_nombre opcional, primer_apellido y segundo_apellido opcional. PROPIETARIO agrega sexo M/F; VEHICULO usa cilindraje. Color y país de origen se explican únicamente como ampliaciones y no aparecen en sus scripts principales.
+
+La PK compuesta de PROP_VEH permite una fila por pareja propietario–vehículo. Para recompras se explica una SK de adquisición como alternativa, sin cambiar el modelo del profesor.
+
+## Generar y comprobar
+Requiere Node.js y Python 3, sin dependencias adicionales para los modelos.
+```shell
+node tools/build-scripts.cjs
+node tools/validate.cjs models.json
+python tools/validate-data.py models.json expected.json
+```
+El primer comando regenera los 53 archivos desde index.html; validate comprueba su correspondencia exacta, columnas, tipos, claves, relaciones y secuencia. La prueba Python contrasta consultas y rechazos de integridad en una base efímera SQLite; no sustituye una ejecución en Oracle 18c.
+
+Referencias de sintaxis: [CREATE TABLE en Oracle 18c](https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/CREATE-TABLE.html), [restricciones en Oracle 18c](https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/constraint.html).
+
+La interfaz conserva los 39 módulos, almacenamiento local del progreso, modo claro/oscuro, diagramas con selección por teclado y ratón, zoom, evaluación y descargas.

@@ -16,11 +16,14 @@ PROMPT Etapa 3 - USR_ADMIN_VEH crea las tablas
 -- ------------------------------------------------------------
 -- Crear la tabla PROPIETARIO
 CREATE TABLE propietario (
-  id_propietario VARCHAR2(10 CHAR),
-  nombre         VARCHAR2(15 CHAR) NOT NULL,
-  apellido       VARCHAR2(20 CHAR) NOT NULL,
-  telefono       VARCHAR2(10 CHAR),
-  correo         VARCHAR2(100 CHAR)
+  id_propietario   VARCHAR2(10 CHAR),
+  primer_nombre    VARCHAR2(15 CHAR) NOT NULL,
+  segundo_nombre   VARCHAR2(15 CHAR),
+  primer_apellido  VARCHAR2(20 CHAR) NOT NULL,
+  segundo_apellido VARCHAR2(20 CHAR),
+  telefono         VARCHAR2(10 CHAR),
+  correo           VARCHAR2(100 CHAR),
+  sexo             CHAR(1) NOT NULL
 );
 
 -- Verificacion
@@ -29,9 +32,8 @@ DESC propietario
 -- ------------------------------------------------------------
 -- Crear la tabla MARCA
 CREATE TABLE marca (
-  id_marca    NUMBER(3),
-  nom_marca   VARCHAR2(20 CHAR) NOT NULL,
-  pais_origen VARCHAR2(20 CHAR)
+  id_marca  NUMBER(3),
+  nom_marca VARCHAR2(20 CHAR) NOT NULL
 );
 
 -- Verificacion
@@ -40,11 +42,11 @@ DESC marca
 -- ------------------------------------------------------------
 -- Crear la tabla VEHICULO
 CREATE TABLE vehiculo (
-  placa    VARCHAR2(6 CHAR),
-  linea    VARCHAR2(20 CHAR) NOT NULL,
-  modelo   NUMBER(4) NOT NULL,
-  color    VARCHAR2(15 CHAR),
-  id_marca NUMBER(3) NOT NULL
+  placa      VARCHAR2(6 CHAR),
+  linea      VARCHAR2(20 CHAR) NOT NULL,
+  modelo     NUMBER(4) NOT NULL,
+  cilindraje NUMBER(5),
+  id_marca   NUMBER(3) NOT NULL
 );
 
 -- Verificacion
@@ -117,6 +119,9 @@ ALTER TABLE marca
 
 ALTER TABLE vehiculo
   ADD CONSTRAINT chk_vehiculo_modelo CHECK (modelo >= 1950);
+
+ALTER TABLE propietario
+  ADD CONSTRAINT chk_propietario_sexo CHECK (sexo IN ('M', 'F'));
 
 -- Verificacion
 COLUMN constraint_name FORMAT A24

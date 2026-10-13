@@ -1,0 +1,5 @@
+.playwright-cli/
+output/playwright/
+models.json
+expected.json
+__pycache__/

@@ -50,22 +50,22 @@ VALUES ('ESP', 'Espana');
 
 -- ------------------------------------------------------------
 -- Insertar en PERSONA (8 filas)
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
-VALUES ('52123456', 'Camila', 'Ruiz', DATE '1995-04-18');
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
-VALUES ('79234567', 'Andres', 'Salazar', DATE '1988-11-02');
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
-VALUES ('1010345678', 'Lucia', 'Mejia', DATE '2001-07-25');
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
-VALUES ('1020456789', 'Mateo', 'Cardenas', DATE '1999-01-09');
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
-VALUES ('1030567890', 'Isabel', 'Torres', DATE '1992-09-30');
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
-VALUES ('1040678901', 'Santiago', 'Rincon', DATE '2003-03-14');
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
-VALUES ('1050789012', 'Valentina', 'Ospina', DATE '1997-12-05');
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
-VALUES ('1060890123', 'Diego', 'Navarro', DATE '1985-06-21');
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
+VALUES ('52123456', 'Camila', NULL, 'Ruiz', NULL, DATE '1995-04-18');
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
+VALUES ('79234567', 'Andres', NULL, 'Salazar', NULL, DATE '1988-11-02');
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
+VALUES ('1010345678', 'Lucia', NULL, 'Mejia', NULL, DATE '2001-07-25');
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
+VALUES ('1020456789', 'Mateo', NULL, 'Cardenas', NULL, DATE '1999-01-09');
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
+VALUES ('1030567890', 'Isabel', NULL, 'Torres', NULL, DATE '1992-09-30');
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
+VALUES ('1040678901', 'Santiago', NULL, 'Rincon', NULL, DATE '2003-03-14');
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
+VALUES ('1050789012', 'Valentina', NULL, 'Ospina', NULL, DATE '1997-12-05');
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
+VALUES ('1060890123', 'Diego', NULL, 'Navarro', NULL, DATE '1985-06-21');
 
 -- ------------------------------------------------------------
 -- Insertar en PASAPORTE_VIGENTE (5 filas)
@@ -103,7 +103,7 @@ VALUES ('AX1111111', '1010345678', 'COL', DATE '2025-03-01', DATE '2024-03-01');
 INSERT INTO usr_admin_pas.pasaporte_vigente (num_pasaporte, id_persona, cod_pais, fecha_expedicion, fecha_vencimiento)
 VALUES ('ZZ2222222', '1040678901', 'XXX', DATE '2025-03-01', DATE '2035-03-01');
 
-INSERT INTO usr_admin_pas.persona (id_persona, nombre, apellido, fecha_nac)
+INSERT INTO usr_admin_pas.persona (id_persona, primer_nombre, primer_apellido, fecha_nac)
 VALUES ('1070901234', NULL, 'Prieto', DATE '2000-02-02');
 
 SPOOL OFF

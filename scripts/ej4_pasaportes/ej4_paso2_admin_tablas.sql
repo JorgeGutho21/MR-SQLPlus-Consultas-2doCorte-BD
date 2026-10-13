@@ -26,10 +26,12 @@ DESC pais
 -- ------------------------------------------------------------
 -- Crear la tabla PERSONA
 CREATE TABLE persona (
-  id_persona VARCHAR2(10 CHAR),
-  nombre     VARCHAR2(15 CHAR) NOT NULL,
-  apellido   VARCHAR2(20 CHAR) NOT NULL,
-  fecha_nac  DATE NOT NULL
+  id_persona       VARCHAR2(10 CHAR),
+  primer_nombre    VARCHAR2(15 CHAR) NOT NULL,
+  segundo_nombre   VARCHAR2(15 CHAR),
+  primer_apellido  VARCHAR2(20 CHAR) NOT NULL,
+  segundo_apellido VARCHAR2(20 CHAR),
+  fecha_nac        DATE NOT NULL
 );
 
 -- Verificacion

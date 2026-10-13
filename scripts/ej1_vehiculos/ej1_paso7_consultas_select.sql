@@ -17,23 +17,23 @@ SET PAGESIZE 100
 
 -- ------------------------------------------------------------
 -- Consulta: Que propietarios estan registrados?
-SELECT id_propietario, nombre, apellido, telefono
+SELECT id_propietario, primer_nombre, primer_apellido, telefono
 FROM usr_admin_veh.propietario
-ORDER BY apellido, nombre;
+ORDER BY primer_apellido, primer_nombre;
 
 -- ------------------------------------------------------------
 -- Consulta: Que vehiculos tiene (o ha tenido) cada propietario?
-SELECT p.nombre, p.apellido, v.placa, m.nom_marca, v.linea,
+SELECT p.primer_nombre, p.primer_apellido, v.placa, m.nom_marca, v.linea,
        TO_CHAR(pv.fecha_adquisicion, 'YYYY-MM-DD') AS fecha_adq
 FROM usr_admin_veh.propietario p
 JOIN usr_admin_veh.prop_veh pv ON pv.id_propietario = p.id_propietario
 JOIN usr_admin_veh.vehiculo v ON v.placa = pv.placa
 JOIN usr_admin_veh.marca m ON m.id_marca = v.id_marca
-ORDER BY p.apellido, pv.fecha_adquisicion;
+ORDER BY p.primer_apellido, pv.fecha_adquisicion;
 
 -- ------------------------------------------------------------
 -- Consulta: Que marcas estan registradas?
-SELECT id_marca, nom_marca, pais_origen
+SELECT id_marca, nom_marca
 FROM usr_admin_veh.marca
 ORDER BY nom_marca;
 
@@ -47,24 +47,24 @@ ORDER BY cantidad DESC, m.nom_marca;
 
 -- ------------------------------------------------------------
 -- Consulta: Que propietarios estan relacionados con mas de un vehiculo?
-SELECT p.id_propietario, p.nombre, p.apellido,
+SELECT p.id_propietario, p.primer_nombre, p.primer_apellido,
        COUNT(DISTINCT pv.placa) AS vehiculos
 FROM usr_admin_veh.propietario p
 JOIN usr_admin_veh.prop_veh pv ON pv.id_propietario = p.id_propietario
-GROUP BY p.id_propietario, p.nombre, p.apellido
+GROUP BY p.id_propietario, p.primer_nombre, p.primer_apellido
 HAVING COUNT(DISTINCT pv.placa) > 1
-ORDER BY vehiculos DESC, p.apellido;
+ORDER BY vehiculos DESC, p.primer_apellido;
 
 -- ------------------------------------------------------------
 -- Consulta: Que propietarios no tienen ningun vehiculo?
-SELECT p.id_propietario, p.nombre, p.apellido
+SELECT p.id_propietario, p.primer_nombre, p.primer_apellido
 FROM usr_admin_veh.propietario p
 LEFT JOIN usr_admin_veh.prop_veh pv ON pv.id_propietario = p.id_propietario
 WHERE pv.placa IS NULL;
 
 -- ------------------------------------------------------------
 -- Consulta: Quienes han sido propietarios del vehiculo ABC123?
-SELECT pv.placa, p.nombre, p.apellido,
+SELECT pv.placa, p.primer_nombre, p.primer_apellido,
        TO_CHAR(pv.fecha_adquisicion, 'YYYY-MM-DD') AS fecha_adq
 FROM usr_admin_veh.prop_veh pv
 JOIN usr_admin_veh.propietario p ON p.id_propietario = pv.id_propietario
@@ -91,23 +91,23 @@ ORDER BY modelo, placa;
 
 -- ------------------------------------------------------------
 -- Consulta: Que propietarios no registraron correo?
-SELECT nombre, apellido
+SELECT primer_nombre, primer_apellido
 FROM usr_admin_veh.propietario
 WHERE correo IS NULL
-ORDER BY apellido;
+ORDER BY primer_apellido;
 
 -- ------------------------------------------------------------
--- Consulta: Que colores distintos hay?
-SELECT DISTINCT color
+-- Consulta: Que cilindrajees distintos hay?
+SELECT DISTINCT cilindraje
 FROM usr_admin_veh.vehiculo
-ORDER BY color;
+ORDER BY cilindraje;
 
 -- ------------------------------------------------------------
--- Consulta: Que vehiculos son de marcas japonesas o coreanas?
-SELECT v.placa, v.linea, m.nom_marca, m.pais_origen
+-- Consulta: Que vehiculos tienen cilindraje entre 1200 y 1800 cm?
+SELECT v.placa, v.linea, m.nom_marca, v.cilindraje
 FROM usr_admin_veh.vehiculo v
 JOIN usr_admin_veh.marca m ON m.id_marca = v.id_marca
-WHERE m.pais_origen IN ('Japon', 'Corea del Sur')
+WHERE v.cilindraje BETWEEN 1200 AND 1800
 ORDER BY m.nom_marca, v.placa;
 
 SPOOL OFF

@@ -2,7 +2,7 @@ RESUMEN DE PRACTICA - EJERCICIO 4: PERSONAS Y PASAPORTES VIGENTES
 ============================================================
 
 ENUNCIADO
-- La oficina de relaciones internacionales de una universidad registra a las personas que viajan en misiones academicas. De cada persona se guarda su numero de documento, nombre, apellido y fecha de nacimiento.
+- La oficina de relaciones internacionales de una universidad registra a las personas que viajan en misiones academicas. De cada persona se guarda su numero de documento, primer nombre, segundo nombre (opcional), primer apellido, segundo apellido (opcional) y fecha de nacimiento.
 - Algunas personas tienen pasaporte vigente y otras no. Para este sistema, cada persona tiene como maximo un pasaporte vigente registrado, y cada pasaporte vigente pertenece exactamente a una persona.
 - Del pasaporte se guarda su numero (unico), el pais que lo expidio, la fecha de expedicion y la fecha de vencimiento, que debe ser posterior a la de expedicion.
 - De cada pais se guarda su codigo ISO de tres letras y su nombre. Un pais puede haber expedido muchos de los pasaportes registrados, o ninguno.
@@ -16,7 +16,7 @@ R5. Vencimiento posterior a expedicion.  ->  CHECK que compara dos columnas.
 
 MODELO RELACIONAL
 PAIS (#cod_pais, nom_pais)
-PERSONA (#id_persona, nombre, apellido, fecha_nac)
+PERSONA (#id_persona, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nac)
 PASAPORTE_VIGENTE (#num_pasaporte, id_persona*, cod_pais*, fecha_expedicion, fecha_vencimiento)
   (# = parte de la PK, * = FK)
 
@@ -54,17 +54,17 @@ SCRIPTS
 
 CONSULTAS
 - Que pasaporte tiene cada persona?
-    SELECT pe.nombre, pe.apellido, pa.num_pasaporte, pa.cod_pais
+    SELECT pe.primer_nombre, pe.primer_apellido, pa.num_pasaporte, pa.cod_pais
     FROM usr_admin_pas.persona pe
     LEFT JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
-    ORDER BY pe.apellido;
+    ORDER BY pe.primer_apellido;
 
 - Que personas no tienen pasaporte vigente?
-    SELECT pe.id_persona, pe.nombre, pe.apellido
+    SELECT pe.id_persona, pe.primer_nombre, pe.primer_apellido
     FROM usr_admin_pas.persona pe
     LEFT JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
     WHERE pa.num_pasaporte IS NULL
-    ORDER BY pe.apellido;
+    ORDER BY pe.primer_apellido;
 
 - Cuantos pasaportes registrados expidio cada pais?
     SELECT pi.cod_pais, pi.nom_pais, COUNT(pa.num_pasaporte) AS pasaportes
@@ -74,7 +74,7 @@ CONSULTAS
     ORDER BY pasaportes DESC, pi.cod_pais;
 
 - Que pasaportes vencen antes de 2030?
-    SELECT pa.num_pasaporte, pe.nombre, pe.apellido,
+    SELECT pa.num_pasaporte, pe.primer_nombre, pe.primer_apellido,
            TO_CHAR(pa.fecha_vencimiento, 'YYYY-MM-DD') AS vence
     FROM usr_admin_pas.pasaporte_vigente pa
     JOIN usr_admin_pas.persona pe ON pe.id_persona = pa.id_persona
@@ -82,7 +82,7 @@ CONSULTAS
     ORDER BY pa.fecha_vencimiento;
 
 - Que personas nacidas antes de 1995 tienen pasaporte?
-    SELECT pe.nombre, pe.apellido, TO_CHAR(pe.fecha_nac, 'YYYY-MM-DD') AS nacimiento, pa.cod_pais
+    SELECT pe.primer_nombre, pe.primer_apellido, TO_CHAR(pe.fecha_nac, 'YYYY-MM-DD') AS nacimiento, pa.cod_pais
     FROM usr_admin_pas.persona pe
     JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
     WHERE pe.fecha_nac < DATE '1995-01-01'

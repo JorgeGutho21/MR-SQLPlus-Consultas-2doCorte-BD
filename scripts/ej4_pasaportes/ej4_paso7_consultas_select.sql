@@ -17,18 +17,18 @@ SET PAGESIZE 100
 
 -- ------------------------------------------------------------
 -- Consulta: Que pasaporte tiene cada persona?
-SELECT pe.nombre, pe.apellido, pa.num_pasaporte, pa.cod_pais
+SELECT pe.primer_nombre, pe.primer_apellido, pa.num_pasaporte, pa.cod_pais
 FROM usr_admin_pas.persona pe
 LEFT JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
-ORDER BY pe.apellido;
+ORDER BY pe.primer_apellido;
 
 -- ------------------------------------------------------------
 -- Consulta: Que personas no tienen pasaporte vigente?
-SELECT pe.id_persona, pe.nombre, pe.apellido
+SELECT pe.id_persona, pe.primer_nombre, pe.primer_apellido
 FROM usr_admin_pas.persona pe
 LEFT JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
 WHERE pa.num_pasaporte IS NULL
-ORDER BY pe.apellido;
+ORDER BY pe.primer_apellido;
 
 -- ------------------------------------------------------------
 -- Consulta: Cuantos pasaportes registrados expidio cada pais?
@@ -40,7 +40,7 @@ ORDER BY pasaportes DESC, pi.cod_pais;
 
 -- ------------------------------------------------------------
 -- Consulta: Que pasaportes vencen antes de 2030?
-SELECT pa.num_pasaporte, pe.nombre, pe.apellido,
+SELECT pa.num_pasaporte, pe.primer_nombre, pe.primer_apellido,
        TO_CHAR(pa.fecha_vencimiento, 'YYYY-MM-DD') AS vence
 FROM usr_admin_pas.pasaporte_vigente pa
 JOIN usr_admin_pas.persona pe ON pe.id_persona = pa.id_persona
@@ -49,7 +49,7 @@ ORDER BY pa.fecha_vencimiento;
 
 -- ------------------------------------------------------------
 -- Consulta: Que personas nacidas antes de 1995 tienen pasaporte?
-SELECT pe.nombre, pe.apellido, TO_CHAR(pe.fecha_nac, 'YYYY-MM-DD') AS nacimiento, pa.cod_pais
+SELECT pe.primer_nombre, pe.primer_apellido, TO_CHAR(pe.fecha_nac, 'YYYY-MM-DD') AS nacimiento, pa.cod_pais
 FROM usr_admin_pas.persona pe
 JOIN usr_admin_pas.pasaporte_vigente pa ON pa.id_persona = pe.id_persona
 WHERE pe.fecha_nac < DATE '1995-01-01'

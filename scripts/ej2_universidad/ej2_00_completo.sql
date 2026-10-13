@@ -120,13 +120,15 @@ DESC barrios
 -- ------------------------------------------------------------
 -- [Etapa 3] Crear la tabla ALUMNOS
 CREATE TABLE alumnos (
-  ced_alumno  VARCHAR2(10 CHAR),
-  nombre      VARCHAR2(15 CHAR) NOT NULL,
-  apellido    VARCHAR2(20 CHAR) NOT NULL,
-  genero      CHAR(1) NOT NULL,
-  promedio    NUMBER(2,1),
-  cod_carrera VARCHAR2(3 CHAR) NOT NULL,
-  id_barrio   NUMBER(3)
+  ced_alumno       VARCHAR2(10 CHAR),
+  primer_nombre    VARCHAR2(15 CHAR) NOT NULL,
+  segundo_nombre   VARCHAR2(15 CHAR),
+  primer_apellido  VARCHAR2(20 CHAR) NOT NULL,
+  segundo_apellido VARCHAR2(20 CHAR),
+  genero           CHAR(1) NOT NULL,
+  promedio         NUMBER(2,1),
+  cod_carrera      VARCHAR2(3 CHAR) NOT NULL,
+  id_barrio        NUMBER(3)
 );
 
 -- Verificacion
@@ -352,16 +354,16 @@ SELECT 'ALUMNOS' AS tabla, COUNT(*) AS filas FROM usr_admin_uni.alumnos;
 -- [Etapa 6] Pruebas de integridad: errores esperados
 -- ERRORES ESPERADOS (prueba intencional): ORA-02290, ORA-02291, ORA-02290, ORA-00001
 PROMPT Pruebas intencionales: cada sentencia debe fallar
-INSERT INTO usr_admin_uni.alumnos (ced_alumno, nombre, apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
+INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, primer_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
 VALUES ('1000000060', 'Mario', 'Diaz', 'X', 3.5, 'SIS', 1, DATE '2003-02-02');
 
-INSERT INTO usr_admin_uni.alumnos (ced_alumno, nombre, apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
+INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, primer_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
 VALUES ('1000000061', 'Ana', 'Soto', 'F', 3.0, 'XYZ', 1, DATE '2004-01-01');
 
-INSERT INTO usr_admin_uni.alumnos (ced_alumno, nombre, apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
+INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, primer_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
 VALUES ('1000000062', 'Luis', 'Paz', 'M', 6, 'SIS', 1, DATE '2003-05-05');
 
-INSERT INTO usr_admin_uni.alumnos (ced_alumno, nombre, apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
+INSERT INTO usr_admin_uni.alumnos (ced_alumno, primer_nombre, primer_apellido, genero, promedio, cod_carrera, id_barrio, fecha_nac)
 VALUES ('1000000001', 'Pedro', 'Lozano', 'M', 3.5, 'SIS', 2, DATE '2003-08-08');
 
 -- ------------------------------------------------------------
@@ -391,7 +393,7 @@ ORDER BY alumnos DESC, b.nom_barrio;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Que alumnos no informaron su barrio?
-SELECT ced_alumno, nombre, apellido
+SELECT ced_alumno, primer_nombre, primer_apellido
 FROM usr_admin_uni.alumnos
 WHERE id_barrio IS NULL;
 
@@ -409,29 +411,29 @@ ORDER BY promedio DESC;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Que alumnas estudian Ingenieria de Sistemas?
-SELECT nombre, apellido, promedio
+SELECT primer_nombre, primer_apellido, promedio
 FROM usr_admin_uni.alumnos
 WHERE genero = 'F'
   AND cod_carrera = 'SIS'
-ORDER BY apellido;
+ORDER BY primer_apellido;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Que alumnos todavia no tienen promedio?
-SELECT nombre, apellido, cod_carrera
+SELECT primer_nombre, primer_apellido, cod_carrera
 FROM usr_admin_uni.alumnos
 WHERE promedio IS NULL
-ORDER BY apellido;
+ORDER BY primer_apellido;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Que alumnos tienen un apellido que empieza por M?
-SELECT nombre, apellido
+SELECT primer_nombre, primer_apellido
 FROM usr_admin_uni.alumnos
-WHERE apellido LIKE 'M%'
-ORDER BY apellido, nombre;
+WHERE primer_apellido LIKE 'M%'
+ORDER BY primer_apellido, primer_nombre;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Que alumnos nacieron en 2004?
-SELECT nombre, apellido, TO_CHAR(fecha_nac, 'YYYY-MM-DD') AS nacimiento
+SELECT primer_nombre, primer_apellido, TO_CHAR(fecha_nac, 'YYYY-MM-DD') AS nacimiento
 FROM usr_admin_uni.alumnos
 WHERE fecha_nac BETWEEN DATE '2004-01-01' AND DATE '2004-12-31'
 ORDER BY fecha_nac;
@@ -446,11 +448,11 @@ ORDER BY alumnos DESC, cod_carrera;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Que alumnos de Medicina o Enfermeria tienen promedio de 4.0 o mas?
-SELECT nombre, apellido, cod_carrera, promedio
+SELECT primer_nombre, primer_apellido, cod_carrera, promedio
 FROM usr_admin_uni.alumnos
 WHERE cod_carrera IN ('MED', 'ENF')
   AND promedio >= 4
-ORDER BY promedio DESC, apellido;
+ORDER BY promedio DESC, primer_apellido;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: AND se evalua antes que OR: cuantas filas devuelve cada version?
@@ -472,12 +474,12 @@ ORDER BY b.nom_barrio;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Consulta: Que alumnos pertenecen a la facultad de Ciencias de la Salud?
-SELECT a.nombre, a.apellido, c.nom_carrera
+SELECT a.primer_nombre, a.primer_apellido, c.nom_carrera
 FROM usr_admin_uni.alumnos a
 JOIN usr_admin_uni.carrera c ON c.cod_carrera = a.cod_carrera
 JOIN usr_admin_uni.facultad f ON f.cod_fac = c.cod_fac
 WHERE f.cod_fac = 'SAL'
-ORDER BY c.nom_carrera, a.apellido;
+ORDER BY c.nom_carrera, a.primer_apellido;
 
 -- ------------------------------------------------------------
 -- [Etapa 6] Cerrar la evidencia y revisarla

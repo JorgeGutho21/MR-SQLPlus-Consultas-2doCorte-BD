@@ -69,6 +69,9 @@ ALTER TABLE marca
 ALTER TABLE vehiculo
   ADD CONSTRAINT chk_vehiculo_modelo CHECK (modelo >= 1950);
 
+ALTER TABLE propietario
+  ADD CONSTRAINT chk_propietario_sexo CHECK (sexo IN ('M', 'F'));
+
 -- Verificacion
 COLUMN constraint_name FORMAT A24
 COLUMN table_name FORMAT A18

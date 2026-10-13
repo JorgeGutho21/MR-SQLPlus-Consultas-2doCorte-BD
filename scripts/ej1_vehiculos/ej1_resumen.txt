@@ -3,9 +3,9 @@ RESUMEN DE PRACTICA - EJERCICIO 1: PROPIETARIOS Y VEHICULOS
 
 ENUNCIADO
 - La Secretaria de Movilidad de un municipio necesita una base de datos para registrar quienes son o han sido propietarios de cada vehiculo.
-- De cada propietario se registra su numero de identificacion, nombre, apellido, telefono y correo electronico; el telefono y el correo pueden faltar.
-- De cada vehiculo se registra la placa (tres letras y tres caracteres, por ejemplo ABC123), la linea (Spark, Logan), el modelo (ano de fabricacion, no anterior a 1950) y el color.
-- Cada vehiculo pertenece a una unica marca. De cada marca se guarda un codigo, su nombre -que no puede repetirse- y el pais de origen.
+- De cada propietario se registra su numero de identificacion, primer nombre, segundo nombre (opcional), primer apellido, segundo apellido (opcional), telefono y correo electronico; el telefono y el correo pueden faltar. Tambien se registra el sexo (M/F).
+- De cada vehiculo se registra la placa (tres letras y tres caracteres, por ejemplo ABC123), la linea (Spark, Logan), el modelo (ano de fabricacion, no anterior a 1950) y el cilindraje en cm.
+- Cada vehiculo pertenece a una unica marca. De cada marca se guarda un codigo, su nombre -que no puede repetirse-.
 - Una persona puede adquirir varios vehiculos y un mismo vehiculo puede pasar por varios propietarios a lo largo del tiempo. Por cada adquisicion se debe guardar la fecha en que ese propietario adquirio ese vehiculo.
 - Se puede registrar una marca que todavia no tenga vehiculos y un propietario antes de asociarle un vehiculo.
 
@@ -18,11 +18,12 @@ R5. Una marca puede no tener vehiculos todavia.  ->  Participacion opcional (0..
 R6. El nombre de la marca no se repite.  ->  Restriccion UNIQUE (clave alternativa).
 R7. El modelo no es anterior a 1950.  ->  Restriccion CHECK.
 R8. Telefono y correo pueden faltar.  ->  Columnas que admiten NULL.
+R9. El sexo registrado es M o F.  ->  CHAR(1), NOT NULL y CHECK.
 
 MODELO RELACIONAL
-PROPIETARIO (#id_propietario, nombre, apellido, telefono, correo)
-MARCA (#id_marca, nom_marca, pais_origen)
-VEHICULO (#placa, linea, modelo, color, id_marca*)
+PROPIETARIO (#id_propietario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, correo, sexo)
+MARCA (#id_marca, nom_marca)
+VEHICULO (#placa, linea, modelo, cilindraje, id_marca*)
 PROP_VEH (#id_propietario*, #placa*, fecha_adquisicion)
   (# = parte de la PK, * = FK)
 
@@ -41,6 +42,7 @@ FK     fk_propveh_propietario: PROP_VEH (id_propietario) -> PROPIETARIO (id_prop
 FK     fk_propveh_vehiculo: PROP_VEH (placa) -> VEHICULO (placa)
 UNIQUE uq_marca_nombre ON MARCA (nom_marca)
 CHECK  chk_vehiculo_modelo ON VEHICULO: modelo >= 1950
+CHECK  chk_propietario_sexo ON PROPIETARIO: sexo IN ('M', 'F')
 
 CLASIFICACION DE CLAVES (natural / SK / compuesta)
 PROPIETARIO (id_propietario): PK natural - Es el numero de identificacion (documento) de la persona: existe fuera de la base, es unico y no cambia.
@@ -64,21 +66,21 @@ SCRIPTS
 
 CONSULTAS
 - Que propietarios estan registrados?
-    SELECT id_propietario, nombre, apellido, telefono
+    SELECT id_propietario, primer_nombre, primer_apellido, telefono
     FROM usr_admin_veh.propietario
-    ORDER BY apellido, nombre;
+    ORDER BY primer_apellido, primer_nombre;
 
 - Que vehiculos tiene (o ha tenido) cada propietario?
-    SELECT p.nombre, p.apellido, v.placa, m.nom_marca, v.linea,
+    SELECT p.primer_nombre, p.primer_apellido, v.placa, m.nom_marca, v.linea,
            TO_CHAR(pv.fecha_adquisicion, 'YYYY-MM-DD') AS fecha_adq
     FROM usr_admin_veh.propietario p
     JOIN usr_admin_veh.prop_veh pv ON pv.id_propietario = p.id_propietario
     JOIN usr_admin_veh.vehiculo v ON v.placa = pv.placa
     JOIN usr_admin_veh.marca m ON m.id_marca = v.id_marca
-    ORDER BY p.apellido, pv.fecha_adquisicion;
+    ORDER BY p.primer_apellido, pv.fecha_adquisicion;
 
 - Que marcas estan registradas?
-    SELECT id_marca, nom_marca, pais_origen
+    SELECT id_marca, nom_marca
     FROM usr_admin_veh.marca
     ORDER BY nom_marca;
 
@@ -90,22 +92,22 @@ CONSULTAS
     ORDER BY cantidad DESC, m.nom_marca;
 
 - Que propietarios estan relacionados con mas de un vehiculo?
-    SELECT p.id_propietario, p.nombre, p.apellido,
+    SELECT p.id_propietario, p.primer_nombre, p.primer_apellido,
            COUNT(DISTINCT pv.placa) AS vehiculos
     FROM usr_admin_veh.propietario p
     JOIN usr_admin_veh.prop_veh pv ON pv.id_propietario = p.id_propietario
-    GROUP BY p.id_propietario, p.nombre, p.apellido
+    GROUP BY p.id_propietario, p.primer_nombre, p.primer_apellido
     HAVING COUNT(DISTINCT pv.placa) > 1
-    ORDER BY vehiculos DESC, p.apellido;
+    ORDER BY vehiculos DESC, p.primer_apellido;
 
 - Que propietarios no tienen ningun vehiculo?
-    SELECT p.id_propietario, p.nombre, p.apellido
+    SELECT p.id_propietario, p.primer_nombre, p.primer_apellido
     FROM usr_admin_veh.propietario p
     LEFT JOIN usr_admin_veh.prop_veh pv ON pv.id_propietario = p.id_propietario
     WHERE pv.placa IS NULL;
 
 - Quienes han sido propietarios del vehiculo ABC123?
-    SELECT pv.placa, p.nombre, p.apellido,
+    SELECT pv.placa, p.primer_nombre, p.primer_apellido,
            TO_CHAR(pv.fecha_adquisicion, 'YYYY-MM-DD') AS fecha_adq
     FROM usr_admin_veh.prop_veh pv
     JOIN usr_admin_veh.propietario p ON p.id_propietario = pv.id_propietario
@@ -129,21 +131,21 @@ CONSULTAS
     ORDER BY modelo, placa;
 
 - Que propietarios no registraron correo?
-    SELECT nombre, apellido
+    SELECT primer_nombre, primer_apellido
     FROM usr_admin_veh.propietario
     WHERE correo IS NULL
-    ORDER BY apellido;
+    ORDER BY primer_apellido;
 
-- Que colores distintos hay?
-    SELECT DISTINCT color
+- Que cilindrajees distintos hay?
+    SELECT DISTINCT cilindraje
     FROM usr_admin_veh.vehiculo
-    ORDER BY color;
+    ORDER BY cilindraje;
 
-- Que vehiculos son de marcas japonesas o coreanas?
-    SELECT v.placa, v.linea, m.nom_marca, m.pais_origen
+- Que vehiculos tienen cilindraje entre 1200 y 1800 cm?
+    SELECT v.placa, v.linea, m.nom_marca, v.cilindraje
     FROM usr_admin_veh.vehiculo v
     JOIN usr_admin_veh.marca m ON m.id_marca = v.id_marca
-    WHERE m.pais_origen IN ('Japon', 'Corea del Sur')
+    WHERE v.cilindraje BETWEEN 1200 AND 1800
     ORDER BY m.nom_marca, v.placa;
 
 PREGUNTAS TIPO PARCIAL
@@ -156,4 +158,4 @@ PREGUNTAS TIPO PARCIAL
 4. Donde va la FK entre VEHICULO y MARCA y por que?
    R: En VEHICULO (lado N): cada vehiculo guarda una sola marca. Si se pusiera en MARCA, una marca solo podria apuntar a un vehiculo. Es NOT NULL porque la marca es obligatoria.
 5. Cuantas tablas tiene el modelo y cuantas restricciones?
-   R: 4 tablas; 4 PK, 3 FK, 1 UNIQUE y 1 CHECK (ademas de los NOT NULL de columna).
+   R: 4 tablas; 4 PK, 3 FK, 1 UNIQUE y 2 CHECK (ademas de los NOT NULL de columna).
